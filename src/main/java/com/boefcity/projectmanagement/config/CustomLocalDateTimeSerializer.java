@@ -19,12 +19,12 @@ public class CustomLocalDateTimeSerializer extends JsonSerializer<LocalDateTime>
      */
 
     /*
-    - @param 'value' Den LocalDateTime, der skal serialiseres. Kan ikke være null.
+    - 'value' Den LocalDateTime, der skal serialiseres. Kan ikke være null.
 
-    - @param 'gen' JsonGenerator bruges til at skrive JSON-outputtet. Dette er den generator,
+    - 'gen' JsonGenerator bruges til at skrive JSON-outputtet. Dette er den generator,
        der håndterer serialiseringen af JSON data.
 
-    - @param 'serializers' SerializerProvider, der kan bruges til at
+    - 'serializers' SerializerProvider, der kan bruges til at
        at serialisere objekter af andre typer.
 
      @throws IOException Hvis der opstår en input/output-fejl under processen.

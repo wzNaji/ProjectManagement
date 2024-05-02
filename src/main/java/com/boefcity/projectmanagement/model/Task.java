@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Data // Getters, setters, toString osv.
-@Entity // Mapper 'task' entity/klasse til en tabel hvor name = "items" i databasen
+@Entity // Mapper 'task' entity/klasse til en tabel hvor name = "task" i databasen
 @Table(name = "task")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,17 +37,17 @@ public class Task {
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
-    @ManyToOne
-    @JoinColumn(name = "priority_level_id", nullable = false)
+    @Enumerated(EnumType.STRING) // enum bliver gemt som en String i databasen
+    @Column(name = "priority_level", nullable = false)
     private PriorityLevel priorityLevel;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status;
 
     @ManyToOne
     @JoinColumn(name = "assigned_user_id", nullable = false)
     private User assignedUser;
-
-    @ManyToOne
-    @JoinColumn(name = "status_id", nullable = false)
-    private Status status;
 
 
 
