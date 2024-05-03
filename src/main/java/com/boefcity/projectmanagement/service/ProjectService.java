@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ProjectService {
 
-    void createProject (Project project);
+    Project createProject (Project project);
 
     Project findById (Long id);
 
