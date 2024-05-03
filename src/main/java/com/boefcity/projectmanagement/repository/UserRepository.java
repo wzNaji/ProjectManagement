@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.sql.*;
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
@@ -69,5 +70,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
         return user;
     }
      */
+
+    Optional<User> findUserByUsername(String username);
 
 }

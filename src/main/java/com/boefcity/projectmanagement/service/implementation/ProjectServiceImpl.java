@@ -1,7 +1,8 @@
-package com.boefcity.projectmanagement.service;
+package com.boefcity.projectmanagement.service.implementation;
 
 import com.boefcity.projectmanagement.model.Project;
 import com.boefcity.projectmanagement.repository.ProjectRepository;
+import com.boefcity.projectmanagement.service.ProjectService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,9 +21,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void createProject(Project project) {
+    public Project createProject(Project project) {
 
-    projectRepository.save(project);
+    return projectRepository.save(project);
 
     }
     @Transactional(readOnly = true)
@@ -33,9 +34,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void deleteById(Long id) {
-
     projectRepository.deleteById(id);
-
     }
 
     @Transactional(readOnly = true)
@@ -44,9 +43,12 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.findAll();
     }
     @Override
-    public Project update(Long id, Project projectDetails) {
-        Project projectToUpdate = projectRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Project not found for this id: " + id));
+    public Project update(Long projectId, Project projectDetails) {
+        Project projectToUpdate = projectRepository.findProjectByIdNative(projectId);
+
+        if (projectToUpdate == null) {
+            throw new EntityNotFoundException("User not found for id: " + projectId);
+        }
 
         projectToUpdate.setProjectName(projectDetails.getProjectName());
         projectToUpdate.setProjectDescription(projectDetails.getProjectDescription());
@@ -54,6 +56,6 @@ public class ProjectServiceImpl implements ProjectService {
         projectToUpdate.setProjectEndDate(projectDetails.getProjectEndDate());
 
 
-        return projectRepository.save(projectDetails);
+        return projectRepository.save(projectToUpdate);
     }
 }
