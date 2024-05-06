@@ -1,10 +1,8 @@
 package com.boefcity.projectmanagement.controller;
 
-import com.boefcity.projectmanagement.model.Role;
 import com.boefcity.projectmanagement.model.User;
 import com.boefcity.projectmanagement.service.UserService;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,11 +15,9 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UserController(UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @GetMapping("/loginDisplay")
@@ -51,28 +47,6 @@ public class UserController {
         }
     }
 
-    /*
-    @PostMapping("/registerUser")
-    public String registerUser(@ModelAttribute User user,
-                               RedirectAttributes redirectAttributes) {
-        try {
-            Optional<User> optionalExistingUser = userService.findUserByUsername(user.getUsername());
-            if (optionalExistingUser.isPresent()) {
-                redirectAttributes.addFlashAttribute("message", "Username already exists.");
-                return "redirect:/users/registerDisplay";
-            }
-            user.setUserRole(Role.WORKER);
-            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-            userService.createUser(user);
-            redirectAttributes.addFlashAttribute("message", "User registered successfully!");
-            return "redirect:/users/loginDisplay";
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "An error occurred.");
-            return "redirect:/users/registerDisplay";
-        }
-    }
-
-     */
     @PostMapping("/loginUser")
     public String loginUser(@RequestParam String username,
                             @RequestParam String password,
