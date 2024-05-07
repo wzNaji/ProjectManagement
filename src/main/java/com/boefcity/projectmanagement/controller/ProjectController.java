@@ -26,6 +26,19 @@ public class ProjectController {
         this.projectService = projectService;
         this.userService = userService;
     }
+/*
+    @GetMapping("/addForm")
+    public String projectsAddFormDisplay(Model model, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/login";
+        }
+        if ()
+        model.addAttribute("project", new Project());
+        return "/project/userProjectList";
+    }
+
+ */
 
     @GetMapping("/display")
     public String projectsDisplay(HttpSession session, Model model) {
@@ -43,13 +56,16 @@ public class ProjectController {
 
         if (Role.ADMIN.equals(role)) {
             List<Project> adminProjectList = projectService.findAll();
-            model.addAttribute("projectList", adminProjectList);
-            return "adminProjectList";
+            model.addAttribute("adminProjectList", adminProjectList);
+            return "/project/adminProjectList";
         } else if (Role.WORKER.equals(role) || Role.MANAGER.equals(role)) {
             List<Project> projectList = user.getProjects();
-            model.addAttribute("projectList", projectList);
-            return "userProjectList";
+            model.addAttribute("userProjectList", projectList);
+            return "/project/userProjectList";
         }
         return "errorPage";
     }
+
+
+
 }

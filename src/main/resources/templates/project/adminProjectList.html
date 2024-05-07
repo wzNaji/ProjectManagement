@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Projects</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+<header>
+    <nav class="d-flex justify-content-center">
+        <h1>- Admin - Projects</h1>
+    </nav>
+</header>
+<main>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col"></th>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Start Date</th>
+            <th scope="col">Due Date</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="project : ${adminProjectList}">
+            <th scope="row"></th>
+            <td th:text="${project.projectName}">TestName1</td>
+            <td th:text="${project.projectDescription}">TestDescription1</td>
+            <td th:text="${project.projectStartDate}">TestLink1</td>
+            <td th:text="${project.projectEndDate}">TestLink1</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a href="/menu"><button type="button" class="btn btn-primary ms-3">Back to Menu</button></a>
+    <a href="/projects/create"><button type="button" class="btn btn-success ms-3">Create A Project</button></a>
+</main>
+<footer class="mt-auto text-center">
+    <p>BoefCity@EMC.com</p>
+</footer>
+</body>
+</html>

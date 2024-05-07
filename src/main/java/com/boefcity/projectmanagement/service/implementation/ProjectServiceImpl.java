@@ -20,12 +20,12 @@ public class ProjectServiceImpl implements ProjectService {
         this.projectRepository = projectRepository;
     }
 
+
     @Override
     public Project createProject(Project project) {
-
-    return projectRepository.save(project);
-
+        return projectRepository.save(project);
     }
+
     @Transactional(readOnly = true)
     @Override
     public Project findById(Long id) {
