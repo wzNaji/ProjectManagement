@@ -18,7 +18,7 @@ public class ProjectController {
     }
 
     @GetMapping("/display")
-    public String projectsDisplay(){
+    public String projectsDisplay() {
         return "projects";
     }
 

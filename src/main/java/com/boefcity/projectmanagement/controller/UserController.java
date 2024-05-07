@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -59,13 +60,27 @@ public class UserController {
             if (optionalUser.isPresent()) {
                 User user = optionalUser.get();
                 session.setAttribute("userId", user.getUserId());
-                return "redirect:/projects/display";
+                return "redirect:/menu";
             }
         } else {
             redirectAttributes.addFlashAttribute("message", "Incorrect username or password. Try again");
             return "redirect:/users/loginDisplay";
         }
-        return "redirect:/users/loginDisplay";
+        return "redirect:/errorPage";
+    }
+
+    @GetMapping("/userListDisplay")
+    public String displayItems(HttpSession session,
+                               Model model) {
+
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/login";
+        }
+
+        List<User> userList = userService.findAllUsers();
+        model.addAttribute("userList", userList);
+        return "userList";
     }
 
 
