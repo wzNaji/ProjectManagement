@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -35,8 +36,11 @@ public class User {
         @ToString.Exclude
         private String password;
 
-
-
-
+        @ManyToMany(cascade = CascadeType.DETACH)
+        @JoinTable(
+                name = "user_project",
+                joinColumns = @JoinColumn(name = "user_id"),
+                inverseJoinColumns = @JoinColumn(name = "project_id")
+        )
+        private List<Project> projects = new ArrayList<>();
 }
-
