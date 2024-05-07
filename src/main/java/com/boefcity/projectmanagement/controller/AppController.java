@@ -11,4 +11,13 @@ public class AppController {
         return "homepage";
     }
 
+    @GetMapping("/menu")
+    public String menuPageDisplay() {
+        return "menuPage";
+    }
+
+    @GetMapping("/errorPage")
+    public String errorPageDisplay() {
+        return "errorPage";
+    }
 }

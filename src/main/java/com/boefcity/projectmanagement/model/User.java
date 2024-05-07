@@ -5,7 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.util.List;
 
 @Entity
 @Table(name = "user")
@@ -33,6 +34,7 @@ public class User {
         @Column(name = "password", nullable = false)
         @ToString.Exclude
         private String password;
+
 
 }
 
