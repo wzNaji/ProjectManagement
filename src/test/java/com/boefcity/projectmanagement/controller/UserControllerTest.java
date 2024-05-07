@@ -89,7 +89,7 @@ public class UserControllerTest {
         when(userService.findUserByUsername("validUser")).thenReturn(Optional.of(user));
 
         String result = userController.loginUser("validUser", "validPass", session, redirectAttributes);
-        assertEquals("redirect:/projects/display", result);
+        assertEquals("redirect:/menu", result);
         verify(session).setAttribute("userId", user.getUserId());
     }
 }
