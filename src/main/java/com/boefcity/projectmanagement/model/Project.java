@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -30,4 +32,7 @@ public class Project {
     @Column(name = "project_end_date")
     private LocalDateTime projectEndDate;
 
+    @ManyToMany(mappedBy = "projects", cascade = CascadeType.DETACH)
+    private List<User> users = new ArrayList<>();
 }
+

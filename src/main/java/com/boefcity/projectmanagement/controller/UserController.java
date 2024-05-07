@@ -70,7 +70,7 @@ public class UserController {
     }
 
     @GetMapping("/userListDisplay")
-    public String displayItems(HttpSession session,
+    public String userListDisplay(HttpSession session,
                                Model model) {
 
         Long userId = (Long) session.getAttribute("userId");
