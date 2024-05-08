@@ -1,4 +1,4 @@
-package com.boefcity.projectmanagement.config;
+/*package com.boefcity.projectmanagement.config;
 
 
 
@@ -30,6 +30,7 @@ public class CustomLocalDateTimeSerializer extends JsonSerializer<LocalDateTime>
      @throws IOException Hvis der opstår en input/output-fejl under processen.
 
      */
+/*
     @Override
     public void serialize(LocalDateTime value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
         if (value != null) {
@@ -38,3 +39,4 @@ public class CustomLocalDateTimeSerializer extends JsonSerializer<LocalDateTime>
 
     }
 }
+*/

@@ -1,4 +1,4 @@
-package com.boefcity.projectmanagement.config;
+/*package com.boefcity.projectmanagement.config;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
  * Denne klasse er ansvarlig for at konfigurere Jacksons ObjectMapper til at bruge
  * brugerdefinerede serializers for bestemte datatyper.
  */
+/*
 @Configuration
     public class JacksonConfig {
 
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 
       'return' Konfigureret ObjectMapper-instans.
      */
+/*
         @Bean
         @Primary
         public ObjectMapper objectMapper() {
@@ -37,3 +39,4 @@ import java.time.LocalDateTime;
             return mapper;
         }
 }
+*/

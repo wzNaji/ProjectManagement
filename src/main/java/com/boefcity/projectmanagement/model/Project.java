@@ -35,4 +35,3 @@ public class Project {
     @ManyToMany(mappedBy = "projects", cascade = CascadeType.DETACH)
     private List<User> users = new ArrayList<>();
 }
-
