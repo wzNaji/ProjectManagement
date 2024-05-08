@@ -1,5 +1,6 @@
 package com.boefcity.projectmanagement.controller;
 
+import com.boefcity.projectmanagement.config.SessionUtility;
 import com.boefcity.projectmanagement.model.User;
 import com.boefcity.projectmanagement.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -71,11 +72,10 @@ public class UserController {
 
     @GetMapping("/userListDisplay")
     public String userListDisplay(HttpSession session,
-                               Model model) {
+                               Model model, RedirectAttributes redirectAttributes) {
 
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return "redirect:/login";
+        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+            return "redirect:/users/loginDisplay";
         }
 
         List<User> userList = userService.findAllUsers();

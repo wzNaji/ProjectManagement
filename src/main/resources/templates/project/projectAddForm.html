@@ -12,22 +12,26 @@
     </div>
 </header>
 <main>
-    <form th:action="@{/create}" th:method="post" th:object="${item}">
+    <form th:action="@{/projects/createProject}" th:method="post" th:object="${project}">
         <div class="m-3">
             <label for="name" class="form-label">Name</label>
-            <input type="text" th:field="*{name}" id="name" required class="form-control">
+            <input type="text" th:field="*{projectName}" id="name" required class="form-control">
         </div>
         <div class="m-3">
             <label for="description" class="form-label">Description</label>
-            <textarea th:field="*{description}" id="description" class="form-control"></textarea>
+            <textarea th:field="*{projectDescription}" id="description" class="form-control"></textarea>
         </div>
         <div class="m-3">
-            <label for="link" class="form-label">Link</label>
-            <input type="text" th:field="*{link}" id="link" class="form-control">
+            <label for="startDate" class="form-label">Start Date</label>
+            <input type="datetime-local" th:field="*{projectStartDate}" id="startDate" class="form-control">
+        </div>
+        <div class="m-3">
+            <label for="dueDate" class="form-label">Due Date</label>
+            <input type="datetime-local" th:field="*{projectEndDate}" id="dueDate" class="form-control">
         </div>
 
         <button type="submit" class="btn btn-primary m-3">Submit</button>
-        <a href="/items" class="btn btn-secondary m-3">Cancel</a>
+        <a href="/projects/display" class="btn btn-secondary m-3">Cancel</a>
     </form>
 </main>
 <footer class="mt-auto text-center">
