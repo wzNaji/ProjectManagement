@@ -36,9 +36,9 @@ public class User {
         @ToString.Exclude
         private String password;
 
-        @ManyToMany(cascade = CascadeType.DETACH)
+        @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
         @JoinTable(
-                name = "user_project",
+                name = "user_projects",
                 joinColumns = @JoinColumn(name = "user_id"),
                 inverseJoinColumns = @JoinColumn(name = "project_id")
         )

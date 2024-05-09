@@ -15,4 +15,6 @@ public interface ProjectService {
     List<Project> findAll();
 
     Project update (Long id, Project projectDetails);
+
+    Project assignUsersToProject (Long projectID, Long userID);
 }

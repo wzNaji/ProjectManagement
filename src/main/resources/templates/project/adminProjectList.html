@@ -15,22 +15,26 @@
     <table class="table table-hover">
         <thead>
         <tr>
-            <th scope="col"></th>
+            <th scope="col">#</th>
             <th scope="col">Name</th>
             <th scope="col">Description</th>
             <th scope="col">Start Date</th>
             <th scope="col">Due Date</th>
             <th scope="col"></th>
-            <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="project : ${adminProjectList}">
-            <th scope="row"></th>
+        <tr th:each="project, stat : ${adminProjectList}">
+            <th scope="row" th:text="${stat.index + 1}"></th>
             <td th:text="${project.projectName}">TestName1</td>
             <td th:text="${project.projectDescription}">TestDescription1</td>
-            <td th:text="${project.projectStartDate}">TestLink1</td>
-            <td th:text="${project.projectEndDate}">TestLink1</td>
+            <td th:text="${#dates.format(project.projectStartDate, 'dd-MM-yyyy')}">TestStartDate1</td>
+            <td th:text="${#dates.format(project.projectEndDate, 'dd-MM-yyyy')}">TestEndDate1</td>
+            <td>
+                <a th:href="@{'/projects/assignUserDisplay'(projectId=${project.getProjectId()})}">
+                    <button type="button" class="btn btn-primary">Assign Users</button>
+                </a>
+            </td>
         </tr>
         </tbody>
     </table>
