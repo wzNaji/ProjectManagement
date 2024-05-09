@@ -32,6 +32,11 @@ public class Project {
     @Column(name = "project_end_date")
     private LocalDateTime projectEndDate;
 
-    @ManyToMany(mappedBy = "projects", cascade = CascadeType.DETACH)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "project_users",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
     private List<User> users = new ArrayList<>();
 }

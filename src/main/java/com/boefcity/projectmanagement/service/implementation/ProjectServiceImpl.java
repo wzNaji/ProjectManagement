@@ -1,7 +1,9 @@
 package com.boefcity.projectmanagement.service.implementation;
 
 import com.boefcity.projectmanagement.model.Project;
+import com.boefcity.projectmanagement.model.User;
 import com.boefcity.projectmanagement.repository.ProjectRepository;
+import com.boefcity.projectmanagement.repository.UserRepository;
 import com.boefcity.projectmanagement.service.ProjectService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,15 +11,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
 
-@Autowired
-    public ProjectServiceImpl(ProjectRepository projectRepository) {
+    @Autowired
+    public ProjectServiceImpl(ProjectRepository projectRepository, UserRepository userRepository) {
         this.projectRepository = projectRepository;
+        this.userRepository = userRepository;
     }
 
 
@@ -34,7 +39,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void deleteById(Long id) {
-    projectRepository.deleteById(id);
+        projectRepository.deleteById(id);
     }
 
     @Transactional(readOnly = true)
@@ -42,6 +47,7 @@ public class ProjectServiceImpl implements ProjectService {
     public List<Project> findAll() {
         return projectRepository.findAll();
     }
+
     @Override
     public Project update(Long projectId, Project projectDetails) {
         Project projectToUpdate = projectRepository.findProjectByIdNative(projectId);
@@ -58,4 +64,20 @@ public class ProjectServiceImpl implements ProjectService {
 
         return projectRepository.save(projectToUpdate);
     }
+
+    public Project assignUsersToProject(Long projectID, Long userID) {
+        Project project = projectRepository.findProjectByIdNative(projectID);
+        User userToAssign = userRepository.findUserByIdNative(userID);
+
+        if (project != null && userToAssign != null) {
+            project.getUsers().add(userToAssign);
+            userToAssign.getProjects().add(project);
+            userRepository.save(userToAssign);
+
+            return projectRepository.save(project);
+        } else {
+            throw new RuntimeException("Project or User not found");
+        }
+    }
+
 }

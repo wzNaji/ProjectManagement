@@ -10,10 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -30,6 +27,7 @@ public class ProjectController {
         this.projectService = projectService;
         this.userService = userService;
     }
+
     @GetMapping("/addForm")
     public String projectsAddFormDisplay(Model model, HttpSession session,
                                          RedirectAttributes redirectAttributes) {
@@ -43,7 +41,7 @@ public class ProjectController {
 
         Role role = user.getUserRole();
 
-        if (Role.ADMIN.equals(role) || Role.MANAGER.equals(role) ) {
+        if (Role.ADMIN.equals(role) || Role.MANAGER.equals(role)) {
             model.addAttribute("project", new Project());
             return "/project/projectAddForm";
         } else if (Role.WORKER.equals(role)) {
@@ -108,5 +106,66 @@ public class ProjectController {
     }
 
 
+    @GetMapping("/assignUserDisplay")
+    public String assignUserDisplay(HttpSession session, Model model, @RequestParam Long projectId,
+                                    RedirectAttributes redirectAttributes) {
+        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+            return "redirect:/users/loginDisplay";
+        }
 
+        Long userId = (Long) session.getAttribute("userId");
+        User currentUser = userService.findUserById(userId);
+
+        Role role = currentUser.getUserRole();
+
+        if (Role.ADMIN.equals(role) || Role.MANAGER.equals(role)) {
+            Project project = projectService.findById(projectId);
+            List<User> allUsers = userService.findAllUsers();
+            List<User> assignedUsers = project.getUsers().stream().toList();
+
+            model.addAttribute("project", project);
+            model.addAttribute("allUsers", allUsers);
+            model.addAttribute("assignedUsers", assignedUsers);
+
+            // Retrieve the flash message if it exists
+            String message = (String) session.getAttribute("message");
+            if (message != null) {
+                model.addAttribute("message", message);
+                session.removeAttribute("message");
+            }
+
+            return "project/assignUser";
+        }
+
+        return "errorPage";
+    }
+
+    @PostMapping("/assignUser")
+    public String assignUserToProject(@RequestParam Long projectId, @RequestParam Long userId,
+                                      HttpSession session, RedirectAttributes redirectAttributes) {
+
+        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+            return "redirect:/users/loginDisplay";
+        }
+
+        Long currentUserId = (Long) session.getAttribute("userId");
+        User currentUser = userService.findUserById(currentUserId);
+
+        Role role = currentUser.getUserRole();
+        if (Role.ADMIN.equals(role) || Role.MANAGER.equals(role)) {
+            try {
+                projectService.assignUsersToProject(projectId, userId);
+                redirectAttributes.addFlashAttribute("message", "User successfully assigned to the project.");
+                return "redirect:/projects/assignUserDisplay?projectId=" + projectId;
+            } catch (RuntimeException e) {
+                redirectAttributes.addFlashAttribute("message", "Something went wrong. User was not assigned.");
+                return "redirect:/projects/assignUserDisplay?projectId=" + projectId;
+            }
+        }
+
+        return "redirect:/errorPage";
+    }
 }
+
+
+
