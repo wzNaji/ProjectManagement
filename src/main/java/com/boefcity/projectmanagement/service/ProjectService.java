@@ -17,4 +17,7 @@ public interface ProjectService {
     Project update (Long id, Project projectDetails);
 
     Project assignUsersToProject (Long projectID, Long userID);
+
+    boolean isUserAssignedToProject(Long projectID, Long userID);
+
 }
