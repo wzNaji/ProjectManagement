@@ -168,4 +168,5 @@ public class UserControllerTest {
             verify(redirectAttributes).addFlashAttribute("message", "An error occurred while fetching the user list.");
         }
     }
+
 }

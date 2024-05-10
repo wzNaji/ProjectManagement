@@ -127,7 +127,6 @@ public class ProjectController {
             model.addAttribute("allUsers", allUsers);
             model.addAttribute("assignedUsers", assignedUsers);
 
-            // Retrieve the flash message if it exists
             String message = (String) session.getAttribute("message");
             if (message != null) {
                 model.addAttribute("message", message);
@@ -167,7 +166,6 @@ public class ProjectController {
                 return "redirect:/projects/assignUserDisplay?projectId=" + projectId;
             }
         }
-
         return "redirect:/errorPage";
     }
 }
