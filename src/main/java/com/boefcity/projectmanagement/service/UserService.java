@@ -10,7 +10,7 @@ public interface UserService {
     User findUserById(Long id);
     User createUser(User user);
     User updateUser(Long userId, User user);
-    void deleteUser(Long id);
+    void deleteUser(Long userId);
     List<User> findAllUsers();
     boolean checkLogin(String username, String password);
     Optional<User> findUserByUsername(String username);

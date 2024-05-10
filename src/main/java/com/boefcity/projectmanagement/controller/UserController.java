@@ -1,6 +1,7 @@
 package com.boefcity.projectmanagement.controller;
 
 import com.boefcity.projectmanagement.config.SessionUtility;
+import com.boefcity.projectmanagement.model.Role;
 import com.boefcity.projectmanagement.model.User;
 import com.boefcity.projectmanagement.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -80,7 +81,7 @@ public class UserController {
         if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
         }
-
+// worker skal ikke kunne se alle brugere
         try {
             List<User> userList = userService.findAllUsers();
             model.addAttribute("userList", userList);
@@ -90,6 +91,30 @@ public class UserController {
             return "redirect:/users/loginDisplay";
         }
     }
+    @PostMapping("/delete/{userToDeleteId}")
+    public String deleteUser(@PathVariable Long userToDeleteId, HttpSession session,
+                             RedirectAttributes redirectAttributes) {
+        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+            return "redirect:/users/loginDisplay";
+        }
 
+        Long currentUserId = (Long) session.getAttribute("userId");
+        User currentUser = userService.findUserById(currentUserId);
+
+        Role role = currentUser.getUserRole();
+        if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
+            return "errorPage";
+        }
+
+        User userToDelete = userService.findUserById(userToDeleteId);
+        if (userToDelete != null) {
+            userService.deleteUser(userToDeleteId);
+            redirectAttributes.addFlashAttribute("message",
+                    userToDelete.getUsername() + " was successfully deleted.");
+        } else {
+            redirectAttributes.addFlashAttribute("message", "User not found.");
+        }
+        return "redirect:/users/userListDisplay";
+    }
 
 }

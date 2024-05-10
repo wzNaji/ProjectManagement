@@ -8,8 +8,11 @@
 <body>
 
 <h1>Menu</h1>
-<a href="/users/userListDisplay"><button type="button" class="btn btn-primary m-3 btn-overlay">Users</button></a>
-<a href="/projects/display"><button type="button" class="btn btn-primary m-3 btn-overlay">Projects</button></a>
+<a th:href="@{/users/userListDisplay}"><button type="button" class="btn btn-primary m-3 btn-overlay">Users</button></a>
+<a th:href="@{/projects/display}"><button type="button" class="btn btn-primary m-3 btn-overlay">Projects</button></a>
+<form id="logout-form" th:action="@{/logout}" method="post" style="display: inline;">
+    <button type="submit" class="btn btn-danger m-3 btn-overlay">Logout</button>
+</form>
 
 </body>
 </html>

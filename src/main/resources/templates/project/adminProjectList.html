@@ -21,6 +21,7 @@
             <th scope="col">Start Date</th>
             <th scope="col">Due Date</th>
             <th scope="col"></th>
+            <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
@@ -31,9 +32,14 @@
             <td th:text="${project.projectStartDate}">TestStartDate1</td>
             <td th:text="${project.projectEndDate}">TestEndDate1</td>
             <td>
-                <a th:href="@{'/projects/assignUserDisplay'(projectId=${project.projectId})}">
-                    <button type="button" class="btn btn-primary">Assign Users</button>
+                <a th:href="@{'/projects/editDisplay'(projectId=${project.projectId})}">
+                    <button type="button" class="btn btn-primary">Edit</button>
                 </a>
+            </td>
+            <td>
+                <form th:action="@{/projects/delete/{projectToDeleteId}(projectToDeleteId=${project.projectId})}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
             </td>
         </tr>
         </tbody>

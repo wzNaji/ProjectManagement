@@ -106,8 +106,8 @@ public class ProjectController {
     }
 
 
-    @GetMapping("/assignUserDisplay")
-    public String assignUserDisplay(HttpSession session, Model model, @RequestParam Long projectId,
+    @GetMapping("/editDisplay")
+    public String editProjectDisplay(HttpSession session, Model model, @RequestParam Long projectId,
                                     RedirectAttributes redirectAttributes) {
         if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
@@ -133,7 +133,7 @@ public class ProjectController {
                 session.removeAttribute("message");
             }
 
-            return "project/assignUser";
+            return "project/editDisplay";
         }
 
         return "errorPage";
@@ -155,19 +155,49 @@ public class ProjectController {
             try {
                 if (projectService.isUserAssignedToProject(projectId, userId)) {
                     redirectAttributes.addFlashAttribute("message", "User is already assigned to the project.");
-                    return "redirect:/projects/assignUserDisplay?projectId=" + projectId;
+                    return "redirect:/projects/editDisplay?projectId=" + projectId;
                 }
 
                 projectService.assignUsersToProject(projectId, userId);
                 redirectAttributes.addFlashAttribute("message", "User successfully assigned to the project.");
-                return "redirect:/projects/assignUserDisplay?projectId=" + projectId;
+                return "redirect:/projects/editDisplay?projectId=" + projectId;
             } catch (RuntimeException e) {
                 redirectAttributes.addFlashAttribute("message", "Something went wrong. User was not assigned.");
-                return "redirect:/projects/assignUserDisplay?projectId=" + projectId;
+                return "redirect:/projects/editDisplay?projectId=" + projectId;
             }
         }
         return "redirect:/errorPage";
     }
+
+    @PostMapping("/delete/{projectToDeleteId}")
+    public String deleteProject(@PathVariable Long projectToDeleteId, HttpSession session,
+                                RedirectAttributes redirectAttributes) {
+
+        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+            return "redirect:/projects/display";
+        }
+
+        Long currentUserId = (Long) session.getAttribute("userId");
+        User currentUser = userService.findUserById(currentUserId);
+
+        Role role = currentUser.getUserRole();
+        if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
+            return "errorPage";
+        }
+
+        Project projectToDelete = projectService.findById(projectToDeleteId);
+        if (projectToDelete != null) {
+            projectService.deleteById(projectToDeleteId);
+            redirectAttributes.addFlashAttribute("message", projectToDelete.getProjectName() + " was successfully deleted.");
+        } else {
+            redirectAttributes.addFlashAttribute("message", "Project not found.");
+        }
+
+        return "redirect:/projects/display";
+    }
+
+
+
 }
 
 
