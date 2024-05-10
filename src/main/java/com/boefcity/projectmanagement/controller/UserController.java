@@ -54,33 +54,41 @@ public class UserController {
                             @RequestParam String password,
                             HttpSession session,
                             RedirectAttributes redirectAttributes) {
-
-        boolean isValidUser = userService.checkLogin(username, password);
-        if (isValidUser) {
-            Optional<User> optionalUser = userService.findUserByUsername(username);
-            if (optionalUser.isPresent()) {
-                User user = optionalUser.get();
-                session.setAttribute("userId", user.getUserId());
-                return "redirect:/menu";
+        try {
+            boolean isValidUser = userService.checkLogin(username, password);
+            if (isValidUser) {
+                Optional<User> optionalUser = userService.findUserByUsername(username);
+                if (optionalUser.isPresent()) {
+                    User user = optionalUser.get();
+                    session.setAttribute("userId", user.getUserId());
+                    return "redirect:/menu";
+                }
+                return "redirect:/errorPage";
+            } else {
+                redirectAttributes.addFlashAttribute("message", "Incorrect username or password. Try again");
+                return "redirect:/users/loginDisplay";
             }
-        } else {
-            redirectAttributes.addFlashAttribute("message", "Incorrect username or password. Try again");
-            return "redirect:/users/loginDisplay";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "An unexpected error occurred.");
+            return "redirect:/errorPage";
         }
-        return "redirect:/errorPage";
     }
 
     @GetMapping("/userListDisplay")
     public String userListDisplay(HttpSession session,
-                               Model model, RedirectAttributes redirectAttributes) {
-
+                                  Model model, RedirectAttributes redirectAttributes) {
         if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
         }
 
-        List<User> userList = userService.findAllUsers();
-        model.addAttribute("userList", userList);
-        return "userList";
+        try {
+            List<User> userList = userService.findAllUsers();
+            model.addAttribute("userList", userList);
+            return "userList";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "An error occurred while fetching the user list.");
+            return "redirect:/users/loginDisplay";
+        }
     }
 
 
