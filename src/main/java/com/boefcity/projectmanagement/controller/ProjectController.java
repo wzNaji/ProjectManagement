@@ -154,6 +154,11 @@ public class ProjectController {
         Role role = currentUser.getUserRole();
         if (Role.ADMIN.equals(role) || Role.MANAGER.equals(role)) {
             try {
+                if (projectService.isUserAssignedToProject(projectId, userId)) {
+                    redirectAttributes.addFlashAttribute("message", "User is already assigned to the project.");
+                    return "redirect:/projects/assignUserDisplay?projectId=" + projectId;
+                }
+
                 projectService.assignUsersToProject(projectId, userId);
                 redirectAttributes.addFlashAttribute("message", "User successfully assigned to the project.");
                 return "redirect:/projects/assignUserDisplay?projectId=" + projectId;

@@ -79,5 +79,9 @@ public class ProjectServiceImpl implements ProjectService {
             throw new RuntimeException("Project or User not found");
         }
     }
+    public boolean isUserAssignedToProject(Long projectId, Long userId) {
+        return projectRepository.existsByProjectIdAndUsersUserId(projectId, userId);
+    }
+
 
 }
