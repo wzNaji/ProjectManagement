@@ -28,10 +28,10 @@
             <th scope="row" th:text="${stat.index + 1}"></th>
             <td th:text="${project.projectName}">TestName1</td>
             <td th:text="${project.projectDescription}">TestDescription1</td>
-            <td th:text="${#dates.format(project.projectStartDate, 'dd-MM-yyyy')}">TestStartDate1</td>
-            <td th:text="${#dates.format(project.projectEndDate, 'dd-MM-yyyy')}">TestEndDate1</td>
+            <td th:text="${project.projectStartDate}">TestStartDate1</td>
+            <td th:text="${project.projectEndDate}">TestEndDate1</td>
             <td>
-                <a th:href="@{'/projects/assignUserDisplay'(projectId=${project.getProjectId()})}">
+                <a th:href="@{'/projects/assignUserDisplay'(projectId=${project.projectId})}">
                     <button type="button" class="btn btn-primary">Assign Users</button>
                 </a>
             </td>
