@@ -32,11 +32,28 @@ public class Project {
     @Column(name = "project_end_date")
     private LocalDateTime projectEndDate;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinTable(
             name = "project_users",
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
+
     private List<User> users = new ArrayList<>();
+
+    public void addUser(User user) {
+        users.add(user);
+        user.getProjects().add(this);
+    }
+
+    public void removeUser(User user) {
+        users.remove(user);
+        user.getProjects().remove(this);
+    }
+
+    public void removeAllUsers() {
+        for (User user : new ArrayList<>(users)) {
+            removeUser(user);
+        }
+    }
 }

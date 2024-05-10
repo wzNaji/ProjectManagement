@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -38,8 +37,12 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void deleteById(Long id) {
-        projectRepository.deleteById(id);
+    public void deleteById(Long projectId) {
+        Project projectToDelete = projectRepository.findProjectByIdNative(projectId);
+        if (projectToDelete != null) {
+            projectToDelete.removeAllUsers();
+            projectRepository.delete(projectToDelete);
+        }
     }
 
     @Transactional(readOnly = true)
@@ -65,6 +68,7 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.save(projectToUpdate);
     }
 
+    // se om vi kan bruge utility metoder i projects klassen eller user klassen.
     public Project assignUsersToProject(Long projectID, Long userID) {
         Project project = projectRepository.findProjectByIdNative(projectID);
         User userToAssign = userRepository.findUserByIdNative(userID);
@@ -79,5 +83,9 @@ public class ProjectServiceImpl implements ProjectService {
             throw new RuntimeException("Project or User not found");
         }
     }
+    public boolean isUserAssignedToProject(Long projectId, Long userId) {
+        return projectRepository.existsByProjectIdAndUsersUserId(projectId, userId);
+    }
+
 
 }

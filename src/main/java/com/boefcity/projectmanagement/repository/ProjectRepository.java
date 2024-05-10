@@ -12,4 +12,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     @Query(value = "SELECT * FROM project WHERE project_id = :projectId", nativeQuery = true)
     Project findProjectByIdNative(@Param("projectId") Long projectId);
 
+    boolean existsByProjectIdAndUsersUserId(Long projectId, Long userId);
+
 }
