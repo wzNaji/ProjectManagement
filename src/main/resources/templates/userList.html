@@ -27,9 +27,13 @@
     <tr th:each="user : ${userList}">
       <th scope="row"></th>
       <td th:text="${user.username}">TestName1</td>
-      <td th:text="${user.email}">TestDescription1</td>
-      <td th:text="${user.userRole}">TestLink1</td>
-
+      <td th:text="${user.email}">TestEmail1</td>
+      <td th:text="${user.userRole}">TestRole1</td>
+      <td>
+        <form th:action="@{/users/delete/{userToDeleteId}(userToDeleteId=${user.userId})}" method="post" style="display: inline;">
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+      </td>
     </tr>
     </tbody>
   </table>
@@ -41,3 +45,4 @@
 </footer>
 </body>
 </html>
+
