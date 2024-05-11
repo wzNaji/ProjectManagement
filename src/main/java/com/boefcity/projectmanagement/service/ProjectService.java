@@ -20,4 +20,5 @@ public interface ProjectService {
 
     boolean isUserAssignedToProject(Long projectID, Long userID);
 
+    Project assignTaskToProject(String projectName, String taskName);
 }

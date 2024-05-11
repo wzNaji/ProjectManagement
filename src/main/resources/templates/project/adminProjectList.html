@@ -12,6 +12,10 @@
     </nav>
 </header>
 <main>
+    <div th:if="${message}" class="alert alert-dismissible fade show" role="alert">
+        <span th:text="${message}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
     <table class="table table-hover">
         <thead>
         <tr>
@@ -32,9 +36,7 @@
             <td th:text="${project.projectStartDate}">TestStartDate1</td>
             <td th:text="${project.projectEndDate}">TestEndDate1</td>
             <td>
-                <a th:href="@{'/projects/editDisplay'(projectId=${project.projectId})}">
-                    <button type="button" class="btn btn-primary">Edit</button>
-                </a>
+                <a th:href="@{/projects/editDisplay(projectId=${project.projectId})}" class="btn btn-primary">Edit</a>
             </td>
             <td>
                 <form th:action="@{/projects/delete/{projectToDeleteId}(projectToDeleteId=${project.projectId})}" method="post" style="display: inline;">

@@ -22,7 +22,7 @@
     <input type="hidden" name="projectId" th:value="${project.projectId}"/>
 
     <div class="mb-3">
-        <label for="userId" class="form-label">Select User to Assign:</label>
+        <label for="userId" class="form-label">Assign User to Project:</label>
         <select name="userId" id="userId" class="form-select">
             <th:block th:each="user : ${allUsers}">
                 <option th:value="${user.userId}" th:text="${user.username}"></option>
@@ -53,6 +53,32 @@
     </tbody>
 </table>
 
-<a href="/projects/display"><button type="button" class="btn btn-primary ms-3">Back to Projects</button></a>
+<h2 class="mb-3">Project Tasks</h2>
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Description</th>
+        <th scope="col">Created</th>
+        <th scope="col">Due</th>
+        <th scope="col">Priority</th>
+        <th scope="col">Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="task, stat : ${taskList}">
+        <th scope="row" th:text="${stat.index + 1}"></th>
+        <td th:text="${task.taskName}"></td>
+        <td th:text="${task.taskDescription}"></td>
+        <td th:text="${task.taskStartDate}"></td>
+        <td th:text="${task.taskDueDate}"></td>
+        <td th:text="${task.priorityLevel}"></td>
+        <td th:text="${task.status}"></td>
+    </tr>
+    </tbody>
+</table>
+<a href="/tasks/addFormDisplay"><button type="button" class="btn btn-success ms-3">Create A Task</button></a>
+<a href="/projects/display"><button type="button" class="btn btn-primary ms-3">Back To Projects</button></a>
 </body>
 </html>

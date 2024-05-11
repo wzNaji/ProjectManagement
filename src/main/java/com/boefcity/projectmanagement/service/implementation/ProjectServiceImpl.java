@@ -1,8 +1,10 @@
 package com.boefcity.projectmanagement.service.implementation;
 
 import com.boefcity.projectmanagement.model.Project;
+import com.boefcity.projectmanagement.model.Task;
 import com.boefcity.projectmanagement.model.User;
 import com.boefcity.projectmanagement.repository.ProjectRepository;
+import com.boefcity.projectmanagement.repository.TaskRepository;
 import com.boefcity.projectmanagement.repository.UserRepository;
 import com.boefcity.projectmanagement.service.ProjectService;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,11 +19,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
+    private final TaskRepository taskRepository;
 
     @Autowired
-    public ProjectServiceImpl(ProjectRepository projectRepository, UserRepository userRepository) {
+    public ProjectServiceImpl(ProjectRepository projectRepository, UserRepository userRepository, TaskRepository taskRepository) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
+        this.taskRepository = taskRepository;
     }
 
 
@@ -68,7 +72,6 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.save(projectToUpdate);
     }
 
-    // se om vi kan bruge utility metoder i projects klassen eller user klassen.
     public Project assignUsersToProject(Long projectID, Long userID) {
         Project project = projectRepository.findProjectByIdNative(projectID);
         User userToAssign = userRepository.findUserByIdNative(userID);
@@ -86,6 +89,22 @@ public class ProjectServiceImpl implements ProjectService {
     public boolean isUserAssignedToProject(Long projectId, Long userId) {
         return projectRepository.existsByProjectIdAndUsersUserId(projectId, userId);
     }
+
+    public Project assignTaskToProject(String projectName, String taskName) {
+
+        Project project = projectRepository.findProjectByProjectName(projectName);
+        Task taskToAssign = taskRepository.findByTaskName(taskName);
+        if (project == null || taskToAssign == null) {
+            throw new IllegalArgumentException("Project or Task not found");
+        }
+        try {
+            project.getTasks().add(taskToAssign);
+            return projectRepository.save(project);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to assign task to project");
+        }
+    }
+
 
 
 }

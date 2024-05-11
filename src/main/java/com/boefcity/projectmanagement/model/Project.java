@@ -41,6 +41,15 @@ public class Project {
 
     private List<User> users = new ArrayList<>();
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinTable(
+            name = "project_tasks",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "task_id")
+    )
+
+    private List<Task> tasks = new ArrayList<>();
+
     public void addUser(User user) {
         users.add(user);
         user.getProjects().add(this);
@@ -56,4 +65,9 @@ public class Project {
             removeUser(user);
         }
     }
+    public void addTaskToProject(Task task) {
+        tasks.add(task);
+        task.setProject(this);
+    }
+
 }

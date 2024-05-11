@@ -5,10 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data // Getters, setters, toString osv.
-@Entity // Mapper 'task' entity/klasse til en tabel hvor name = "task" i databasen
+@Entity // Maps 'task' entity/class to a table named "task" in the database
 @Table(name = "task")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,33 +24,32 @@ public class Task {
     @Column(name = "task_name", nullable = false)
     private String taskName;
 
-    @Column(name = "task_description")
+    @Column(name = "task_description", nullable = true) // Made nullable
     private String taskDescription;
 
-    @Column(name = "creation_date", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creationDate;
+    @Column(name = "start_date", nullable = true) // Made nullable
+    private LocalDateTime taskStartDate;
 
-    @Column(name = "due_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dueDate;
+    @Column(name = "due_date", nullable = true) // Made nullable
+    private LocalDateTime taskDueDate;
 
-    @ManyToOne
-    @JoinColumn(name = "project_id", nullable = false)
-    private Project project;
-
-    @Enumerated(EnumType.STRING) // enum bliver gemt som en String i databasen
-    @Column(name = "priority_level", nullable = false)
+    @Enumerated(EnumType.STRING) // Enum stored as a String in the database
+    @Column(name = "priority_level", nullable = true) // Made nullable
     private PriorityLevel priorityLevel;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "status", nullable = true) // Made nullable
     private Status status;
 
-    @ManyToOne
-    @JoinColumn(name = "assigned_user_id", nullable = false)
-    private User assignedUser;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinTable(
+            name = "task_users",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> users = new ArrayList<>();
 
-
-
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinColumn(name = "project_id", nullable = true) // Made nullable
+    private Project project;
 }

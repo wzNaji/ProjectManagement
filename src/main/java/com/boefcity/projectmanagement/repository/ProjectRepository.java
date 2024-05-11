@@ -1,7 +1,6 @@
 package com.boefcity.projectmanagement.repository;
 
 import com.boefcity.projectmanagement.model.Project;
-import com.boefcity.projectmanagement.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,5 +12,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     Project findProjectByIdNative(@Param("projectId") Long projectId);
 
     boolean existsByProjectIdAndUsersUserId(Long projectId, Long userId);
+
+    Project findProjectByProjectName(String projectName);
 
 }
