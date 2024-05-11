@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data // Getters, setters, toString osv.
-@Entity // Mapper 'task' entity/klasse til en tabel hvor name = "task" i databasen
+@Entity // Maps 'task' entity/class to a table named "task" in the database
 @Table(name = "task")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,22 +24,21 @@ public class Task {
     @Column(name = "task_name", nullable = false)
     private String taskName;
 
-    @Column(name = "task_description")
+    @Column(name = "task_description", nullable = true) // Made nullable
     private String taskDescription;
 
-    @Column(name = "start_date", nullable = false)
+    @Column(name = "start_date", nullable = true) // Made nullable
     private LocalDateTime taskStartDate;
 
-
-    @Column(name = "due_date")
+    @Column(name = "due_date", nullable = true) // Made nullable
     private LocalDateTime taskDueDate;
 
-    @Enumerated(EnumType.STRING) // enum bliver gemt som en String i databasen
-    @Column(name = "priority_level", nullable = false)
+    @Enumerated(EnumType.STRING) // Enum stored as a String in the database
+    @Column(name = "priority_level", nullable = true) // Made nullable
     private PriorityLevel priorityLevel;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "status", nullable = true) // Made nullable
     private Status status;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
@@ -50,10 +49,7 @@ public class Task {
     )
     private List<User> users = new ArrayList<>();
 
-
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
-    @JoinColumn(name = "project_id")
+    @JoinColumn(name = "project_id", nullable = true) // Made nullable
     private Project project;
-
-
 }

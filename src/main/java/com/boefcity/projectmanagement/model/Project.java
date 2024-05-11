@@ -65,4 +65,9 @@ public class Project {
             removeUser(user);
         }
     }
+    public void addTaskToProject(Task task) {
+        tasks.add(task);
+        task.setProject(this);
+    }
+
 }

@@ -22,7 +22,7 @@
     <input type="hidden" name="projectId" th:value="${project.projectId}"/>
 
     <div class="mb-3">
-        <label for="userId" class="form-label">Select User to Assign:</label>
+        <label for="userId" class="form-label">Assign User to Project:</label>
         <select name="userId" id="userId" class="form-select">
             <th:block th:each="user : ${allUsers}">
                 <option th:value="${user.userId}" th:text="${user.username}"></option>
@@ -75,10 +75,10 @@
         <td th:text="${task.taskDueDate}"></td>
         <td th:text="${task.priorityLevel}"></td>
         <td th:text="${task.status}"></td>
-
     </tr>
     </tbody>
 </table>
-<a href="/projects/display"><button type="button" class="btn btn-primary ms-3">Back to Projects</button></a>
+<a href="/tasks/addFormDisplay"><button type="button" class="btn btn-success ms-3">Create A Task</button></a>
+<a href="/projects/display"><button type="button" class="btn btn-primary ms-3">Back To Projects</button></a>
 </body>
 </html>

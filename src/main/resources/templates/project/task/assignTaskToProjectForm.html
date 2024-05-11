@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assign Task To Project</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+<main>
+    <div class="d-flex justify-content-center">
+        <h1>Assign Task To Project</h1>
+    </div>
+
+    <form th:action="@{/tasks/assignTaskToProject}" th:method="post">
+        <div class="m-3">
+            <label for="taskName" class="form-label">Tasks</label>
+            <select name="taskName" id="taskName" class="form-select">
+                <option value="">Select Task</option>
+                <th:block th:each="task : ${taskList}">
+                    <option th:value="${task.taskName}" th:text="${task.taskName}"></option>
+                </th:block>
+            </select>
+        </div>
+
+        <div class="m-3">
+            <label for="projectName" class="form-label">Projects</label>
+            <select name="projectName" id="projectName" class="form-select">
+                <option value="">Select Project</option>
+                <th:block th:each="project : ${projectList}">
+                    <option th:value="${project.projectName}" th:text="${project.projectName}"></option>
+                </th:block>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success m-3">Submit</button>
+        <!-- Laves om til at komme tilbage til det korrekte projekt. Indtil videre smider den bare tilbage til alle projekter -->
+        <a href="/projects/display"><button class="btn btn-secondary ms-3">Cancel</button></a>
+    </form>
+<footer class="mt-auto text-center">
+  <p>BoefCity@EMC.com</p>
+</footer>
+</main>
+</body>
+</html>

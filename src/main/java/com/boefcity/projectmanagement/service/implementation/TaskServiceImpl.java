@@ -1,7 +1,9 @@
 package com.boefcity.projectmanagement.service.implementation;
 
 import com.boefcity.projectmanagement.model.Task;
+import com.boefcity.projectmanagement.repository.ProjectRepository;
 import com.boefcity.projectmanagement.repository.TaskRepository;
+import com.boefcity.projectmanagement.repository.UserRepository;
 import com.boefcity.projectmanagement.service.TaskService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -14,7 +16,7 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
 
-    public TaskServiceImpl(TaskRepository taskRepository) {
+    public TaskServiceImpl(TaskRepository taskRepository, ProjectRepository projectRepository, UserRepository userRepository) {
         this.taskRepository = taskRepository;
     }
 
