@@ -67,7 +67,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="task, stat : ${taskList}">
+    <tr th:each="task, stat : ${projectTasks}">
         <th scope="row" th:text="${stat.index + 1}"></th>
         <td th:text="${task.taskName}"></td>
         <td th:text="${task.taskDescription}"></td>

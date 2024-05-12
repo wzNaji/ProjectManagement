@@ -3,6 +3,7 @@ package com.boefcity.projectmanagement.controller;
 import com.boefcity.projectmanagement.config.SessionUtility;
 import com.boefcity.projectmanagement.model.Project;
 import com.boefcity.projectmanagement.model.Role;
+import com.boefcity.projectmanagement.model.Task;
 import com.boefcity.projectmanagement.model.User;
 import com.boefcity.projectmanagement.service.ProjectService;
 import com.boefcity.projectmanagement.service.UserService;
@@ -123,9 +124,13 @@ public class ProjectController {
             List<User> allUsers = userService.findAllUsers();
             List<User> assignedUsers = project.getUsers().stream().toList();
 
+            Project projectToFind = projectService.findById(projectId);
+            List<Task> projectTasks = projectToFind.getTasks();
+
             model.addAttribute("project", project);
             model.addAttribute("allUsers", allUsers);
             model.addAttribute("assignedUsers", assignedUsers);
+            model.addAttribute("projectTasks", projectTasks);
 
             String message = (String) session.getAttribute("message");
             if (message != null) {

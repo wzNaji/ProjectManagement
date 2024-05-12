@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -41,13 +42,26 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional
     public void deleteById(Long projectId) {
         Project projectToDelete = projectRepository.findProjectByIdNative(projectId);
         if (projectToDelete != null) {
+            // Detacher users fra projektet
             projectToDelete.removeAllUsers();
+
+            // Laver en kopi for at undgå listen bliver null.
+            List<Task> tasksToDelete = new ArrayList<>(projectToDelete.getTasks());
+            projectToDelete.removeAllTasks();
+
+            // Sletter tasks fra databasen
+            if (!tasksToDelete.isEmpty()) {
+                taskRepository.deleteAll(tasksToDelete);
+            }
+
             projectRepository.delete(projectToDelete);
         }
     }
+
 
     @Transactional(readOnly = true)
     @Override
