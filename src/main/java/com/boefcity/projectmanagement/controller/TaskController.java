@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
 
 @Controller
 @RequestMapping("/tasks")
@@ -26,34 +25,8 @@ public class TaskController {
         this.projectService = projectService;
     }
 
-
-    @GetMapping("/display")
-    public String tasksDisplay(@RequestParam Long projectId, HttpSession session, Model model,
-                               RedirectAttributes redirectAttributes) {
-
-        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
-            return "redirect:/users/loginDisplay";
-        }
-
-        Long userId = (Long) session.getAttribute("userId");
-        User user = userService.findUserById(userId);
-
-        Role role = user.getUserRole();
-
-        if (Role.ADMIN.equals(role) || Role.MANAGER.equals(role)) {
-            List<Task> adminTaskList = taskService.findAllTask();
-            model.addAttribute("taskList", adminTaskList);
-            return "/project/editDisplay";
-        } else if (Role.WORKER.equals(role)) {
-            List<Task> userTaskList = user.getTasks();
-            model.addAttribute("taskList", userTaskList);
-            return "/project/editDisplay";
-        }
-        return "errorPage";
-    }
-
     @GetMapping("/addFormDisplay")
-    public String addFormDisplay(Model model, HttpSession session,
+    public String addFormDisplay(@RequestParam("projectId") Long projectId, Model model, HttpSession session,
                                  RedirectAttributes redirectAttributes) {
 
         if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
@@ -62,11 +35,13 @@ public class TaskController {
 
         Long userId = (Long) session.getAttribute("userId");
         User user = userService.findUserById(userId);
+        Project projectToFind = projectService.findById(projectId);
 
         Role role = user.getUserRole();
 
         if (Role.ADMIN.equals(role) || Role.MANAGER.equals(role)) {
             model.addAttribute("task", new Task());
+            model.addAttribute("project", projectToFind);
             model.addAttribute("priorityLevel", PriorityLevel.values());
             model.addAttribute("status", Status.values());
             return "/project/task/taskAddForm";
@@ -78,92 +53,39 @@ public class TaskController {
     }
 
     @PostMapping("/addForm")
-    public String createTask(@ModelAttribute Task task,
+    public String createAndAssignTask(@RequestParam("projectId") Long projectId,
+                                      @ModelAttribute Task task,
                              HttpSession session,
                              RedirectAttributes redirectAttributes) {
 
         if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
         }
-
+        System.out.println();
         Long userId = (Long) session.getAttribute("userId");
         User user = userService.findUserById(userId);
+
 
         Role role = user.getUserRole();
 
         if (Role.ADMIN.equals(role) || Role.MANAGER.equals(role)) {
             try {
+
                 taskService.createTask(task);
+                projectService.assignTaskToProject(task, projectId);
+
                 redirectAttributes.addFlashAttribute("message",
-                        "You have successfully created a new project: " + task.getTaskName());
-                return "redirect:/tasks/assignTaskToProjectDisplay";
+                        "You have successfully created a new task: " + task.getTaskName());
+                return "redirect:/projects/editDisplay?projectId=" + projectId;
             } catch (Exception e) {
                 redirectAttributes.addFlashAttribute("message", "Something went wrong. Please try again.");
-                return "redirect:/projects/display";
+                return "redirect:/projects/editDisplay?projectId=" + projectId;
             }
         }
 
         return "errorPage";
     }
 
-    @GetMapping("/assignTaskToProjectDisplay")
-    public String assignTaskToProjectDisplay(Model model, HttpSession session,
-                                             RedirectAttributes redirectAttributes) {
-
-        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
-            return "redirect:/users/loginDisplay";
-        }
-
-        Long userId = (Long) session.getAttribute("userId");
-        User user = userService.findUserById(userId);
-        List<Task> taskList = taskService.findAllTask();
-        List<Project> projectList = projectService.findAll();
-
-        Role role = user.getUserRole();
-
-        if (Role.ADMIN.equals(role) || Role.MANAGER.equals(role)) {
-            model.addAttribute("taskList", taskList);
-            model.addAttribute("projectList", projectList);
-            return "/project/task/assignTaskToProjectForm";
-        } else if (Role.WORKER.equals(role)) {
-            redirectAttributes.addFlashAttribute("message", "User not authorized");
-            return "redirect:/projects/display";
-        }
-        return "/errorPage";
-    }
-
-
-    @PostMapping("/assignTaskToProject")
-    public String assignTaskToProject(@RequestParam String projectName, @RequestParam String taskName,
-                                      HttpSession session, RedirectAttributes redirectAttributes) {
-
-        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
-            return "redirect:/users/loginDisplay";
-        }
-
-        Long currentUserId = (Long) session.getAttribute("userId");
-        User currentUser = userService.findUserById(currentUserId);
-
-
-        Role role = currentUser.getUserRole();
-        if (Role.ADMIN.equals(role) || Role.MANAGER.equals(role)) {
-            try {
-                projectService.assignTaskToProject(projectName, taskName);
-                redirectAttributes.addFlashAttribute("message", "Task successfully assigned to the project.");
-
-                return "redirect:/projects/display"; // placeholder for editproject display.
-
-            } catch (IllegalArgumentException e) {
-                redirectAttributes.addFlashAttribute("message", "The project or task you specified could not be found.");
-                return "redirect:/projects/display";
-            } catch (Exception e) {
-                redirectAttributes.addFlashAttribute("message", "An error occurred. Please try again.");
-                return "redirect:/projects/display";
-            }
-        }
-
-        return "redirect:/errorPage";
-    }
 
 }
 

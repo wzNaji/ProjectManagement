@@ -1,6 +1,7 @@
 package com.boefcity.projectmanagement.service;
 
 import com.boefcity.projectmanagement.model.Project;
+import com.boefcity.projectmanagement.model.Task;
 
 import java.util.List;
 
@@ -20,5 +21,5 @@ public interface ProjectService {
 
     boolean isUserAssignedToProject(Long projectID, Long userID);
 
-    Project assignTaskToProject(String projectName, String taskName);
+    Project assignTaskToProject(Task task, Long projectId);
 }

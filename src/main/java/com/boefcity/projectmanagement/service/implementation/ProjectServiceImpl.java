@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -41,13 +42,26 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional
     public void deleteById(Long projectId) {
         Project projectToDelete = projectRepository.findProjectByIdNative(projectId);
         if (projectToDelete != null) {
+            // Detacher users fra projektet
             projectToDelete.removeAllUsers();
+
+            // Laver en kopi for at undgå listen bliver null.
+            List<Task> tasksToDelete = new ArrayList<>(projectToDelete.getTasks());
+            projectToDelete.removeAllTasks();
+
+            // Sletter tasks fra databasen
+            if (!tasksToDelete.isEmpty()) {
+                taskRepository.deleteAll(tasksToDelete);
+            }
+
             projectRepository.delete(projectToDelete);
         }
     }
+
 
     @Transactional(readOnly = true)
     @Override
@@ -90,16 +104,17 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.existsByProjectIdAndUsersUserId(projectId, userId);
     }
 
-    public Project assignTaskToProject(String projectName, String taskName) {
+    public Project assignTaskToProject(Task task, Long projectId) {
 
-        Project project = projectRepository.findProjectByProjectName(projectName);
-        Task taskToAssign = taskRepository.findByTaskName(taskName);
-        if (project == null || taskToAssign == null) {
+        Project projectToFind = projectRepository.findProjectByIdNative(projectId);
+        Task taskToAssign = taskRepository.findTaskByIdNative(task.getTaskId());
+
+        if (projectToFind == null || taskToAssign == null) {
             throw new IllegalArgumentException("Project or Task not found");
         }
         try {
-            project.getTasks().add(taskToAssign);
-            return projectRepository.save(project);
+            projectToFind.addTaskToProject(task);
+            return projectRepository.save(projectToFind);
         } catch (Exception e) {
             throw new RuntimeException("Failed to assign task to project");
         }
