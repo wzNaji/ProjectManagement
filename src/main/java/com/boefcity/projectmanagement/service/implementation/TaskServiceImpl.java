@@ -1,5 +1,6 @@
 package com.boefcity.projectmanagement.service.implementation;
 
+import com.boefcity.projectmanagement.model.Project;
 import com.boefcity.projectmanagement.model.Task;
 import com.boefcity.projectmanagement.repository.ProjectRepository;
 import com.boefcity.projectmanagement.repository.TaskRepository;
@@ -15,10 +16,15 @@ import java.util.List;
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
+    private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
 
     public TaskServiceImpl(TaskRepository taskRepository, ProjectRepository projectRepository, UserRepository userRepository) {
         this.taskRepository = taskRepository;
+        this.projectRepository = projectRepository;
+        this.userRepository = userRepository;
     }
+
 
     @Override
     public Task createTask(Task task) {
@@ -30,15 +36,6 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.findTaskByIdNative(taskId);
     }
 
-    @Override
-    public void deleteByTaskId(Long taskId) {
-        Task taskToDelete = taskRepository.findTaskByIdNative(taskId);
-        if (taskToDelete != null) {
-            //remove all users
-            taskRepository.delete(taskToDelete);
-        }
-
-    }
     @Transactional(readOnly = true)
     @Override
     public List<Task> findAllTask() {
@@ -76,5 +73,25 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public boolean isUserAssignedToTask(Long taskId, Long userID) {
         return false;
+    }
+    @Override
+    @Transactional
+    public void deleteTask(Long taskId, Long projectId) {
+        Project projectToFind = projectRepository.findProjectByIdNative(projectId);
+        Task taskToDelete = taskRepository.findTaskByIdNative(taskId);
+
+            // undgå unødige database handlinger
+        if (projectToFind == null || taskToDelete == null) {
+            throw new IllegalArgumentException("Project or Task not found");
+        }
+
+        if (projectToFind.getTasks().contains(taskToDelete)) {
+            projectToFind.getTasks().remove(taskToDelete); // Detach task fra project
+            projectRepository.save(projectToFind);
+        }
+
+        //remove task from users taskList når users har assigned tasks.
+
+        taskRepository.delete(taskToDelete);
     }
 }

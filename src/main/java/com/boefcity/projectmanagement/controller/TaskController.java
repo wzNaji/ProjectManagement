@@ -55,13 +55,13 @@ public class TaskController {
     @PostMapping("/addForm")
     public String createAndAssignTask(@RequestParam("projectId") Long projectId,
                                       @ModelAttribute Task task,
-                             HttpSession session,
-                             RedirectAttributes redirectAttributes) {
+                                      HttpSession session,
+                                      RedirectAttributes redirectAttributes) {
 
         if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
         }
-        System.out.println();
+
         Long userId = (Long) session.getAttribute("userId");
         User user = userService.findUserById(userId);
 
@@ -84,6 +84,42 @@ public class TaskController {
         }
 
         return "errorPage";
+    }
+
+    // Delete task
+
+    @PostMapping("/delete")
+    public String deleteTask(@RequestParam("taskId") Long taskId,
+                             @RequestParam("projectId") Long projectId,
+                             HttpSession session,
+                             RedirectAttributes redirectAttributes) {
+
+        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+            return "redirect:/users/loginDisplay";
+        }
+
+        Long userId = (Long) session.getAttribute("userId");
+        User user = userService.findUserById(userId);
+        Role role = user.getUserRole();
+
+        if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
+            return "errorPage";
+        }
+
+        try {
+            Task taskToDelete = taskService.findByTaskId(taskId);
+            if (taskToDelete != null) {
+                taskService.deleteTask(taskId, projectId);
+                redirectAttributes.addFlashAttribute("message",
+                        "You have successfully deleted task: " + taskToDelete.getTaskName());
+            } else {
+                redirectAttributes.addFlashAttribute("message", "Task not found.");
+            }
+            return "redirect:/projects/editDisplay?projectId=" + projectId;
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "Error deleting task");
+            return "redirect:/projects/editDisplay?projectId=" + projectId;
+        }
     }
 
 
