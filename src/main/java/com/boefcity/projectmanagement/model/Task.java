@@ -24,21 +24,21 @@ public class Task {
     @Column(name = "task_name", nullable = false)
     private String taskName;
 
-    @Column(name = "task_description", nullable = true) // Made nullable
+    @Column(name = "task_description", nullable = true)
     private String taskDescription;
 
-    @Column(name = "start_date", nullable = true) // Made nullable
+    @Column(name = "start_date", nullable = true)
     private LocalDateTime taskStartDate;
 
-    @Column(name = "due_date", nullable = true) // Made nullable
+    @Column(name = "due_date", nullable = true)
     private LocalDateTime taskDueDate;
 
     @Enumerated(EnumType.STRING) // Enum stored as a String in the database
-    @Column(name = "priority_level", nullable = true) // Made nullable
+    @Column(name = "priority_level", nullable = true)
     private PriorityLevel priorityLevel;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = true) // Made nullable
+    @Column(name = "status", nullable = true)
     private Status status;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
@@ -50,6 +50,6 @@ public class Task {
     private List<User> users = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
-    @JoinColumn(name = "project_id", nullable = true) // Made nullable
+    @JoinColumn(name = "project_id", nullable = true)
     private Project project;
 }

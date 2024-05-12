@@ -78,7 +78,9 @@
     </tr>
     </tbody>
 </table>
-<a href="/tasks/addFormDisplay"><button type="button" class="btn btn-success ms-3">Create A Task</button></a>
+<a th:href="@{/tasks/addFormDisplay(projectId=${project.projectId})}">
+    <button type="button" class="btn btn-success ms-3">Create A Task</button>
+</a>
 <a href="/projects/display"><button type="button" class="btn btn-primary ms-3">Back To Projects</button></a>
 </body>
 </html>
