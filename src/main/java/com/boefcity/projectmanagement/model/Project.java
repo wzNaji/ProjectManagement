@@ -70,4 +70,19 @@ public class Project {
         task.setProject(this);
     }
 
+    public void removeTask(Task task) {
+        if (tasks.remove(task)) { // Only nullify the project reference if the task was successfully removed
+            task.setProject(null);
+        }
+    }
+
+    public void removeAllTasks() {
+        // Iterate over a copy of the task list to avoid ConcurrentModificationException
+        for (Task task : new ArrayList<>(tasks)) {
+            removeTask(task);
+        }
+        tasks.clear(); // Optionally clear the tasks list after all tasks have been disassociated
+    }
+
+
 }

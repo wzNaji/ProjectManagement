@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
 
 @Controller
 @RequestMapping("/tasks")
@@ -24,32 +23,6 @@ public class TaskController {
         this.taskService = taskService;
         this.userService = userService;
         this.projectService = projectService;
-    }
-
-
-    @GetMapping("/display")
-    public String tasksDisplay(@RequestParam Long projectId, HttpSession session, Model model,
-                               RedirectAttributes redirectAttributes) {
-
-        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
-            return "redirect:/users/loginDisplay";
-        }
-
-        Long userId = (Long) session.getAttribute("userId");
-        User user = userService.findUserById(userId);
-
-        Role role = user.getUserRole();
-
-        if (Role.ADMIN.equals(role) || Role.MANAGER.equals(role)) {
-            List<Task> adminTaskList = taskService.findAllTask();
-            model.addAttribute("taskList", adminTaskList);
-            return "/project/editDisplay";
-        } else if (Role.WORKER.equals(role)) {
-            List<Task> userTaskList = user.getTasks();
-            model.addAttribute("taskList", userTaskList);
-            return "/project/editDisplay";
-        }
-        return "errorPage";
     }
 
     @GetMapping("/addFormDisplay")
