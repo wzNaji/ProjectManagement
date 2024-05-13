@@ -75,6 +75,13 @@
         <td th:text="${task.taskDueDate}"></td>
         <td th:text="${task.priorityLevel}"></td>
         <td th:text="${task.status}"></td>
+        <td>
+            <form th:action="@{/tasks/delete}" method="post">
+                <input type="hidden" name="taskId" th:value="${task.taskId}"/>
+                <input type="hidden" name="projectId" th:value="${project.projectId}"/>
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+        </td>
     </tr>
     </tbody>
 </table>
