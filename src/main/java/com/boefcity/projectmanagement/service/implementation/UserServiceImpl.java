@@ -8,6 +8,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -51,10 +52,12 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(userToUpdate);
     }
 
+    @Transactional
     @Override
     public void deleteUser(Long userId) {
         User userToDelete = userRepository.findUserByIdNative(userId);
         if (userToDelete != null ) {
+            userToDelete.getTasks().clear();
             userToDelete.removeAllProjects();
             userRepository.deleteById(userId);
         }
