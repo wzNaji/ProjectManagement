@@ -49,7 +49,7 @@ public class ProjectController {
             redirectAttributes.addFlashAttribute("message", "User not authorized to add new projects");
             return "redirect:/projects/display";
         }
-        return "/errorPage";
+        return "redirect:/errorPage";
     }
 
     @PostMapping("/createProject")
@@ -103,7 +103,7 @@ public class ProjectController {
             model.addAttribute("userProjectList", projectList);
             return "/project/userProjectList";
         }
-        return "errorPage";
+        return "redirect:/errorPage";
     }
 
 
@@ -200,6 +200,40 @@ public class ProjectController {
 
         return "redirect:/projects/display";
     }
+
+    @PostMapping("/removeUser")
+    public String removeUserFromProject(@RequestParam Long userId,
+                                        @RequestParam Long projectId,
+                                        HttpSession session,
+                                        RedirectAttributes redirectAttributes) {
+
+        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+            return "redirect:/projects/display";
+        }
+
+        Long currentUserId = (Long) session.getAttribute("userId");
+        User currentUser = userService.findUserById(currentUserId);
+        Role role = currentUser.getUserRole();
+        if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
+            redirectAttributes.addFlashAttribute("message", "You are not authorized to remove assigned users");
+            return "redirect:/projects/editDisplay?projectId=" + projectId;
+        }
+
+        if (projectId == null || userId == null) {
+            redirectAttributes.addFlashAttribute("message", "User or project information is missing. Please try again.");
+            return "redirect:/projects/display";
+        }
+
+        try {
+            projectService.removeUserFromProject(userId, projectId);
+            redirectAttributes.addFlashAttribute("message", "User was successfully removed from the project.");
+            return "redirect:/projects/editDisplay?projectId=" + projectId;
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "Failed to remove user from the project due to unexpected error.");
+            return "redirect:/errorPage";
+        }
+    }
+
 
 
 

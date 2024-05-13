@@ -120,6 +120,19 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
+    @Transactional
+    @Override
+    public void removeUserFromProject(Long userId, Long projectId) {
+
+        User user = userRepository.findUserByIdNative(userId);
+        Project project = projectRepository.findProjectByIdNative(projectId);
+
+        if (user == null || project == null) {
+            throw new IllegalArgumentException("Could not find user or project. userId: " + userId + ", projectId: " + projectId);
+        }
+            user.removeProject(project); /* Fjerner projektet fra useren og fjerner useren fra projektet.
+                                                          Se 'removeProject' i User klassen */
+    }
 
 
 }
