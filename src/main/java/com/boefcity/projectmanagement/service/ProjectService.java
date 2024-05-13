@@ -22,4 +22,6 @@ public interface ProjectService {
     boolean isUserAssignedToProject(Long projectID, Long userID);
 
     Project assignTaskToProject(Task task, Long projectId);
+
+    void removeUserFromProject(Long userId, Long projectId);
 }
