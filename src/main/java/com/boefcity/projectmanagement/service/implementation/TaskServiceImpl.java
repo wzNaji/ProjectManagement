@@ -77,21 +77,32 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public void deleteTask(Long taskId, Long projectId) {
-        Project projectToFind = projectRepository.findProjectByIdNative(projectId);
-        Task taskToDelete = taskRepository.findTaskByIdNative(taskId);
+        Project project = projectRepository.findProjectByIdNative(projectId);
+        Task task = taskRepository.findTaskByIdNative(taskId);
 
             // undgå unødige database handlinger
-        if (projectToFind == null || taskToDelete == null) {
+        if (project == null || task == null) {
             throw new IllegalArgumentException("Project or Task not found");
         }
 
-        if (projectToFind.getTasks().contains(taskToDelete)) {
-            projectToFind.getTasks().remove(taskToDelete); // Detach task fra project
-            projectRepository.save(projectToFind);
+        if (project.getTasks().contains(task)) {
+
+            // Fjerner taskens hours fra projektets samlede hours.
+            Double taskHours = task.getTaskHours();
+            Double currentProjectHours = project.getProjectActualdHours() != null ? project.getProjectActualdHours() : 0;
+            project.setProjectActualdHours(currentProjectHours - taskHours);
+
+            // Fjerner taskens cost fra projektets samlede cost.
+            Double taskCost = task.getTaskCost();
+            Double currentProjectCost = project.getProjectCost() != null ? project.getProjectCost() : 0;
+            project.setProjectCost(currentProjectCost - taskCost);
+
+            project.getTasks().remove(task); // Detach task fra project
+            projectRepository.save(project);
         }
 
         //remove task from users taskList når users har assigned tasks.
 
-        taskRepository.delete(taskToDelete);
+        taskRepository.delete(task);
     }
 }

@@ -73,6 +73,8 @@
         <th scope="col">Due</th>
         <th scope="col">Priority</th>
         <th scope="col">Status</th>
+        <th scope="col">Cost</th>
+        <th scope="col">Hours</th>
         <th scope="col"></th>
         <th scope="col"></th>
     </tr>
@@ -86,6 +88,8 @@
         <td th:text="${task.taskDueDate}"></td>
         <td th:text="${task.priorityLevel}"></td>
         <td th:text="${task.status}"></td>
+        <td th:text="${task.taskCost}"></td>
+        <td th:text="${task.taskHours}"></td>
         <td>
             <form th:action="@{/tasks/delete}" method="post">
                 <input type="hidden" name="taskId" th:value="${task.taskId}"/>
