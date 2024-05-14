@@ -41,6 +41,12 @@ public class Task {
     @Column(name = "status", nullable = true)
     private Status status;
 
+    @Column(name = "task_cost", nullable = true)
+    private Double taskCost;
+
+    @Column(name = "task_hours", nullable = true)
+    private Double taskHours;
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(
             name = "task_users",

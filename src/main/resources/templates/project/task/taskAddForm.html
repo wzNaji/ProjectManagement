@@ -23,6 +23,14 @@
       <textarea th:field="*{taskDescription}" id="description" class="form-control"></textarea>
     </div>
     <div class="m-3">
+      <label for="taskCost" class="form-label">Cost</label>
+      <input type="number" step="0.01" th:field="*{taskCost}" id="taskCost" class="form-control">
+    </div>
+    <div class="m-3">
+      <label for="taskHours" class="form-label">Hours</label>
+      <input type="number" step="0.01" th:field="*{taskHours}" id="taskHours" class="form-control">
+    </div>
+    <div class="m-3">
       <label for="startDate" class="form-label">Start Date</label>
       <input type="datetime-local" th:field="*{taskStartDate}" id="startDate" class="form-control">
     </div>

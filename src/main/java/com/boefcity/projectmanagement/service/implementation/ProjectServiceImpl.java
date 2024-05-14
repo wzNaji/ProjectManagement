@@ -104,6 +104,8 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.existsByProjectIdAndUsersUserId(projectId, userId);
     }
 
+    @Transactional
+    @Override
     public Project assignTaskToProject(Task task, Long projectId) {
 
         Project projectToFind = projectRepository.findProjectByIdNative(projectId);
@@ -113,7 +115,17 @@ public class ProjectServiceImpl implements ProjectService {
             throw new IllegalArgumentException("Project or Task not found");
         }
         try {
+            // Update project cost
+            Double projectCost = projectToFind.getProjectCost() != null ? projectToFind.getProjectCost() : 0;
+            projectToFind.setProjectCost(projectCost + task.getTaskCost());
+
+            // Update project hours
+            Double projectHours = projectToFind.getProjectActualdHours() != null ? projectToFind.getProjectActualdHours() : 0;
+            projectToFind.setProjectActualdHours(projectHours + task.getTaskHours());
+
             projectToFind.addTaskToProject(task);
+
+
             return projectRepository.save(projectToFind);
         } catch (Exception e) {
             throw new RuntimeException("Failed to assign task to project");
