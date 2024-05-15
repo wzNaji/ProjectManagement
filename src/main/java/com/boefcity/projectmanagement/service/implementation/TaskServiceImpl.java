@@ -2,7 +2,6 @@ package com.boefcity.projectmanagement.service.implementation;
 
 import com.boefcity.projectmanagement.model.Project;
 import com.boefcity.projectmanagement.model.Task;
-import com.boefcity.projectmanagement.model.User;
 import com.boefcity.projectmanagement.repository.ProjectRepository;
 import com.boefcity.projectmanagement.repository.TaskRepository;
 import com.boefcity.projectmanagement.repository.UserRepository;
