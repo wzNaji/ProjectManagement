@@ -2,6 +2,7 @@ package com.boefcity.projectmanagement.service.implementation;
 
 import com.boefcity.projectmanagement.model.Project;
 import com.boefcity.projectmanagement.model.Task;
+import com.boefcity.projectmanagement.model.User;
 import com.boefcity.projectmanagement.repository.ProjectRepository;
 import com.boefcity.projectmanagement.repository.TaskRepository;
 import com.boefcity.projectmanagement.repository.UserRepository;
@@ -42,10 +43,11 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.findAll();
     }
 
+    @Transactional
     @Override
-    public Task update(Long taskId, Task taskDetails) {
-            Task taskToUpdate = taskRepository.findTaskByIdNative(taskId);
+    public Task updateTask(Long taskId, Task taskDetails) {
 
+            Task taskToUpdate = taskRepository.findTaskByIdNative(taskId);
             if (taskToUpdate == null) {
                 throw new EntityNotFoundException("User not found for id: " + taskId);
             }
@@ -56,13 +58,11 @@ public class TaskServiceImpl implements TaskService {
             taskToUpdate.setTaskDueDate(taskDetails.getTaskDueDate());
             taskToUpdate.setPriorityLevel(taskDetails.getPriorityLevel());
             taskToUpdate.setStatus(taskDetails.getStatus());
+            taskToUpdate.setTaskCost(taskDetails.getTaskCost());
+            taskToUpdate.setTaskHours(taskDetails.getTaskHours());
 
-            // tjek denne - måske det skal ændres i Model... tænker ManyToMany, fordi 1 task kan have mange users og vice versa.
-            //taskToUpdate.setAssignedUser(taskDetails.getAssignedUser());
-
-
-            return taskRepository.save(taskDetails);
-        }
+            return taskRepository.save(taskToUpdate);
+    }
 
 
     @Override
@@ -105,4 +105,5 @@ public class TaskServiceImpl implements TaskService {
 
         taskRepository.delete(task);
     }
+
 }

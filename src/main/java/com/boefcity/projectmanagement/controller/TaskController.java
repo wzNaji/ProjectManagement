@@ -123,6 +123,74 @@ public class TaskController {
         }
     }
 
+    // edit task
+
+    @GetMapping("/editFormDisplay/{taskId}")
+    public String editUser(@PathVariable Long taskId,
+                           @RequestParam Long projectId,
+                           Model model,
+                           HttpSession session,
+                           RedirectAttributes redirectAttributes) {
+
+        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+            return "redirect:/users/loginDisplay";
+        }
+
+        Long currentUserId = (Long) session.getAttribute("userId");
+        User currentUser = userService.findUserById(currentUserId);
+        Role role = currentUser.getUserRole();
+
+        if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
+            redirectAttributes.addFlashAttribute("message", "User not authorized to edit tasks");
+            return "redirect:/projects/editDisplay?projectId=" + projectId;
+        }
+
+        Task taskToEdit = taskService.findByTaskId(taskId);
+        if (taskToEdit == null) {
+            redirectAttributes.addFlashAttribute("message", "Task to edit was not found");
+            return "redirect:/projects/editDisplay?projectId=" + projectId;
+        }
+
+        model.addAttribute("priorityLevel", PriorityLevel.values());
+        model.addAttribute("status", Status.values());
+        model.addAttribute("task", taskToEdit);
+        model.addAttribute("projectId", projectId);
+        return "/project/task/taskEditForm";
+    }
+
+    @PostMapping("/editForm/{taskId}")
+    public String updateTask(@PathVariable Long taskId,
+                             @RequestParam Long projectId,
+                             @ModelAttribute("task") Task taskDetails,
+                             HttpSession session,
+                             RedirectAttributes redirectAttributes) {
+
+        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+            return "redirect:/users/loginDisplay";
+        }
+
+        Long currentUserId = (Long) session.getAttribute("userId");
+        User currentUser = userService.findUserById(currentUserId);
+        Role role = currentUser.getUserRole();
+
+        if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
+            redirectAttributes.addFlashAttribute("message", "User not authorized to edit tasks");
+            return "redirect:/projects/editDisplay?projectId=" + projectId;
+        }
+
+        Task existingTask = taskService.findByTaskId(taskId);
+        if (existingTask == null) {
+            redirectAttributes.addFlashAttribute("message", "Task to edit was not found");
+            return "redirect:/projects/editDisplay?projectId=" + projectId;
+        }
+
+
+        taskService.updateTask(taskId, taskDetails);
+
+        redirectAttributes.addFlashAttribute("message", "Task updated successfully");
+        return "redirect:/projects/editDisplay?projectId=" + projectId;
+    }
+
 
 }
 

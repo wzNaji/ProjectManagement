@@ -91,6 +91,11 @@
         <td th:text="${task.taskCost}"></td>
         <td th:text="${task.taskHours}"></td>
         <td>
+            <a th:href="@{/tasks/editFormDisplay/{taskId}(taskId=${task.taskId}, projectId=${project.projectId})}">
+                <button type="button" class="btn btn-primary ms-3">Edit</button>
+            </a>
+        </td>
+        <td>
             <form th:action="@{/tasks/delete}" method="post">
                 <input type="hidden" name="taskId" th:value="${task.taskId}"/>
                 <input type="hidden" name="projectId" th:value="${project.projectId}"/>

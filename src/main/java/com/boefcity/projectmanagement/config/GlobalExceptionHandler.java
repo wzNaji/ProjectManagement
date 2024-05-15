@@ -1,4 +1,4 @@
-package com.boefcity.projectmanagement.config;
+/*package com.boefcity.projectmanagement.config;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,3 +14,5 @@ public class GlobalExceptionHandler{
     }
 
 }
+
+ */

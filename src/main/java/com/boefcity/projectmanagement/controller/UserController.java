@@ -168,9 +168,6 @@ public class UserController {
             return "redirect:/menu";
         }
 
-        System.out.println("userId: " + userId);
-        System.out.println(userDetails.getUsername() + userDetails.getEmail() + userDetails.getUserRole() + userDetails.getPassword());
-
         userService.updateUser(userId, userDetails);
         redirectAttributes.addFlashAttribute("message", "User updated successfully");
         return "redirect:/users/userListDisplay";
