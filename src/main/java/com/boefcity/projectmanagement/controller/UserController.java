@@ -2,7 +2,6 @@ package com.boefcity.projectmanagement.controller;
 
 import com.boefcity.projectmanagement.config.SessionUtility;
 import com.boefcity.projectmanagement.model.Role;
-import com.boefcity.projectmanagement.model.Task;
 import com.boefcity.projectmanagement.model.User;
 import com.boefcity.projectmanagement.service.UserService;
 import jakarta.servlet.http.HttpSession;
