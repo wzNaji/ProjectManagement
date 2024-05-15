@@ -103,7 +103,8 @@ public class TaskController {
         Role role = user.getUserRole();
 
         if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
-            return "errorPage";
+            redirectAttributes.addFlashAttribute("message", "You are not authorized to delete tasks");
+            return "redirect:/projects/editDisplay?projectId=" + projectId;
         }
 
         try {

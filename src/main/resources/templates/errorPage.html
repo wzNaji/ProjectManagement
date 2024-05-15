@@ -5,6 +5,15 @@
     <title><Error Page></title>
 </head>
 <body>
-<h>Something went wrong. Please try again.</h>
+<main>
+    <h1>Something went wrong. Please try again.</h1>
+
+    <div th:if="${message}" class="alert alert-dismissible fade show" role="alert">
+        <span th:text="${message}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+</main>
+
 </body>
 </html>

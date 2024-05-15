@@ -24,6 +24,10 @@
             <th scope="col">Description</th>
             <th scope="col">Start Date</th>
             <th scope="col">Due Date</th>
+            <th scope="col">Budget</th>
+            <th scope="col">Actual Cost</th>
+            <th scope="col">Estimated Hours</th>
+            <th scope="col">Actual Hours</th>
             <th scope="col"></th>
             <th scope="col"></th>
         </tr>
@@ -35,6 +39,10 @@
             <td th:text="${project.projectDescription}">TestDescription1</td>
             <td th:text="${project.projectStartDate}">TestStartDate1</td>
             <td th:text="${project.projectEndDate}">TestEndDate1</td>
+            <td th:text="${project.projectBudget}">TestBudget1</td>
+            <td th:text="${project.projectCost}">TestCost1</td>
+            <td th:text="${project.projectEstimatedHours}">TestEstimatedHours1</td>
+            <td th:text="${project.projectActualdHours}">TestActualHours1</td>
             <td>
                 <a th:href="@{/projects/editDisplay(projectId=${project.projectId})}" class="btn btn-primary">Edit</a>
             </td>
