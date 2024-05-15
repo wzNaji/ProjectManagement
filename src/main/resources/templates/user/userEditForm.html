@@ -19,10 +19,10 @@
         </div>
         <div class="m-3">
             <label for="role" class="form-label">Role</label>
-            <select name="role" id="role" class="form-select">
-                <option value="">Select Role</option>
+            <select th:field="*{userRole}" id="role" class="form-select">
+                <option value="">Select role</option>
                 <th:block th:each="role : ${roles}">
-                    <option th:value="${role}" th:text="${role}" th:selected="${role == user.userRole}"></option>
+                    <option th:value="${role}" th:text="${role}"></option>
                 </th:block>
             </select>
         </div>

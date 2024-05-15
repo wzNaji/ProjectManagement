@@ -169,11 +169,8 @@ public class UserController {
             return "redirect:/menu";
         }
 
-        User userToUpdate = userService.findUserById(userId);
-        if (userToUpdate == null) {
-            redirectAttributes.addFlashAttribute("message", "User to update was not found");
-            return "redirect:/menu";
-        }
+        System.out.println("userId: " + userId);
+        System.out.println(userDetails.getUsername() + userDetails.getEmail() + userDetails.getUserRole() + userDetails.getPassword());
 
         userService.updateUser(userId, userDetails);
         redirectAttributes.addFlashAttribute("message", "User updated successfully");

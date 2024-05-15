@@ -45,12 +45,10 @@ public class UserServiceImpl implements UserService {
             throw new EntityNotFoundException("User not found for id: " + userId);
         }
 
-        String existingPassword = userToUpdate.getPassword();
-
         userToUpdate.setUsername(userDetails.getUsername());
         userToUpdate.setEmail(userDetails.getEmail());
         userToUpdate.setUserRole(userDetails.getUserRole());
-        userToUpdate.setPassword(existingPassword);
+
 
         return userRepository.save(userToUpdate);
     }
