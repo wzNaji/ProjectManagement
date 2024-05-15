@@ -108,28 +108,28 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Project assignTaskToProject(Task task, Long projectId) {
 
-        Project projectToFind = projectRepository.findProjectByIdNative(projectId);
+        Project project = projectRepository.findProjectByIdNative(projectId);
         Task taskToAssign = taskRepository.findTaskByIdNative(task.getTaskId());
 
-        if (projectToFind == null || taskToAssign == null) {
+        if (project == null || taskToAssign == null) {
             throw new IllegalArgumentException("Project or Task not found");
         }
-        try {
-            // Update project cost
-            Double projectCost = projectToFind.getProjectCost() != null ? projectToFind.getProjectCost() : 0;
-            projectToFind.setProjectCost(projectCost + task.getTaskCost());
 
-            // Update project hours
-            Double projectHours = projectToFind.getProjectActualdHours() != null ? projectToFind.getProjectActualdHours() : 0;
-            projectToFind.setProjectActualdHours(projectHours + task.getTaskHours());
+        // Default values '0.0' hvis cost eller hours er 'null'
+        double taskCost = (task.getTaskCost() != null) ? task.getTaskCost() : 0.0;
+        double taskHours = (task.getTaskHours() != null) ? task.getTaskHours() : 0.0;
 
-            projectToFind.addTaskToProject(task);
+        // Opdatér project cost
+        double projectCost = (project.getProjectCost() != null) ? project.getProjectCost() : 0.0;
+        project.setProjectCost(projectCost + taskCost);
 
+        // Opdatér project hours
+        double projectHours = (project.getProjectActualdHours() != null) ? project.getProjectActualdHours() : 0.0;
+        project.setProjectActualdHours(projectHours + taskHours);
 
-            return projectRepository.save(projectToFind);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to assign task to project");
-        }
+        project.addTaskToProject(task);
+
+        return projectRepository.save(project);
     }
 
     @Transactional
