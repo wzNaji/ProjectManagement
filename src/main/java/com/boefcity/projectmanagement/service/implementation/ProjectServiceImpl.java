@@ -69,23 +69,6 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.findAll();
     }
 
-    @Override
-    public Project update(Long projectId, Project projectDetails) {
-        Project projectToUpdate = projectRepository.findProjectByIdNative(projectId);
-
-        if (projectToUpdate == null) {
-            throw new EntityNotFoundException("User not found for id: " + projectId);
-        }
-
-        projectToUpdate.setProjectName(projectDetails.getProjectName());
-        projectToUpdate.setProjectDescription(projectDetails.getProjectDescription());
-        projectToUpdate.setProjectStartDate(projectDetails.getProjectStartDate());
-        projectToUpdate.setProjectEndDate(projectDetails.getProjectEndDate());
-
-
-        return projectRepository.save(projectToUpdate);
-    }
-
     public Project assignUsersToProject(Long projectID, Long userID) {
         Project project = projectRepository.findProjectByIdNative(projectID);
         User userToAssign = userRepository.findUserByIdNative(userID);
@@ -144,6 +127,25 @@ public class ProjectServiceImpl implements ProjectService {
         }
             user.removeProject(project); /* Fjerner projektet fra useren og fjerner useren fra projektet.
                                                           Se 'removeProject' i User klassen */
+    }
+
+    @Transactional
+    @Override
+    public Project updateProject(Long projectId, Project projectDetails) {
+
+        Project projectToUpdate = projectRepository.findProjectByIdNative(projectId);
+        if (projectToUpdate == null) {
+            throw new EntityNotFoundException("User not found for id: " + projectId);
+        }
+
+        projectToUpdate.setProjectName(projectDetails.getProjectName());
+        projectToUpdate.setProjectDescription(projectDetails.getProjectDescription());
+        projectToUpdate.setProjectStartDate(projectDetails.getProjectStartDate());
+        projectToUpdate.setProjectEndDate(projectDetails.getProjectEndDate());
+        projectToUpdate.setProjectBudget(projectDetails.getProjectBudget());
+        projectToUpdate.setProjectEstimatedHours(projectDetails.getProjectEstimatedHours());
+
+        return projectRepository.save(projectToUpdate);
     }
 
 

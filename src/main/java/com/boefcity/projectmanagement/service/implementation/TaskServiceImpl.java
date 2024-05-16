@@ -42,25 +42,23 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.findAll();
     }
 
-    @Transactional
     @Override
     public Task updateTask(Long taskId, Task taskDetails) {
+        Task taskToUpdate = taskRepository.findTaskByIdNative(taskId);
+        if (taskToUpdate == null) {
+            throw new EntityNotFoundException("User not found for id: " + taskId);
+        }
 
-            Task taskToUpdate = taskRepository.findTaskByIdNative(taskId);
-            if (taskToUpdate == null) {
-                throw new EntityNotFoundException("User not found for id: " + taskId);
-            }
+        taskToUpdate.setTaskName(taskDetails.getTaskName());
+        taskToUpdate.setTaskDescription(taskDetails.getTaskDescription());
+        taskToUpdate.setTaskStartDate(taskDetails.getTaskStartDate());
+        taskToUpdate.setTaskDueDate(taskDetails.getTaskDueDate());
+        taskToUpdate.setPriorityLevel(taskDetails.getPriorityLevel());
+        taskToUpdate.setStatus(taskDetails.getStatus());
+        taskToUpdate.setTaskCost(taskDetails.getTaskCost());
+        taskToUpdate.setTaskHours(taskDetails.getTaskHours());
 
-            taskToUpdate.setTaskName(taskDetails.getTaskName());
-            taskToUpdate.setTaskDescription(taskDetails.getTaskDescription());
-            taskToUpdate.setTaskStartDate(taskDetails.getTaskStartDate());
-            taskToUpdate.setTaskDueDate(taskDetails.getTaskDueDate());
-            taskToUpdate.setPriorityLevel(taskDetails.getPriorityLevel());
-            taskToUpdate.setStatus(taskDetails.getStatus());
-            taskToUpdate.setTaskCost(taskDetails.getTaskCost());
-            taskToUpdate.setTaskHours(taskDetails.getTaskHours());
-
-            return taskRepository.save(taskToUpdate);
+        return taskRepository.save(taskToUpdate);
     }
 
 
