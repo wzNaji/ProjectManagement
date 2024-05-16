@@ -8,11 +8,11 @@
 <body class="d-flex flex-column min-vh-100">
 <header>
   <div class="d-flex justify-content-center">
-    <h1>Sub Project Add Form</h1>
+    <h1>Subproject Add Form</h1>
   </div>
 </header>
 <main>
-  <form th:action="@{/subProjects/addForm}" th:method="post" th:object="${subProject}">
+  <form th:action="@{/subprojects/addForm}" th:method="post" th:object="${subproject}">
     <input type="hidden" name="projectId" th:value="${project.projectId}"/>
     <div class="m-3">
       <label for="name" class="form-label">Name</label>

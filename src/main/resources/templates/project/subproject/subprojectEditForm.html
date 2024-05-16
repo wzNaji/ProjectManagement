@@ -8,24 +8,24 @@
 <body class="d-flex flex-column min-vh-100">
 <main>
     <header class="m-3 text-center">
-        <h1>Edit Sub Project</h1>
+        <h1>Edit Subproject</h1>
     </header>
-    <form th:action="@{/subProjects/editForm/{subProjectId}(subProjectId=${subProjectId}, projectId=${projectId})}" th:method="post" th:object="${subProject}">
+    <form th:action="@{/subprojects/editForm/{subprojectId}(subprojectId=${subprojectId}, projectId=${projectId})}" th:method="post" th:object="${subproject}">
         <div class="m-3">
             <label for="title" class="form-label">Title</label>
-            <input type="text" th:field="*{subProjectName}" class="form-control" id="title">
+            <input type="text" th:field="*{subprojectName}" class="form-control" id="title">
         </div>
         <div class="m-3">
             <label for="description" class="form-label">Description</label>
-            <textarea th:field="*{subProjectDescription}" class="form-control" id="description"></textarea>
+            <textarea th:field="*{subprojectDescription}" class="form-control" id="description"></textarea>
         </div>
         <div class="m-3">
             <label for="startDate" class="form-label">Start Date</label>
-            <input type="date" th:field="*{subProjectStartDate}" class="form-control" id="startDate">
+            <input type="date" th:field="*{subprojectStartDate}" class="form-control" id="startDate">
         </div>
         <div class="m-3">
             <label for="dueDate" class="form-label">Due Date</label>
-            <input type="date" th:field="*{subProjectDueDate}" class="form-control" id="dueDate">
+            <input type="date" th:field="*{subprojectDueDate}" class="form-control" id="dueDate">
         </div>
         <div class="m-3">
             <label for="priority" class="form-label">Priority</label>
@@ -44,12 +44,12 @@
             </select>
         </div>
         <div class="m-3">
-            <label for="subProjectCost" class="form-label">Cost</label>
-            <input type="number" step="0.01" th:field="*{subProjectCost}" class="form-control" id="subProjectCost">
+            <label for="subprojectCost" class="form-label">Cost</label>
+            <input type="number" step="0.01" th:field="*{subprojectCost}" class="form-control" id="subprojectCost">
         </div>
         <div class="m-3">
-            <label for="subProjectHours" class="form-label">Hours</label>
-            <input type="number" step="0.5" th:field="*{subProjectHours}" class="form-control" id="subProjectHours">
+            <label for="subprojectHours" class="form-label">Hours</label>
+            <input type="number" step="0.5" th:field="*{subprojectHours}" class="form-control" id="subprojectHours">
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
         <a href="/projects/editDisplay" th:href="@{/projects/editDisplay(projectId=${projectId})}" class="btn btn-secondary m-3">Cancel</a>

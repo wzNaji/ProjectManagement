@@ -44,7 +44,7 @@ public class SubprojectController {
             model.addAttribute("project", projectToFind);
             model.addAttribute("priorityLevel", PriorityLevel.values());
             model.addAttribute("status", Status.values());
-            return "/project/subProject/subProjectAddForm";
+            return "/project/subproject/subprojectAddForm";
         } else if (Role.WORKER.equals(role)) {
             redirectAttributes.addFlashAttribute("message", "User not authorized to add new sub project");
             return "redirect:/projects/display";
@@ -88,7 +88,7 @@ public class SubprojectController {
     // Delete sub project
 
     @PostMapping("/delete")
-    public String deleteSubProject(@RequestParam("subProjectId") Long subProjectId,
+    public String deleteSubproject(@RequestParam("subprojectId") Long subprojectId,
                              @RequestParam("projectId") Long projectId,
                              HttpSession session,
                              RedirectAttributes redirectAttributes) {
@@ -102,7 +102,7 @@ public class SubprojectController {
         Role role = user.getUserRole();
 
         if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
-            redirectAttributes.addFlashAttribute("message", "You are not authorized to delete sub projects");
+            redirectAttributes.addFlashAttribute("message", "You are not authorized to delete subprojects");
             return "redirect:/projects/editDisplay?projectId=" + projectId;
         }
 
@@ -113,19 +113,19 @@ public class SubprojectController {
                 redirectAttributes.addFlashAttribute("message",
                         "You have successfully deleted sub project: " + subprojectToDelete.getSubprojectName());
             } else {
-                redirectAttributes.addFlashAttribute("message", "Sub project not found.");
+                redirectAttributes.addFlashAttribute("message", "Subproject not found.");
             }
             return "redirect:/projects/editDisplay?projectId=" + projectId;
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Error deleting sub project");
+            redirectAttributes.addFlashAttribute("message", "Error deleting subproject");
             return "redirect:/projects/editDisplay?projectId=" + projectId;
         }
     }
 
-    // edit sub project
+    // edit subproject
 
-    @GetMapping("/editFormDisplay/{subProjectId}")
-    public String editSubProject(@PathVariable Long subProjectId,
+    @GetMapping("/editFormDisplay/{subprojectId}")
+    public String editSubproject(@PathVariable Long subprojectId,
                            @RequestParam Long projectId,
                            Model model,
                            HttpSession session,
@@ -140,7 +140,7 @@ public class SubprojectController {
         Role role = currentUser.getUserRole();
 
         if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
-            redirectAttributes.addFlashAttribute("message", "User not authorized to edit sub projects");
+            redirectAttributes.addFlashAttribute("message", "User not authorized to edit subprojects");
             return "redirect:/projects/editDisplay?projectId=" + projectId;
         }
 
@@ -152,13 +152,13 @@ public class SubprojectController {
 
         model.addAttribute("priorityLevel", PriorityLevel.values());
         model.addAttribute("status", Status.values());
-        model.addAttribute("subProject", subProjectId);
+        model.addAttribute("subproject", subprojectId);
         model.addAttribute("projectId", projectId);
-        return "/project/subProject/subProjectEditForm";
+        return "/project/subproject/subprojectEditForm";
     }
 
-    @PostMapping("/editForm/{subProjectId}")
-    public String updateSubProject(@PathVariable Long subProjectId,
+    @PostMapping("/editForm/{subprojectId}")
+    public String updateSubproject(@PathVariable Long subprojectId,
                              @RequestParam Long projectId,
                              @ModelAttribute("subproject") Subproject subprojectDetails,
                              HttpSession session,
@@ -173,7 +173,7 @@ public class SubprojectController {
         Role role = currentUser.getUserRole();
 
         if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
-            redirectAttributes.addFlashAttribute("message", "User not authorized to edit subProjects");
+            redirectAttributes.addFlashAttribute("message", "User not authorized to edit subprojects");
             return "redirect:/projects/editDisplay?projectId=" + projectId;
         }
 
@@ -186,7 +186,7 @@ public class SubprojectController {
 
         subprojectService.updateSubproject(subprojectId, subprojectDetails);
 
-        redirectAttributes.addFlashAttribute("message", "SubProject updated successfully");
+        redirectAttributes.addFlashAttribute("message", "Subproject updated successfully");
         return "redirect:/projects/editDisplay?projectId=" + projectId;
     }
 
