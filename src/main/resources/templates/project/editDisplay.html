@@ -65,7 +65,7 @@
     </tbody>
 </table>
 
-<h2 class="mb-3">Project Tasks</h2>
+<h2 class="mb-3">Project sub projects</h2>
 <table class="table table-hover">
     <thead>
     <tr>
@@ -83,24 +83,24 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="task, stat : ${projectTasks}">
+    <tr th:each="subproject, stat : ${projectSubprojects}">
         <th scope="row" th:text="${stat.index + 1}"></th>
-        <td th:text="${task.taskName}"></td>
-        <td th:text="${task.taskDescription}"></td>
-        <td th:text="${task.taskStartDate}"></td>
-        <td th:text="${task.taskDueDate}"></td>
-        <td th:text="${task.priorityLevel}"></td>
-        <td th:text="${task.status}"></td>
-        <td th:text="${task.taskCost}"></td>
-        <td th:text="${task.taskHours}"></td>
+        <td th:text="${subproject.subprojectName}"></td>
+        <td th:text="${subproject.subprojectDescription}"></td>
+        <td th:text="${subproject.subprojectStartDate}"></td>
+        <td th:text="${subproject.subprojectDueDate}"></td>
+        <td th:text="${subproject.priorityLevel}"></td>
+        <td th:text="${subproject.status}"></td>
+        <td th:text="${subproject.subprojectCost}"></td>
+        <td th:text="${subproject.subprojectHours}"></td>
         <td>
-            <a th:href="@{/tasks/editFormDisplay/{taskId}(taskId=${task.taskId}, projectId=${project.projectId})}">
+            <a th:href="@{/subprojects/editFormDisplay/{subprojectId}(subprojectId=${subproject.subprojectId}, projectId=${project.projectId})}">
                 <button type="button" class="btn btn-primary ms-3">Edit</button>
             </a>
         </td>
         <td>
-            <form th:action="@{/tasks/delete}" method="post">
-                <input type="hidden" name="taskId" th:value="${task.taskId}"/>
+            <form th:action="@{/subprojects/delete}" method="post">
+                <input type="hidden" name="subprojectId" th:value="${subproject.subprojectId}"/>
                 <input type="hidden" name="projectId" th:value="${project.projectId}"/>
                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
             </form>
@@ -108,8 +108,8 @@
     </tr>
     </tbody>
 </table>
-<a th:href="@{/tasks/addFormDisplay(projectId=${project.projectId})}">
-    <button type="button" class="btn btn-success ms-3">Create A Task</button>
+<a th:href="@{/subprojects/addFormDisplay(projectId=${project.projectId})}">
+    <button type="button" class="btn btn-success ms-3">Create A Subproject</button>
 </a>
 <a href="/projects/display"><button type="button" class="btn btn-primary ms-3">Back To Projects</button></a>
 </body>

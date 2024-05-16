@@ -47,12 +47,12 @@ public class User {
 
         @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
         @JoinTable(
-                name = "user_tasks",
+                name = "user_subprojects",
                 joinColumns = @JoinColumn(name = "user_id"),
-                inverseJoinColumns = @JoinColumn(name = "task_id")
+                inverseJoinColumns = @JoinColumn(name = "subproject_id")
         )
         @ToString.Exclude
-        private List<Task> tasks = new ArrayList<>();
+        private List<Subproject> Subprojects = new ArrayList<>();
 
         public void addProject(Project project) {
                 projects.add(project);

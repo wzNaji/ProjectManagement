@@ -42,11 +42,11 @@ public class Project {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinTable(
-            name = "project_tasks",
+            name = "project_subprojects",
             joinColumns = @JoinColumn(name = "project_id"),
-            inverseJoinColumns = @JoinColumn(name = "task_id")
+            inverseJoinColumns = @JoinColumn(name = "subproject_id")
     )
-    private List<Task> tasks = new ArrayList<>();
+    private List<Subproject> Subprojects = new ArrayList<>();
 
     @Column(name = "project_budget", nullable = true)
     private Double projectBudget;
@@ -75,23 +75,23 @@ public class Project {
             removeUser(user);
         }
     }
-    public void addTaskToProject(Task task) {
-        tasks.add(task);
-        task.setProject(this);
+    public void addSubprojectToProject(Subproject subproject) {
+        Subprojects.add(subproject);
+        subproject.setProject(this);
     }
 
-    public void removeTask(Task task) {
-        if (tasks.remove(task)) { // Only nullify the project reference if the task was successfully removed
-            task.setProject(null);
+    public void removeSubproject(Subproject subproject) {
+        if (Subprojects.remove(subproject)) { // Only nullify the project reference if the task was successfully removed
+            subproject.setProject(null);
         }
     }
 
-    public void removeAllTasks() {
+    public void removeAllSubprojects() {
         // Iterate over a copy of the task list to avoid ConcurrentModificationException
-        for (Task task : new ArrayList<>(tasks)) {
-            removeTask(task);
+        for (Subproject subproject : new ArrayList<>(Subprojects)) {
+            removeSubproject(subproject);
         }
-        tasks.clear(); // Optionally clear the tasks list after all tasks have been disassociated
+        Subprojects.clear(); // Optionally clear the tasks list after all tasks have been disassociated
     }
 
 
