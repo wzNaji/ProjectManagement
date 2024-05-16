@@ -7,7 +7,7 @@
 </head>
 <body class="container mt-5">
 
-<h1 class="mb-4">Edit Project</h1>
+<h1 class="mb-4">Project Overview</h1>
 <div th:if="${message != null}" class="alert alert-dismissible fade show" role="alert">
     <span th:text="${message}"></span>
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -17,6 +17,9 @@
     <label for="projectName" class="form-label">Project Name:</label>
     <input type="text" id="projectName" th:value="${project.projectName}" class="form-control"/>
 </div>
+<a th:href="@{/projects/editFormDisplay/{projectId}(projectId=${project.projectId})}"> <!-- add organization når vi sætter det ind som parameter senere -->
+    <button type="button" class="mb-3 btn btn-primary">Edit</button>
+</a>
 
 <form th:action="@{/projects/assignUser}" th:method="post" class="mb-5">
     <input type="hidden" name="projectId" th:value="${project.projectId}"/>
@@ -41,6 +44,8 @@
         <th scope="col">Username</th>
         <th scope="col">Email</th>
         <th scope="col">Role</th>
+        <th scope="col"></th>
+        <th scope="col"></th>
     </tr>
     </thead>
     <tbody>
@@ -49,6 +54,13 @@
         <td th:text="${user.username}"></td>
         <td th:text="${user.email}"></td>
         <td th:text="${user.userRole}"></td>
+        <td>
+            <form th:action="@{/projects/removeUser}" method="post">
+                <input type="hidden" name="userId" th:value="${user.userId}"/>
+                <input type="hidden" name="projectId" th:value="${project.projectId}"/>
+                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+            </form>
+        </td>
     </tr>
     </tbody>
 </table>
@@ -64,6 +76,10 @@
         <th scope="col">Due</th>
         <th scope="col">Priority</th>
         <th scope="col">Status</th>
+        <th scope="col">Cost</th>
+        <th scope="col">Hours</th>
+        <th scope="col"></th>
+        <th scope="col"></th>
     </tr>
     </thead>
     <tbody>
@@ -75,6 +91,20 @@
         <td th:text="${task.taskDueDate}"></td>
         <td th:text="${task.priorityLevel}"></td>
         <td th:text="${task.status}"></td>
+        <td th:text="${task.taskCost}"></td>
+        <td th:text="${task.taskHours}"></td>
+        <td>
+            <a th:href="@{/tasks/editFormDisplay/{taskId}(taskId=${task.taskId}, projectId=${project.projectId})}">
+                <button type="button" class="btn btn-primary ms-3">Edit</button>
+            </a>
+        </td>
+        <td>
+            <form th:action="@{/tasks/delete}" method="post">
+                <input type="hidden" name="taskId" th:value="${task.taskId}"/>
+                <input type="hidden" name="projectId" th:value="${project.projectId}"/>
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+        </td>
     </tr>
     </tbody>
 </table>

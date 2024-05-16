@@ -10,11 +10,11 @@ public interface TaskService {
 
     Task findByTaskId (Long taskId);
 
-    void deleteByTaskId(Long taskId);
+    void deleteTask(Long taskId, Long projectId);
 
     List<Task> findAllTask();
 
-    Task update (Long taskId, Task taskDetails);
+    Task updateTask(Long taskId, Task taskDetails);
 
     Task assignUsersToTask (Long taskId, Long userID);
 

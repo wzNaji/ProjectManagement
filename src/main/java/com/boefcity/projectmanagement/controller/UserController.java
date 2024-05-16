@@ -117,4 +117,62 @@ public class UserController {
         return "redirect:/users/userListDisplay";
     }
 
+    // Ændring af user
+
+    @GetMapping("/editDisplay/{userId}")
+    public String editUser(@PathVariable Long userId,
+                           Model model,
+                           HttpSession session,
+                           RedirectAttributes redirectAttributes) {
+
+        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+            return "redirect:/users/loginDisplay";
+        }
+
+        Long currentUserId = (Long) session.getAttribute("userId");
+        User currentUser = userService.findUserById(currentUserId);
+        Role role = currentUser.getUserRole();
+
+        if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
+            redirectAttributes.addFlashAttribute("message", "User not authorized to see user list");
+            return "redirect:/menu";
+        }
+
+        User userToEdit = userService.findUserById(userId);
+        if (userToEdit == null) {
+            redirectAttributes.addFlashAttribute("message", "User to edit was not found");
+            return "redirect:/menu";
+        }
+
+        model.addAttribute("roles", Role.values());
+        model.addAttribute("user", userToEdit);
+        return "/user/userEditForm";
+    }
+
+    @PostMapping("/editForm/{userId}")
+    public String editUser(@PathVariable Long userId,
+                             @ModelAttribute("user") User userDetails,
+                             HttpSession session,
+                             RedirectAttributes redirectAttributes) {
+
+        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+            return "redirect:/users/loginDisplay";
+        }
+
+        Long currentUserId = (Long) session.getAttribute("userId");
+        User currentUser = userService.findUserById(currentUserId);
+        Role role = currentUser.getUserRole();
+
+        if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
+            redirectAttributes.addFlashAttribute("message", "User not authorized to edit user");
+            return "redirect:/menu";
+        }
+
+        userService.updateUser(userId, userDetails);
+        redirectAttributes.addFlashAttribute("message", "User updated successfully");
+        return "redirect:/users/userListDisplay";
+    }
+
+
+
 }

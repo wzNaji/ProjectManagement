@@ -55,13 +55,13 @@ public class TaskController {
     @PostMapping("/addForm")
     public String createAndAssignTask(@RequestParam("projectId") Long projectId,
                                       @ModelAttribute Task task,
-                             HttpSession session,
-                             RedirectAttributes redirectAttributes) {
+                                      HttpSession session,
+                                      RedirectAttributes redirectAttributes) {
 
         if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
         }
-        System.out.println();
+
         Long userId = (Long) session.getAttribute("userId");
         User user = userService.findUserById(userId);
 
@@ -84,6 +84,111 @@ public class TaskController {
         }
 
         return "errorPage";
+    }
+
+    // Delete task
+
+    @PostMapping("/delete")
+    public String deleteTask(@RequestParam("taskId") Long taskId,
+                             @RequestParam("projectId") Long projectId,
+                             HttpSession session,
+                             RedirectAttributes redirectAttributes) {
+
+        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+            return "redirect:/users/loginDisplay";
+        }
+
+        Long userId = (Long) session.getAttribute("userId");
+        User user = userService.findUserById(userId);
+        Role role = user.getUserRole();
+
+        if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
+            redirectAttributes.addFlashAttribute("message", "You are not authorized to delete tasks");
+            return "redirect:/projects/editDisplay?projectId=" + projectId;
+        }
+
+        try {
+            Task taskToDelete = taskService.findByTaskId(taskId);
+            if (taskToDelete != null) {
+                taskService.deleteTask(taskId, projectId);
+                redirectAttributes.addFlashAttribute("message",
+                        "You have successfully deleted task: " + taskToDelete.getTaskName());
+            } else {
+                redirectAttributes.addFlashAttribute("message", "Task not found.");
+            }
+            return "redirect:/projects/editDisplay?projectId=" + projectId;
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "Error deleting task");
+            return "redirect:/projects/editDisplay?projectId=" + projectId;
+        }
+    }
+
+    // edit task
+
+    @GetMapping("/editFormDisplay/{taskId}")
+    public String editUser(@PathVariable Long taskId,
+                           @RequestParam Long projectId,
+                           Model model,
+                           HttpSession session,
+                           RedirectAttributes redirectAttributes) {
+
+        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+            return "redirect:/users/loginDisplay";
+        }
+
+        Long currentUserId = (Long) session.getAttribute("userId");
+        User currentUser = userService.findUserById(currentUserId);
+        Role role = currentUser.getUserRole();
+
+        if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
+            redirectAttributes.addFlashAttribute("message", "User not authorized to edit tasks");
+            return "redirect:/projects/editDisplay?projectId=" + projectId;
+        }
+
+        Task taskToEdit = taskService.findByTaskId(taskId);
+        if (taskToEdit == null) {
+            redirectAttributes.addFlashAttribute("message", "Task to edit was not found");
+            return "redirect:/projects/editDisplay?projectId=" + projectId;
+        }
+
+        model.addAttribute("priorityLevel", PriorityLevel.values());
+        model.addAttribute("status", Status.values());
+        model.addAttribute("task", taskToEdit);
+        model.addAttribute("projectId", projectId);
+        return "/project/task/taskEditForm";
+    }
+
+    @PostMapping("/editForm/{taskId}")
+    public String updateTask(@PathVariable Long taskId,
+                             @RequestParam Long projectId,
+                             @ModelAttribute("task") Task taskDetails,
+                             HttpSession session,
+                             RedirectAttributes redirectAttributes) {
+
+        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+            return "redirect:/users/loginDisplay";
+        }
+
+        Long currentUserId = (Long) session.getAttribute("userId");
+        User currentUser = userService.findUserById(currentUserId);
+        Role role = currentUser.getUserRole();
+
+        if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
+            redirectAttributes.addFlashAttribute("message", "User not authorized to edit tasks");
+            return "redirect:/projects/editDisplay?projectId=" + projectId;
+        }
+
+        Task existingTask = taskService.findByTaskId(taskId);
+        if (existingTask == null) {
+            redirectAttributes.addFlashAttribute("message", "Task to edit was not found");
+            return "redirect:/projects/editDisplay?projectId=" + projectId;
+        }
+
+
+        taskService.updateTask(taskId, taskDetails);
+
+        redirectAttributes.addFlashAttribute("message", "Task updated successfully");
+        return "redirect:/projects/editDisplay?projectId=" + projectId;
     }
 
 

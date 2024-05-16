@@ -30,6 +30,9 @@
       <td th:text="${user.email}">TestEmail1</td>
       <td th:text="${user.userRole}">TestRole1</td>
       <td>
+        <a th:href="@{/users/editDisplay/{userId}(userId=${user.userId})}" class="btn btn-primary">Edit</a>
+      </td>
+      <td>
         <form th:action="@{/users/delete/{userToDeleteId}(userToDeleteId=${user.userId})}" method="post" style="display: inline;">
           <button type="submit" class="btn btn-danger">Delete</button>
         </form>

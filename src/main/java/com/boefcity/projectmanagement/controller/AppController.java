@@ -19,8 +19,9 @@ public class AppController {
         return "menuPage";
     }
 
-    @GetMapping("/errorPage")
-    public String errorPageDisplay() {
+    @GetMapping("/errorPage") // Kan ikke få expection message til at virke
+    public String errorPageDisplay(Exception exception, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("message", "hm" + exception.getMessage());
         return "errorPage";
     }
 

@@ -69,23 +69,6 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.findAll();
     }
 
-    @Override
-    public Project update(Long projectId, Project projectDetails) {
-        Project projectToUpdate = projectRepository.findProjectByIdNative(projectId);
-
-        if (projectToUpdate == null) {
-            throw new EntityNotFoundException("User not found for id: " + projectId);
-        }
-
-        projectToUpdate.setProjectName(projectDetails.getProjectName());
-        projectToUpdate.setProjectDescription(projectDetails.getProjectDescription());
-        projectToUpdate.setProjectStartDate(projectDetails.getProjectStartDate());
-        projectToUpdate.setProjectEndDate(projectDetails.getProjectEndDate());
-
-
-        return projectRepository.save(projectToUpdate);
-    }
-
     public Project assignUsersToProject(Long projectID, Long userID) {
         Project project = projectRepository.findProjectByIdNative(projectID);
         User userToAssign = userRepository.findUserByIdNative(userID);
@@ -104,22 +87,66 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.existsByProjectIdAndUsersUserId(projectId, userId);
     }
 
+    @Transactional
+    @Override
     public Project assignTaskToProject(Task task, Long projectId) {
 
-        Project projectToFind = projectRepository.findProjectByIdNative(projectId);
+        Project project = projectRepository.findProjectByIdNative(projectId);
         Task taskToAssign = taskRepository.findTaskByIdNative(task.getTaskId());
 
-        if (projectToFind == null || taskToAssign == null) {
+        if (project == null || taskToAssign == null) {
             throw new IllegalArgumentException("Project or Task not found");
         }
-        try {
-            projectToFind.addTaskToProject(task);
-            return projectRepository.save(projectToFind);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to assign task to project");
-        }
+
+        // Default values '0.0' hvis cost eller hours er 'null'
+        double taskCost = (task.getTaskCost() != null) ? task.getTaskCost() : 0.0;
+        double taskHours = (task.getTaskHours() != null) ? task.getTaskHours() : 0.0;
+
+        // Opdatér project cost
+        double projectCost = (project.getProjectCost() != null) ? project.getProjectCost() : 0.0;
+        project.setProjectCost(projectCost + taskCost);
+
+        // Opdatér project hours
+        double projectHours = (project.getProjectActualdHours() != null) ? project.getProjectActualdHours() : 0.0;
+        project.setProjectActualdHours(projectHours + taskHours);
+
+        project.addTaskToProject(task);
+
+        return projectRepository.save(project);
     }
 
+    @Transactional
+    @Override
+    public void removeUserFromProject(Long userId, Long projectId) {
+
+        User user = userRepository.findUserByIdNative(userId);
+        Project project = projectRepository.findProjectByIdNative(projectId);
+
+        if (user == null || project == null) {
+            throw new IllegalArgumentException("Could not find user or project. userId: " + userId + ", projectId: " + projectId);
+        }
+            user.removeProject(project); /* Fjerner projektet fra useren og fjerner useren fra projektet.
+                                                          Se 'removeProject' i User klassen */
+    }
+
+    @Transactional
+    @Override
+    public Project updateProject(Long projectId, Project projectDetails) {
+
+        Project projectToUpdate = projectRepository.findProjectByIdNative(projectId);
+        if (projectToUpdate == null) {
+            throw new EntityNotFoundException("User not found for id: " + projectId);
+        }
+
+        projectToUpdate.setProjectName(projectDetails.getProjectName());
+        projectToUpdate.setProjectDescription(projectDetails.getProjectDescription());
+        projectToUpdate.setProjectStartDate(projectDetails.getProjectStartDate());
+        projectToUpdate.setProjectEndDate(projectDetails.getProjectEndDate());
+        projectToUpdate.setProjectBudget(projectDetails.getProjectBudget());
+        projectToUpdate.setProjectEstimatedHours(projectDetails.getProjectEstimatedHours());
+
+        return projectRepository.save(projectToUpdate);
+    }
 
 
 }

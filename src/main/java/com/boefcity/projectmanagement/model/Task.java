@@ -33,13 +33,19 @@ public class Task {
     @Column(name = "due_date", nullable = true)
     private LocalDateTime taskDueDate;
 
-    @Enumerated(EnumType.STRING) // Enum stored as a String in the database
+    @Enumerated(EnumType.STRING) // Enum bliver gemt som en String i databasen.
     @Column(name = "priority_level", nullable = true)
     private PriorityLevel priorityLevel;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = true)
     private Status status;
+
+    @Column(name = "task_cost", nullable = true)
+    private Double taskCost;
+
+    @Column(name = "task_hours", nullable = true)
+    private Double taskHours;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(
@@ -49,7 +55,7 @@ public class Task {
     )
     private List<User> users = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE,})
     @JoinColumn(name = "project_id", nullable = true)
     private Project project;
 }
