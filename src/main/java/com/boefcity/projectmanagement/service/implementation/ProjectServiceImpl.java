@@ -1,10 +1,10 @@
 package com.boefcity.projectmanagement.service.implementation;
 
 import com.boefcity.projectmanagement.model.Project;
-import com.boefcity.projectmanagement.model.Task;
+import com.boefcity.projectmanagement.model.SubProject;
 import com.boefcity.projectmanagement.model.User;
 import com.boefcity.projectmanagement.repository.ProjectRepository;
-import com.boefcity.projectmanagement.repository.TaskRepository;
+import com.boefcity.projectmanagement.repository.SubProjectRepository;
 import com.boefcity.projectmanagement.repository.UserRepository;
 import com.boefcity.projectmanagement.service.ProjectService;
 import jakarta.persistence.EntityNotFoundException;
@@ -20,13 +20,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
-    private final TaskRepository taskRepository;
+    private final SubProjectRepository subProjectRepository;
 
     @Autowired
-    public ProjectServiceImpl(ProjectRepository projectRepository, UserRepository userRepository, TaskRepository taskRepository) {
+    public ProjectServiceImpl(ProjectRepository projectRepository, UserRepository userRepository, SubProjectRepository subProjectRepository) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
-        this.taskRepository = taskRepository;
+        this.subProjectRepository = subProjectRepository;
     }
 
 
@@ -35,7 +35,6 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.save(project);
     }
 
-    @Transactional(readOnly = true)
     @Override
     public Project findById(Long id) {
         return projectRepository.findProjectByIdNative(id);
@@ -50,12 +49,12 @@ public class ProjectServiceImpl implements ProjectService {
             projectToDelete.removeAllUsers();
 
             // Laver en kopi for at undgå listen bliver null.
-            List<Task> tasksToDelete = new ArrayList<>(projectToDelete.getTasks());
-            projectToDelete.removeAllTasks();
+            List<SubProject> subProjectsToDelete = new ArrayList<>(projectToDelete.getSubProjects());
+            projectToDelete.removeAllSubProjects();
 
-            // Sletter tasks fra databasen
-            if (!tasksToDelete.isEmpty()) {
-                taskRepository.deleteAll(tasksToDelete);
+            // Sletter sub projects fra databasen
+            if (!subProjectsToDelete.isEmpty()) {
+                subProjectRepository.deleteAll(subProjectsToDelete);
             }
 
             projectRepository.delete(projectToDelete);
@@ -63,7 +62,6 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
 
-    @Transactional(readOnly = true)
     @Override
     public List<Project> findAll() {
         return projectRepository.findAll();
@@ -89,28 +87,28 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Transactional
     @Override
-    public Project assignTaskToProject(Task task, Long projectId) {
+    public Project assignSubProjectToProject(SubProject subProject, Long projectId) {
 
         Project project = projectRepository.findProjectByIdNative(projectId);
-        Task taskToAssign = taskRepository.findTaskByIdNative(task.getTaskId());
+        SubProject subProjectToAssign = subProjectRepository.findSubProjectByIdNative(subProject.getSubProjectId());
 
-        if (project == null || taskToAssign == null) {
-            throw new IllegalArgumentException("Project or Task not found");
+        if (project == null || subProjectToAssign == null) {
+            throw new IllegalArgumentException("Project or sub project not found");
         }
 
         // Default values '0.0' hvis cost eller hours er 'null'
-        double taskCost = (task.getTaskCost() != null) ? task.getTaskCost() : 0.0;
-        double taskHours = (task.getTaskHours() != null) ? task.getTaskHours() : 0.0;
+        double subProjectCost = (subProject.getSubProjectCost() != null) ? subProject.getSubProjectCost() : 0.0;
+        double subProjectHours = (subProject.getSubProjectHours() != null) ? subProject.getSubProjectHours() : 0.0;
 
         // Opdatér project cost
         double projectCost = (project.getProjectCost() != null) ? project.getProjectCost() : 0.0;
-        project.setProjectCost(projectCost + taskCost);
+        project.setProjectCost(projectCost + subProjectCost);
 
         // Opdatér project hours
         double projectHours = (project.getProjectActualdHours() != null) ? project.getProjectActualdHours() : 0.0;
-        project.setProjectActualdHours(projectHours + taskHours);
+        project.setProjectActualdHours(projectHours + projectHours);
 
-        project.addTaskToProject(task);
+        project.addSubProjectToProject(subProject);
 
         return projectRepository.save(project);
     }

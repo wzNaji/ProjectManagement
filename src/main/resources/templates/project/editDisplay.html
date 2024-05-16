@@ -65,7 +65,7 @@
     </tbody>
 </table>
 
-<h2 class="mb-3">Project Tasks</h2>
+<h2 class="mb-3">Project sub projects</h2>
 <table class="table table-hover">
     <thead>
     <tr>
@@ -83,16 +83,16 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="task, stat : ${projectTasks}">
+    <tr th:each="subProject, stat : ${projectSubProjects}">
         <th scope="row" th:text="${stat.index + 1}"></th>
-        <td th:text="${task.taskName}"></td>
-        <td th:text="${task.taskDescription}"></td>
-        <td th:text="${task.taskStartDate}"></td>
-        <td th:text="${task.taskDueDate}"></td>
-        <td th:text="${task.priorityLevel}"></td>
-        <td th:text="${task.status}"></td>
-        <td th:text="${task.taskCost}"></td>
-        <td th:text="${task.taskHours}"></td>
+        <td th:text="${subProject.subProjectName}"></td>
+        <td th:text="${subProject.subProjectDescription}"></td>
+        <td th:text="${subProject.subProjectStartDate}"></td>
+        <td th:text="${subProject.subProjectDueDate}"></td>
+        <td th:text="${subProject.priorityLevel}"></td>
+        <td th:text="${subProject.status}"></td>
+        <td th:text="${subProject.subProjectCost}"></td>
+        <td th:text="${subProject.subProjectHours}"></td>
         <td>
             <a th:href="@{/tasks/editFormDisplay/{taskId}(taskId=${task.taskId}, projectId=${project.projectId})}">
                 <button type="button" class="btn btn-primary ms-3">Edit</button>

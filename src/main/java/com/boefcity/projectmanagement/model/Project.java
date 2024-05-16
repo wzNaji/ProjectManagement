@@ -46,7 +46,7 @@ public class Project {
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "task_id")
     )
-    private List<Task> tasks = new ArrayList<>();
+    private List<SubProject> subProjects = new ArrayList<>();
 
     @Column(name = "project_budget", nullable = true)
     private Double projectBudget;
@@ -75,23 +75,23 @@ public class Project {
             removeUser(user);
         }
     }
-    public void addTaskToProject(Task task) {
-        tasks.add(task);
-        task.setProject(this);
+    public void addSubProjectToProject(SubProject subProject) {
+        subProjects.add(subProject);
+        subProject.setProject(this);
     }
 
-    public void removeTask(Task task) {
-        if (tasks.remove(task)) { // Only nullify the project reference if the task was successfully removed
-            task.setProject(null);
+    public void removeSubProject(SubProject subProject) {
+        if (subProjects.remove(subProject)) { // Only nullify the project reference if the task was successfully removed
+            subProject.setProject(null);
         }
     }
 
-    public void removeAllTasks() {
+    public void removeAllSubProjects() {
         // Iterate over a copy of the task list to avoid ConcurrentModificationException
-        for (Task task : new ArrayList<>(tasks)) {
-            removeTask(task);
+        for (SubProject subProject : new ArrayList<>(subProjects)) {
+            removeSubProject(subProject);
         }
-        tasks.clear(); // Optionally clear the tasks list after all tasks have been disassociated
+        subProjects.clear(); // Optionally clear the tasks list after all tasks have been disassociated
     }
 
 

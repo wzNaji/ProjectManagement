@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long userId) {
         User userToDelete = userRepository.findUserByIdNative(userId);
         if (userToDelete != null ) {
-            userToDelete.getTasks().clear();
+            userToDelete.getSubProjects().clear();
             userToDelete.removeAllProjects();
             userRepository.deleteById(userId);
         }

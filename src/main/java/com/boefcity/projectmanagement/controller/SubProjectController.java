@@ -3,7 +3,7 @@ package com.boefcity.projectmanagement.controller;
 import com.boefcity.projectmanagement.config.SessionUtility;
 import com.boefcity.projectmanagement.model.*;
 import com.boefcity.projectmanagement.service.ProjectService;
-import com.boefcity.projectmanagement.service.TaskService;
+import com.boefcity.projectmanagement.service.SubProjectService;
 import com.boefcity.projectmanagement.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -13,14 +13,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
-@RequestMapping("/tasks")
-public class TaskController {
-    private final TaskService taskService;
+@RequestMapping("/subProjects")
+public class SubProjectController {
+    private final SubProjectService subProjectService;
     private final UserService userService;
     private final ProjectService projectService;
 
-    public TaskController(TaskService taskService, UserService userService, ProjectService projectService) {
-        this.taskService = taskService;
+    public SubProjectController(SubProjectService subProjectService, UserService userService, ProjectService projectService) {
+        this.subProjectService = subProjectService;
         this.userService = userService;
         this.projectService = projectService;
     }
@@ -40,21 +40,21 @@ public class TaskController {
         Role role = user.getUserRole();
 
         if (Role.ADMIN.equals(role) || Role.MANAGER.equals(role)) {
-            model.addAttribute("task", new Task());
+            model.addAttribute("subProject", new SubProject());
             model.addAttribute("project", projectToFind);
             model.addAttribute("priorityLevel", PriorityLevel.values());
             model.addAttribute("status", Status.values());
-            return "/project/task/taskAddForm";
+            return "/project/subProject/subProjectAddForm";
         } else if (Role.WORKER.equals(role)) {
-            redirectAttributes.addFlashAttribute("message", "User not authorized to add new tasks");
+            redirectAttributes.addFlashAttribute("message", "User not authorized to add new sub project");
             return "redirect:/projects/display";
         }
         return "/errorPage";
     }
 
     @PostMapping("/addForm")
-    public String createAndAssignTask(@RequestParam("projectId") Long projectId,
-                                      @ModelAttribute Task task,
+    public String createAndAssignSubProject(@RequestParam("projectId") Long projectId,
+                                      @ModelAttribute SubProject subProject,
                                       HttpSession session,
                                       RedirectAttributes redirectAttributes) {
 
@@ -71,11 +71,11 @@ public class TaskController {
         if (Role.ADMIN.equals(role) || Role.MANAGER.equals(role)) {
             try {
 
-                taskService.createTask(task);
-                projectService.assignTaskToProject(task, projectId);
+                subProjectService.createSubProject(subProject);
+                projectService.assignSubProjectToProject(subProject, projectId);
 
                 redirectAttributes.addFlashAttribute("message",
-                        "You have successfully created a new task: " + task.getTaskName());
+                        "You have successfully created a new sub project: " + subProject.getSubProjectName());
                 return "redirect:/projects/editDisplay?projectId=" + projectId;
             } catch (Exception e) {
                 redirectAttributes.addFlashAttribute("message", "Something went wrong. Please try again.");
@@ -86,10 +86,10 @@ public class TaskController {
         return "errorPage";
     }
 
-    // Delete task
+    // Delete sub project
 
     @PostMapping("/delete")
-    public String deleteTask(@RequestParam("taskId") Long taskId,
+    public String deleteSubProject(@RequestParam("subProjectId") Long subProjectId,
                              @RequestParam("projectId") Long projectId,
                              HttpSession session,
                              RedirectAttributes redirectAttributes) {
@@ -103,27 +103,27 @@ public class TaskController {
         Role role = user.getUserRole();
 
         if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
-            redirectAttributes.addFlashAttribute("message", "You are not authorized to delete tasks");
+            redirectAttributes.addFlashAttribute("message", "You are not authorized to delete sub projects");
             return "redirect:/projects/editDisplay?projectId=" + projectId;
         }
 
         try {
-            Task taskToDelete = taskService.findByTaskId(taskId);
-            if (taskToDelete != null) {
-                taskService.deleteTask(taskId, projectId);
+            SubProject subProjectToDelete = subProjectService.findBySubProjectId(subProjectId);
+            if (subProjectToDelete != null) {
+                subProjectService.deleteSubProject(subProjectId, projectId);
                 redirectAttributes.addFlashAttribute("message",
-                        "You have successfully deleted task: " + taskToDelete.getTaskName());
+                        "You have successfully deleted sub project: " + subProjectToDelete.getSubProjectName());
             } else {
-                redirectAttributes.addFlashAttribute("message", "Task not found.");
+                redirectAttributes.addFlashAttribute("message", "Sub project not found.");
             }
             return "redirect:/projects/editDisplay?projectId=" + projectId;
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Error deleting task");
+            redirectAttributes.addFlashAttribute("message", "Error deleting sub project");
             return "redirect:/projects/editDisplay?projectId=" + projectId;
         }
     }
 
-    // edit task
+    // edit sub project
 
     @GetMapping("/editFormDisplay/{taskId}")
     public String editUser(@PathVariable Long taskId,
@@ -141,7 +141,7 @@ public class TaskController {
         Role role = currentUser.getUserRole();
 
         if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
-            redirectAttributes.addFlashAttribute("message", "User not authorized to edit tasks");
+            redirectAttributes.addFlashAttribute("message", "User not authorized to edit sub projects");
             return "redirect:/projects/editDisplay?projectId=" + projectId;
         }
 
@@ -178,14 +178,14 @@ public class TaskController {
             return "redirect:/projects/editDisplay?projectId=" + projectId;
         }
 
-        Task existingTask = taskService.findByTaskId(taskId);
-        if (existingTask == null) {
-            redirectAttributes.addFlashAttribute("message", "Task to edit was not found");
+        SubProject existingSubProject = subProjectService.findBySubProjectId(subProjectId);
+        if (existingSubProject == null) {
+            redirectAttributes.addFlashAttribute("message", "SubProject to edit was not found");
             return "redirect:/projects/editDisplay?projectId=" + projectId;
         }
 
 
-        taskService.updateTask(taskId, taskDetails);
+        subProjectService.updateSubProject(subProjectId, subProjectDetails);
 
         redirectAttributes.addFlashAttribute("message", "Task updated successfully");
         return "redirect:/projects/editDisplay?projectId=" + projectId;

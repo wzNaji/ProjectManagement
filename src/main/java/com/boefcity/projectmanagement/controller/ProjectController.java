@@ -122,12 +122,12 @@ public class ProjectController {
             List<User> assignedUsers = project.getUsers().stream().toList();
 
             Project projectToFind = projectService.findById(projectId);
-            List<Task> projectTasks = projectToFind.getTasks();
+            List<SubProject> projectSubProjects = projectToFind.getSubProjects();
 
             model.addAttribute("project", project);
             model.addAttribute("allUsers", allUsers);
             model.addAttribute("assignedUsers", assignedUsers);
-            model.addAttribute("projectTasks", projectTasks);
+            model.addAttribute("projectSubProjects", projectSubProjects);
 
             String message = (String) session.getAttribute("message");
             if (message != null) {
