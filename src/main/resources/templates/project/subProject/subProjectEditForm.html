@@ -21,11 +21,11 @@
         </div>
         <div class="m-3">
             <label for="startDate" class="form-label">Start Date</label>
-            <input type="date" th:field="*{taskStartDate}" class="form-control" id="startDate">
+            <input type="date" th:field="*{subProjectStartDate}" class="form-control" id="startDate">
         </div>
         <div class="m-3">
             <label for="dueDate" class="form-label">Due Date</label>
-            <input type="date" th:field="*{taskDueDate}" class="form-control" id="dueDate">
+            <input type="date" th:field="*{subProjectDueDate}" class="form-control" id="dueDate">
         </div>
         <div class="m-3">
             <label for="priority" class="form-label">Priority</label>
@@ -44,12 +44,12 @@
             </select>
         </div>
         <div class="m-3">
-            <label for="taskCost" class="form-label">Cost</label>
-            <input type="number" step="0.01" th:field="*{taskCost}" class="form-control" id="taskCost">
+            <label for="subProjectCost" class="form-label">Cost</label>
+            <input type="number" step="0.01" th:field="*{subProjectCost}" class="form-control" id="subProjectCost">
         </div>
         <div class="m-3">
-            <label for="taskHours" class="form-label">Hours</label>
-            <input type="number" step="0.5" th:field="*{taskHours}" class="form-control" id="taskHours">
+            <label for="subProjectHours" class="form-label">Hours</label>
+            <input type="number" step="0.5" th:field="*{subProjectHours}" class="form-control" id="subProjectHours">
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
         <a href="/projects/editDisplay" th:href="@{/projects/editDisplay(projectId=${projectId})}" class="btn btn-secondary m-3">Cancel</a>

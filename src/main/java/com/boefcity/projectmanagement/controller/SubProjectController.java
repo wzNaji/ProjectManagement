@@ -125,8 +125,8 @@ public class SubProjectController {
 
     // edit sub project
 
-    @GetMapping("/editFormDisplay/{taskId}")
-    public String editUser(@PathVariable Long taskId,
+    @GetMapping("/editFormDisplay/{subProjectId}")
+    public String editSubProject(@PathVariable Long subProjectId,
                            @RequestParam Long projectId,
                            Model model,
                            HttpSession session,
@@ -145,23 +145,23 @@ public class SubProjectController {
             return "redirect:/projects/editDisplay?projectId=" + projectId;
         }
 
-        Task taskToEdit = taskService.findByTaskId(taskId);
-        if (taskToEdit == null) {
-            redirectAttributes.addFlashAttribute("message", "Task to edit was not found");
+        SubProject subProjectToEdit = subProjectService.findBySubProjectId(subProjectId);
+        if (subProjectToEdit == null) {
+            redirectAttributes.addFlashAttribute("message", "Sub project to edit was not found");
             return "redirect:/projects/editDisplay?projectId=" + projectId;
         }
 
         model.addAttribute("priorityLevel", PriorityLevel.values());
         model.addAttribute("status", Status.values());
-        model.addAttribute("task", taskToEdit);
+        model.addAttribute("subProject", subProjectId);
         model.addAttribute("projectId", projectId);
-        return "/project/task/taskEditForm";
+        return "/project/subProject/subProjectEditForm";
     }
 
-    @PostMapping("/editForm/{taskId}")
-    public String updateTask(@PathVariable Long taskId,
+    @PostMapping("/editForm/{subProjectId}")
+    public String updateSubProject(@PathVariable Long subProjectId,
                              @RequestParam Long projectId,
-                             @ModelAttribute("task") Task taskDetails,
+                             @ModelAttribute("subProject") SubProject subProjectDetails,
                              HttpSession session,
                              RedirectAttributes redirectAttributes) {
 
@@ -174,7 +174,7 @@ public class SubProjectController {
         Role role = currentUser.getUserRole();
 
         if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
-            redirectAttributes.addFlashAttribute("message", "User not authorized to edit tasks");
+            redirectAttributes.addFlashAttribute("message", "User not authorized to edit subProjects");
             return "redirect:/projects/editDisplay?projectId=" + projectId;
         }
 
@@ -187,7 +187,7 @@ public class SubProjectController {
 
         subProjectService.updateSubProject(subProjectId, subProjectDetails);
 
-        redirectAttributes.addFlashAttribute("message", "Task updated successfully");
+        redirectAttributes.addFlashAttribute("message", "SubProject updated successfully");
         return "redirect:/projects/editDisplay?projectId=" + projectId;
     }
 
