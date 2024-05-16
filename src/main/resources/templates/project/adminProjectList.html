@@ -44,7 +44,7 @@
             <td th:text="${project.projectEstimatedHours}">TestEstimatedHours1</td>
             <td th:text="${project.projectActualdHours}">TestActualHours1</td>
             <td>
-                <a th:href="@{/projects/editDisplay(projectId=${project.projectId})}" class="btn btn-primary">Edit</a>
+                <a th:href="@{/projects/editDisplay(projectId=${project.projectId})}" class="btn btn-primary">View</a>
             </td>
             <td>
                 <form th:action="@{/projects/delete/{projectToDeleteId}(projectToDeleteId=${project.projectId})}" method="post" style="display: inline;">

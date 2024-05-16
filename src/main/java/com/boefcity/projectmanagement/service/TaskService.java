@@ -14,7 +14,7 @@ public interface TaskService {
 
     List<Task> findAllTask();
 
-    Task updateTask (Long taskId, Task taskDetails);
+    Task updateTask(Long taskId, Task taskDetails);
 
     Task assignUsersToTask (Long taskId, Long userID);
 

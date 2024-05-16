@@ -1,10 +1,7 @@
 package com.boefcity.projectmanagement.controller;
 
 import com.boefcity.projectmanagement.config.SessionUtility;
-import com.boefcity.projectmanagement.model.Project;
-import com.boefcity.projectmanagement.model.Role;
-import com.boefcity.projectmanagement.model.Task;
-import com.boefcity.projectmanagement.model.User;
+import com.boefcity.projectmanagement.model.*;
 import com.boefcity.projectmanagement.service.ProjectService;
 import com.boefcity.projectmanagement.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -106,7 +103,7 @@ public class ProjectController {
         return "redirect:/errorPage";
     }
 
-
+// OVERVIEW DISPLAY
     @GetMapping("/editDisplay")
     public String editProjectDisplay(HttpSession session, Model model, @RequestParam Long projectId,
                                     RedirectAttributes redirectAttributes) {
@@ -234,6 +231,68 @@ public class ProjectController {
         }
     }
 
+
+    // Skal have en request param til ORGANIZATION
+    @GetMapping("/editFormDisplay/{projectId}")
+    public String projectEditFormDisplay(@PathVariable Long projectId,
+                                         Model model,
+                                         HttpSession session,
+                                         RedirectAttributes redirectAttributes) {
+
+        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+            return "redirect:/users/loginDisplay";
+        }
+
+        Long currentUserId = (Long) session.getAttribute("userId");
+        User currentUser = userService.findUserById(currentUserId);
+        Role role = currentUser.getUserRole();
+
+        if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
+            redirectAttributes.addFlashAttribute("message", "User not authorized to edit this project");
+            return "redirect:/projects/editDisplay?projectId=" + projectId;
+        }
+
+        Project projectToEdit = projectService.findById(projectId);
+        if (projectToEdit == null) {
+            redirectAttributes.addFlashAttribute("message", "Project to edit was not found");
+            return "redirect:/projects/editDisplay?projectId=" + projectId;
+        }
+
+        model.addAttribute("project", projectToEdit);
+        return "/project/editForm";
+    }
+
+    @PostMapping("/editForm/{projectId}")
+    public String updateProject(@PathVariable Long projectId,
+                                @ModelAttribute("project") Project projectDetails,
+                                HttpSession session,
+                                RedirectAttributes redirectAttributes) {
+
+        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+            return "redirect:/users/loginDisplay";
+        }
+
+        Long currentUserId = (Long) session.getAttribute("userId");
+        User currentUser = userService.findUserById(currentUserId);
+        Role role = currentUser.getUserRole();
+
+        if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
+            redirectAttributes.addFlashAttribute("message", "User not authorized to edit this project");
+            return "redirect:/projects/editDisplay?projectId=" + projectId;
+        }
+
+        Project existingProject = projectService.findById(projectId);
+        if (existingProject == null) {
+            redirectAttributes.addFlashAttribute("message", "Project to edit was not found");
+            return "redirect:/projects/editDisplay?projectId=" + projectId;
+        }
+
+
+        projectService.updateProject(projectId, projectDetails);
+
+        redirectAttributes.addFlashAttribute("message", "Project updated successfully");
+        return "redirect:/projects/editDisplay?projectId=" + projectId;
+    }
 
 
 

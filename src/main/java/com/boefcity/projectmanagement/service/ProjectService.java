@@ -15,8 +15,6 @@ public interface ProjectService {
 
     List<Project> findAll();
 
-    Project update (Long id, Project projectDetails);
-
     Project assignUsersToProject (Long projectID, Long userID);
 
     boolean isUserAssignedToProject(Long projectID, Long userID);
@@ -24,4 +22,6 @@ public interface ProjectService {
     Project assignTaskToProject(Task task, Long projectId);
 
     void removeUserFromProject(Long userId, Long projectId);
+
+    Project updateProject(Long projectId, Project projectDetails);
 }
