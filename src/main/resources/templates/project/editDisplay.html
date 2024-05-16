@@ -55,7 +55,7 @@
         <td th:text="${user.email}"></td>
         <td th:text="${user.userRole}"></td>
         <td>
-            <form th:action="@{/projects/removeUser}" method="post">
+            <form th:action="@{/projects/removeUser}" method="post" onsubmit="return confirm('Are you sure you want to remove this user?');">
                 <input type="hidden" name="userId" th:value="${user.userId}"/>
                 <input type="hidden" name="projectId" th:value="${project.projectId}"/>
                 <button type="submit" class="btn btn-danger btn-sm">Remove</button>
@@ -99,7 +99,7 @@
             </a>
         </td>
         <td>
-            <form th:action="@{/subprojects/delete}" method="post">
+            <form th:action="@{/subprojects/delete}" method="post" onsubmit="return confirm('Are you sure you want to delete this subproject?');">
                 <input type="hidden" name="subprojectId" th:value="${subproject.subprojectId}"/>
                 <input type="hidden" name="projectId" th:value="${project.projectId}"/>
                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
