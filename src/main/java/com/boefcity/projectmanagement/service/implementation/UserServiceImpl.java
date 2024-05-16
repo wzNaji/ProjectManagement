@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) {
-        user.setUserRole(Role.WORKER);
+        user.setUserRole(Role.ADMIN);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long userId) {
         User userToDelete = userRepository.findUserByIdNative(userId);
         if (userToDelete != null ) {
-            userToDelete.getSubProjects().clear();
+            userToDelete.getSubprojects().clear();
             userToDelete.removeAllProjects();
             userRepository.deleteById(userId);
         }

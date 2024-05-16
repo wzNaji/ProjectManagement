@@ -42,11 +42,11 @@ public class Project {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinTable(
-            name = "project_tasks",
+            name = "project_subprojects",
             joinColumns = @JoinColumn(name = "project_id"),
-            inverseJoinColumns = @JoinColumn(name = "task_id")
+            inverseJoinColumns = @JoinColumn(name = "subproject_id")
     )
-    private List<SubProject> subProjects = new ArrayList<>();
+    private List<Subproject> Subprojects = new ArrayList<>();
 
     @Column(name = "project_budget", nullable = true)
     private Double projectBudget;
@@ -75,23 +75,23 @@ public class Project {
             removeUser(user);
         }
     }
-    public void addSubProjectToProject(SubProject subProject) {
-        subProjects.add(subProject);
-        subProject.setProject(this);
+    public void addSubprojectToProject(Subproject subproject) {
+        Subprojects.add(subproject);
+        subproject.setProject(this);
     }
 
-    public void removeSubProject(SubProject subProject) {
-        if (subProjects.remove(subProject)) { // Only nullify the project reference if the task was successfully removed
-            subProject.setProject(null);
+    public void removeSubproject(Subproject subproject) {
+        if (Subprojects.remove(subproject)) { // Only nullify the project reference if the task was successfully removed
+            subproject.setProject(null);
         }
     }
 
-    public void removeAllSubProjects() {
+    public void removeAllSubprojects() {
         // Iterate over a copy of the task list to avoid ConcurrentModificationException
-        for (SubProject subProject : new ArrayList<>(subProjects)) {
-            removeSubProject(subProject);
+        for (Subproject subproject : new ArrayList<>(Subprojects)) {
+            removeSubproject(subproject);
         }
-        subProjects.clear(); // Optionally clear the tasks list after all tasks have been disassociated
+        Subprojects.clear(); // Optionally clear the tasks list after all tasks have been disassociated
     }
 
 

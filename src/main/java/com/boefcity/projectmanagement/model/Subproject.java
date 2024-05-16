@@ -11,27 +11,27 @@ import java.util.List;
 
 @Data // Getters, setters, toString osv.
 @Entity // Maps 'task' entity/class to a table named "task" in the database
-@Table(name = "subProject")
+@Table(name = "subproject")
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubProject {
+public class Subproject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "subProject_id", nullable = false, unique = true)
-    private Long subProjectId;
+    @Column(name = "subproject_id", nullable = false, unique = true)
+    private Long subprojectId;
 
-    @Column(name = "subProject_name", nullable = false)
-    private String subProjectName;
+    @Column(name = "subproject_name", nullable = false)
+    private String subprojectName;
 
-    @Column(name = "subProject_description", nullable = true)
-    private String subProjectDescription;
+    @Column(name = "subproject_description", nullable = true)
+    private String subprojectDescription;
 
-    @Column(name = "subProject_start_date", nullable = true)
-    private LocalDateTime subProjectStartDate;
+    @Column(name = "subproject_start_date", nullable = true)
+    private LocalDateTime subprojectStartDate;
 
-    @Column(name = "subProject_due_date", nullable = true)
-    private LocalDateTime subProjectDueDate;
+    @Column(name = "subproject_due_date", nullable = true)
+    private LocalDateTime subprojectDueDate;
 
     @Enumerated(EnumType.STRING) // Enum bliver gemt som en String i databasen.
     @Column(name = "priority_level", nullable = true)
@@ -41,16 +41,16 @@ public class SubProject {
     @Column(name = "status", nullable = true)
     private Status status;
 
-    @Column(name = "subProject_cost", nullable = true)
-    private Double subProjectCost;
+    @Column(name = "subproject_cost", nullable = true)
+    private Double subprojectCost;
 
-    @Column(name = "subProject_hours", nullable = true)
-    private Double subProjectHours;
+    @Column(name = "subproject_hours", nullable = true)
+    private Double subprojectHours;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(
-            name = "subProject_users",
-            joinColumns = @JoinColumn(name = "subProject_id"),
+            name = "subproject_users",
+            joinColumns = @JoinColumn(name = "subproject_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<User> users = new ArrayList<>();

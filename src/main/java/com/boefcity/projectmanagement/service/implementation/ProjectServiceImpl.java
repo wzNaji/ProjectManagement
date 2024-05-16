@@ -1,10 +1,10 @@
 package com.boefcity.projectmanagement.service.implementation;
 
 import com.boefcity.projectmanagement.model.Project;
-import com.boefcity.projectmanagement.model.SubProject;
+import com.boefcity.projectmanagement.model.Subproject;
 import com.boefcity.projectmanagement.model.User;
 import com.boefcity.projectmanagement.repository.ProjectRepository;
-import com.boefcity.projectmanagement.repository.SubProjectRepository;
+import com.boefcity.projectmanagement.repository.SubprojectRepository;
 import com.boefcity.projectmanagement.repository.UserRepository;
 import com.boefcity.projectmanagement.service.ProjectService;
 import jakarta.persistence.EntityNotFoundException;
@@ -20,13 +20,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
-    private final SubProjectRepository subProjectRepository;
+    private final SubprojectRepository subprojectRepository;
 
     @Autowired
-    public ProjectServiceImpl(ProjectRepository projectRepository, UserRepository userRepository, SubProjectRepository subProjectRepository) {
+    public ProjectServiceImpl(ProjectRepository projectRepository, UserRepository userRepository, SubprojectRepository subprojectRepository) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
-        this.subProjectRepository = subProjectRepository;
+        this.subprojectRepository = subprojectRepository;
     }
 
 
@@ -49,12 +49,12 @@ public class ProjectServiceImpl implements ProjectService {
             projectToDelete.removeAllUsers();
 
             // Laver en kopi for at undgå listen bliver null.
-            List<SubProject> subProjectsToDelete = new ArrayList<>(projectToDelete.getSubProjects());
-            projectToDelete.removeAllSubProjects();
+            List<Subproject> subprojectsToDelete = new ArrayList<>(projectToDelete.getSubprojects());
+            projectToDelete.removeAllSubprojects();
 
             // Sletter sub projects fra databasen
-            if (!subProjectsToDelete.isEmpty()) {
-                subProjectRepository.deleteAll(subProjectsToDelete);
+            if (!subprojectsToDelete.isEmpty()) {
+                subprojectRepository.deleteAll(subprojectsToDelete);
             }
 
             projectRepository.delete(projectToDelete);
@@ -87,28 +87,28 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Transactional
     @Override
-    public Project assignSubProjectToProject(SubProject subProject, Long projectId) {
+    public Project assignSubprojectToProject(Subproject subproject, Long projectId) {
 
         Project project = projectRepository.findProjectByIdNative(projectId);
-        SubProject subProjectToAssign = subProjectRepository.findSubProjectByIdNative(subProject.getSubProjectId());
+        Subproject subprojectToAssign = subprojectRepository.findSubprojectByIdNative(subproject.getSubprojectId());
 
-        if (project == null || subProjectToAssign == null) {
-            throw new IllegalArgumentException("Project or sub project not found");
+        if (project == null || subprojectToAssign == null) {
+            throw new IllegalArgumentException("Project or subproject not found");
         }
 
         // Default values '0.0' hvis cost eller hours er 'null'
-        double subProjectCost = (subProject.getSubProjectCost() != null) ? subProject.getSubProjectCost() : 0.0;
-        double subProjectHours = (subProject.getSubProjectHours() != null) ? subProject.getSubProjectHours() : 0.0;
+        double subprojectCost = (subproject.getSubprojectCost() != null) ? subproject.getSubprojectCost() : 0.0;
+        double subprojectHours = (subproject.getSubprojectHours() != null) ? subproject.getSubprojectHours() : 0.0;
 
         // Opdatér project cost
         double projectCost = (project.getProjectCost() != null) ? project.getProjectCost() : 0.0;
-        project.setProjectCost(projectCost + subProjectCost);
+        project.setProjectCost(projectCost + subprojectCost);
 
         // Opdatér project hours
         double projectHours = (project.getProjectActualdHours() != null) ? project.getProjectActualdHours() : 0.0;
-        project.setProjectActualdHours(projectHours + projectHours);
+        project.setProjectActualdHours(projectHours + subprojectHours);
 
-        project.addSubProjectToProject(subProject);
+        project.addSubprojectToProject(subproject);
 
         return projectRepository.save(project);
     }

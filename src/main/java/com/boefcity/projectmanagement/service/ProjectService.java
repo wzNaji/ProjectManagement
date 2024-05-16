@@ -1,7 +1,7 @@
 package com.boefcity.projectmanagement.service;
 
 import com.boefcity.projectmanagement.model.Project;
-import com.boefcity.projectmanagement.model.SubProject;
+import com.boefcity.projectmanagement.model.Subproject;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public interface ProjectService {
 
     boolean isUserAssignedToProject(Long projectID, Long userID);
 
-    Project assignSubProjectToProject(SubProject subProject, Long projectId);
+    Project assignSubprojectToProject(Subproject subproject, Long projectId);
 
     void removeUserFromProject(Long userId, Long projectId);
 

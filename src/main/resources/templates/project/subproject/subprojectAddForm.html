@@ -16,27 +16,27 @@
     <input type="hidden" name="projectId" th:value="${project.projectId}"/>
     <div class="m-3">
       <label for="name" class="form-label">Name</label>
-      <input type="text" th:field="*{subProjectName}" id="name" required class="form-control">
+      <input type="text" th:field="*{subprojectName}" id="name" required class="form-control">
     </div>
     <div class="m-3">
       <label for="description" class="form-label">Description</label>
-      <textarea th:field="*{subProjectDescription}" id="description" class="form-control"></textarea>
+      <textarea th:field="*{subprojectDescription}" id="description" class="form-control"></textarea>
     </div>
     <div class="m-3">
-      <label for="subProjectCost" class="form-label">Cost</label>
-      <input type="number" step="0.01" th:field="*{subProjectCost}" id="subProjectCost" class="form-control">
+      <label for="subprojectCost" class="form-label">Cost</label>
+      <input type="number" step="0.01" th:field="*{subprojectCost}" id="subprojectCost" class="form-control">
     </div>
     <div class="m-3">
-      <label for="subProjectHours" class="form-label">Hours</label>
-      <input type="number" step="0.5" th:field="*{subProjectHours}" id="subProjectHours" class="form-control">
+      <label for="subprojectHours" class="form-label">Hours</label>
+      <input type="number" step="0.5" th:field="*{subprojectHours}" id="subprojectHours" class="form-control">
     </div>
     <div class="m-3">
       <label for="startDate" class="form-label">Start Date</label>
-      <input type="datetime-local" th:field="*{subProjectStartDate}" id="startDate" class="form-control">
+      <input type="datetime-local" th:field="*{subprojectStartDate}" id="startDate" class="form-control">
     </div>
     <div class="m-3">
       <label for="dueDate" class="form-label">Due Date</label>
-      <input type="datetime-local" th:field="*{subProjectDueDate}" id="dueDate" class="form-control">
+      <input type="datetime-local" th:field="*{subprojectDueDate}" id="dueDate" class="form-control">
     </div>
     <div class="m-3">
       <label for="priorityLevel" class="form-label">Priority level</label>
@@ -59,8 +59,9 @@
     </div>
 
     <button type="submit" class="btn btn-primary m-3">Submit</button>
-    <!-- Laves om til at komme tilbage til det korrekte projekt. Indtil videre smider den bare tilbage til alle projekter -->
-    <a href="/projects/display"><button type="button" class="btn btn-primary ms-3">Back To Projects</button></a>
+    <a th:href="@{/subprojects/addFormDisplay(projectId=${project.projectId})}">
+      <button type="button" class="btn btn-success ms-3">Cancel</button>
+    </a>
   </form>
 </main>
 <footer class="mt-auto text-center">

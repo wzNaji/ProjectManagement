@@ -3,7 +3,7 @@ package com.boefcity.projectmanagement.controller;
 import com.boefcity.projectmanagement.config.SessionUtility;
 import com.boefcity.projectmanagement.model.*;
 import com.boefcity.projectmanagement.service.ProjectService;
-import com.boefcity.projectmanagement.service.SubProjectService;
+import com.boefcity.projectmanagement.service.SubprojectService;
 import com.boefcity.projectmanagement.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -13,14 +13,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
-@RequestMapping("/subProjects")
-public class SubProjectController {
-    private final SubProjectService subProjectService;
+@RequestMapping("/subprojects")
+public class SubprojectController {
+    private final SubprojectService subprojectService;
     private final UserService userService;
     private final ProjectService projectService;
 
-    public SubProjectController(SubProjectService subProjectService, UserService userService, ProjectService projectService) {
-        this.subProjectService = subProjectService;
+    public SubprojectController(SubprojectService subprojectService, UserService userService, ProjectService projectService) {
+        this.subprojectService = subprojectService;
         this.userService = userService;
         this.projectService = projectService;
     }
@@ -40,7 +40,7 @@ public class SubProjectController {
         Role role = user.getUserRole();
 
         if (Role.ADMIN.equals(role) || Role.MANAGER.equals(role)) {
-            model.addAttribute("subProject", new SubProject());
+            model.addAttribute("subproject", new Subproject());
             model.addAttribute("project", projectToFind);
             model.addAttribute("priorityLevel", PriorityLevel.values());
             model.addAttribute("status", Status.values());
@@ -53,8 +53,8 @@ public class SubProjectController {
     }
 
     @PostMapping("/addForm")
-    public String createAndAssignSubProject(@RequestParam("projectId") Long projectId,
-                                      @ModelAttribute SubProject subProject,
+    public String createAndAssignSubproject(@RequestParam("projectId") Long projectId,
+                                      @ModelAttribute Subproject subproject,
                                       HttpSession session,
                                       RedirectAttributes redirectAttributes) {
 
@@ -70,12 +70,11 @@ public class SubProjectController {
 
         if (Role.ADMIN.equals(role) || Role.MANAGER.equals(role)) {
             try {
-
-                subProjectService.createSubProject(subProject);
-                projectService.assignSubProjectToProject(subProject, projectId);
+                subprojectService.createSubproject(subproject);
+                projectService.assignSubprojectToProject(subproject, projectId);
 
                 redirectAttributes.addFlashAttribute("message",
-                        "You have successfully created a new sub project: " + subProject.getSubProjectName());
+                        "You have successfully created a new subproject: " + subproject.getSubprojectName());
                 return "redirect:/projects/editDisplay?projectId=" + projectId;
             } catch (Exception e) {
                 redirectAttributes.addFlashAttribute("message", "Something went wrong. Please try again.");
@@ -108,11 +107,11 @@ public class SubProjectController {
         }
 
         try {
-            SubProject subProjectToDelete = subProjectService.findBySubProjectId(subProjectId);
-            if (subProjectToDelete != null) {
-                subProjectService.deleteSubProject(subProjectId, projectId);
+            Subproject subprojectToDelete = subprojectService.findBySubprojectId(subprojectId);
+            if (subprojectToDelete != null) {
+                subprojectService.deleteSubproject(subprojectId, projectId);
                 redirectAttributes.addFlashAttribute("message",
-                        "You have successfully deleted sub project: " + subProjectToDelete.getSubProjectName());
+                        "You have successfully deleted sub project: " + subprojectToDelete.getSubprojectName());
             } else {
                 redirectAttributes.addFlashAttribute("message", "Sub project not found.");
             }
@@ -145,9 +144,9 @@ public class SubProjectController {
             return "redirect:/projects/editDisplay?projectId=" + projectId;
         }
 
-        SubProject subProjectToEdit = subProjectService.findBySubProjectId(subProjectId);
-        if (subProjectToEdit == null) {
-            redirectAttributes.addFlashAttribute("message", "Sub project to edit was not found");
+        Subproject subprojectToEdit = subprojectService.findBySubprojectId(subprojectId);
+        if (subprojectToEdit == null) {
+            redirectAttributes.addFlashAttribute("message", "Subproject to edit was not found");
             return "redirect:/projects/editDisplay?projectId=" + projectId;
         }
 
@@ -161,7 +160,7 @@ public class SubProjectController {
     @PostMapping("/editForm/{subProjectId}")
     public String updateSubProject(@PathVariable Long subProjectId,
                              @RequestParam Long projectId,
-                             @ModelAttribute("subProject") SubProject subProjectDetails,
+                             @ModelAttribute("subproject") Subproject subprojectDetails,
                              HttpSession session,
                              RedirectAttributes redirectAttributes) {
 
@@ -178,14 +177,14 @@ public class SubProjectController {
             return "redirect:/projects/editDisplay?projectId=" + projectId;
         }
 
-        SubProject existingSubProject = subProjectService.findBySubProjectId(subProjectId);
-        if (existingSubProject == null) {
-            redirectAttributes.addFlashAttribute("message", "SubProject to edit was not found");
+        Subproject existingSubproject = subprojectService.findBySubprojectId(subprojectId);
+        if (existingSubproject == null) {
+            redirectAttributes.addFlashAttribute("message", "Subproject to edit was not found");
             return "redirect:/projects/editDisplay?projectId=" + projectId;
         }
 
 
-        subProjectService.updateSubProject(subProjectId, subProjectDetails);
+        subprojectService.updateSubproject(subprojectId, subprojectDetails);
 
         redirectAttributes.addFlashAttribute("message", "SubProject updated successfully");
         return "redirect:/projects/editDisplay?projectId=" + projectId;
