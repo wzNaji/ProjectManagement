@@ -152,13 +152,13 @@ public class SubprojectController {
 
         model.addAttribute("priorityLevel", PriorityLevel.values());
         model.addAttribute("status", Status.values());
-        model.addAttribute("subproject", subprojectId);
+        model.addAttribute("subproject", subprojectToEdit);
         model.addAttribute("projectId", projectId);
         return "/project/subproject/subprojectEditForm";
     }
 
     @PostMapping("/editForm/{subprojectId}")
-    public String updateSubproject(@PathVariable Long subprojectId,
+    public String editSubproject(@PathVariable Long subprojectId,
                              @RequestParam Long projectId,
                              @ModelAttribute("subproject") Subproject subprojectDetails,
                              HttpSession session,
