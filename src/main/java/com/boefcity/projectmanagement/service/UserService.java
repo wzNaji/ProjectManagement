@@ -9,10 +9,10 @@ public interface UserService {
 
     User findUserById(Long id);
     User createUser(User user);
-    User updateUser(Long userId, User userDetails);
+    void editUser(Long userId, User userDetails);
     void deleteUser(Long userId);
     List<User> findAllUsers();
     boolean checkLogin(String username, String password);
-    Optional<User> findUserByUsername(String username);
+    Optional<User> findUserByUsername(String username); // fjern optional når repo er refactored.
 
 }

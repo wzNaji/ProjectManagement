@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public User updateUser(Long userId, User userDetails) {
+    public void editUser(Long userId, User userDetails) {
         User userToUpdate = userRepository.findUserByIdNative(userId);
         if (userToUpdate == null) {
             throw new EntityNotFoundException("User not found for id: " + userId);
@@ -49,8 +49,7 @@ public class UserServiceImpl implements UserService {
         userToUpdate.setEmail(userDetails.getEmail());
         userToUpdate.setUserRole(userDetails.getUserRole());
 
-
-        return userRepository.save(userToUpdate);
+        userRepository.save(userToUpdate);
     }
 
     @Transactional

@@ -17,23 +17,23 @@ public class SubprojectServiceImpl implements SubprojectService {
 
     private final SubprojectRepository subprojectRepository;
     private final ProjectRepository projectRepository;
-    private final UserRepository userRepository;
 
-    public SubprojectServiceImpl(SubprojectRepository subprojectRepository, ProjectRepository projectRepository, UserRepository userRepository) {
+    public SubprojectServiceImpl(SubprojectRepository subprojectRepository, ProjectRepository projectRepository) {
         this.subprojectRepository = subprojectRepository;
         this.projectRepository = projectRepository;
-        this.userRepository = userRepository;
     }
 
     @Override
-    public Subproject createSubproject(Subproject subproject) {
-        return subprojectRepository.save(subproject);
-    }
+    public void createSubproject(Subproject subproject) {
+        if (subproject == null) {
+            throw new IllegalArgumentException("Subproject cannot be null");
+        }
 
-    @Transactional
-    @Override
-    public List<Subproject> findAllSubproject() {
-        return subprojectRepository.findAll();
+        try {
+            subprojectRepository.save(subproject);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to save subproject: " + e.getMessage(), e);
+        }
     }
 
     @Override
@@ -43,8 +43,12 @@ public class SubprojectServiceImpl implements SubprojectService {
         Subproject subproject = subprojectRepository.findSubprojectByIdNative(subprojectId);
 
         // undgå unødige database handlinger
-        if (project == null || subproject == null) {
-            throw new IllegalArgumentException("Project or subproject not found");
+        if (project == null) {
+            throw new IllegalArgumentException("Project not found");
+        }
+
+        if (subproject == null) {
+            throw new IllegalArgumentException("Subproject not found");
         }
 
         if (project.getSubprojects().contains(subproject)) {
@@ -65,10 +69,13 @@ public class SubprojectServiceImpl implements SubprojectService {
         subprojectRepository.delete(subproject);
     }
 
-    @Transactional
     @Override
     public Subproject findBySubprojectId(Long subprojectId) {
-        return subprojectRepository.findSubprojectByIdNative(subprojectId);
+        Subproject subproject = subprojectRepository.findSubprojectByIdNative(subprojectId);
+        if (subproject == null) {
+            throw new IllegalArgumentException("Subproject not found with ID: " + subprojectId);
+        }
+        return subproject;
     }
 
 

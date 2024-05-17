@@ -193,7 +193,7 @@ public class ProjectControllerTest {
             List<Project> adminProjectList = new ArrayList<>();
             adminProjectList.add(new Project());
 
-            when(projectService.findAll()).thenReturn(adminProjectList);
+            when(projectService.findAllProjects()).thenReturn(adminProjectList);
 
             String result = projectController.projectsDisplay(session, model, redirectAttributes);
             assertEquals("/project/adminProjectList", result);
@@ -273,7 +273,7 @@ public class ProjectControllerTest {
 
             when(session.getAttribute("userId")).thenReturn(userId);
             when(userService.findUserById(userId)).thenReturn(adminUser);
-            when(projectService.findById(projectId)).thenReturn(project);
+            when(projectService.findProjectById(projectId)).thenReturn(project);
             when(userService.findAllUsers()).thenReturn(allUsers);
 
             String result = projectController.editProjectDisplay(session, model, projectId, redirectAttributes);

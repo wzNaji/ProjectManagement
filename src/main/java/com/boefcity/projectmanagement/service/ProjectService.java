@@ -9,13 +9,13 @@ public interface ProjectService {
 
     Project createProject (Project project);
 
-    Project findById (Long id);
+    Project findProjectById (Long id);
 
-    void deleteById(Long id);
+    void deleteProjectById(Long id);
 
-    List<Project> findAll();
+    List<Project> findAllProjects();
 
-    Project assignUsersToProject (Long projectID, Long userID);
+    void assignUsersToProject (Long projectID, Long userID);
 
     boolean isUserAssignedToProject(Long projectID, Long userID);
 
@@ -23,5 +23,5 @@ public interface ProjectService {
 
     void removeUserFromProject(Long userId, Long projectId);
 
-    Project updateProject(Long projectId, Project projectDetails);
+    void editProject(Long projectId, Project projectDetails);
 }

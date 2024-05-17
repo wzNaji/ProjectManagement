@@ -52,7 +52,7 @@
             <input type="number" step="0.5" th:field="*{subprojectHours}" class="form-control" id="subprojectHours">
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
-        <a href="/projects/editDisplay" th:href="@{/projects/editDisplay(projectId=${projectId})}" class="btn btn-secondary m-3">Cancel</a>
+        <a href="/projects/overviewDisplay" th:href="@{/projects/overviewDisplay(projectId=${projectId})}" class="btn btn-secondary m-3">Cancel</a>
     </form>
 </main>
 <footer class="mt-auto text-center">
