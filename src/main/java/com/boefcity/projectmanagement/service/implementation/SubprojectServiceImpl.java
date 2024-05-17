@@ -2,8 +2,10 @@ package com.boefcity.projectmanagement.service.implementation;
 
 import com.boefcity.projectmanagement.model.Project;
 import com.boefcity.projectmanagement.model.Subproject;
+import com.boefcity.projectmanagement.model.Task;
 import com.boefcity.projectmanagement.repository.ProjectRepository;
 import com.boefcity.projectmanagement.repository.SubprojectRepository;
+import com.boefcity.projectmanagement.repository.TaskRepository;
 import com.boefcity.projectmanagement.service.SubprojectService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -14,10 +16,12 @@ public class SubprojectServiceImpl implements SubprojectService {
 
     private final SubprojectRepository subprojectRepository;
     private final ProjectRepository projectRepository;
+    private final TaskRepository taskRepository;
 
-    public SubprojectServiceImpl(SubprojectRepository subprojectRepository, ProjectRepository projectRepository) {
+    public SubprojectServiceImpl(SubprojectRepository subprojectRepository, ProjectRepository projectRepository, TaskRepository taskRepository) {
         this.subprojectRepository = subprojectRepository;
         this.projectRepository = projectRepository;
+        this.taskRepository = taskRepository;
     }
 
     @Override
@@ -66,10 +70,28 @@ public class SubprojectServiceImpl implements SubprojectService {
         subprojectRepository.delete(subproject);
     }
 
+    @Transactional
+    @Override
+    public void assignTaskToSubproject(Task task, Long subprojectId) {
+        Subproject subproject = subprojectRepository.findSubprojectByIdNative(subprojectId);
+        Task taskToAssign = taskRepository.findTaskByIdNative(task.getTaskId());
+
+        if (subproject == null) {
+            throw new IllegalArgumentException("Subprojektet blev ikke fundet");
+        }
+
+        if (taskToAssign == null) {
+            throw new IllegalArgumentException("Task blev ikke fundet");
+        }
+
+        subproject.addTaskToSubproject(task);
+        subprojectRepository.save(subproject);
+    }
+
     @Override
     public Subproject findBySubprojectId(Long subprojectId) {
         Subproject subproject = subprojectRepository.findSubprojectByIdNative(subprojectId);
-        // Error handling for at undgå unødige database handlinger
+
         if (subproject == null) {
             throw new IllegalArgumentException("Subprojekt med ID: " + subprojectId + " findes ikke.");
         }
