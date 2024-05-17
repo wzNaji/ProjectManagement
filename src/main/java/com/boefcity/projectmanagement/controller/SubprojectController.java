@@ -37,26 +37,23 @@ public class SubprojectController {
         User user = userService.findUserById(userId);
         Project projectToFind = projectService.findProjectById(projectId);
 
-        Role role = user.getUserRole();
+        if (!AppUtility.isAdminOrManager(user)) {
+                redirectAttributes.addFlashAttribute("message", "Denne side kan kun vises til ADMIN og MANAGER brugere");
+                return "redirect:/projects/display";
+            }
+        model.addAttribute("subproject", new Subproject());
+        model.addAttribute("project", projectToFind);
+        model.addAttribute("priorityLevel", PriorityLevel.values());
+        model.addAttribute("status", Status.values());
 
-        if (Role.ADMIN.equals(role) || Role.MANAGER.equals(role)) {
-            model.addAttribute("subproject", new Subproject());
-            model.addAttribute("project", projectToFind);
-            model.addAttribute("priorityLevel", PriorityLevel.values());
-            model.addAttribute("status", Status.values());
-            return "/project/subproject/subprojectAddForm";
-        } else if (Role.WORKER.equals(role)) {
-            redirectAttributes.addFlashAttribute("message", "User not authorized to add new sub project");
-            return "redirect:/projects/display";
-        }
-        return "/errorPage";
+        return "/project/subproject/subprojectAddForm";
     }
 
     @PostMapping("/addForm")
     public String createAndAssignSubproject(@RequestParam("projectId") Long projectId,
-                                      @ModelAttribute Subproject subproject,
-                                      HttpSession session,
-                                      RedirectAttributes redirectAttributes) {
+                                            @ModelAttribute Subproject subproject,
+                                            HttpSession session,
+                                            RedirectAttributes redirectAttributes) {
 
         if (AppUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
@@ -65,33 +62,31 @@ public class SubprojectController {
         Long userId = (Long) session.getAttribute("userId");
         User user = userService.findUserById(userId);
 
-
-        Role role = user.getUserRole();
-
-        if (Role.ADMIN.equals(role) || Role.MANAGER.equals(role)) {
-            try {
-                subprojectService.createSubproject(subproject);
-                projectService.assignSubprojectToProject(subproject, projectId);
-
-                redirectAttributes.addFlashAttribute("message",
-                        "You have successfully created a new subproject: " + subproject.getSubprojectName());
-                return "redirect:/projects/overviewDisplay?projectId=" + projectId;
-            } catch (Exception e) {
-                redirectAttributes.addFlashAttribute("message", "Something went wrong. Please try again.");
-                return "redirect:/projects/overviewDisplay?projectId=" + projectId;
-            }
+        if (!AppUtility.isAdminOrManager(user)) {
+            redirectAttributes.addFlashAttribute("message", "Kun ADMIN og MANAGER brugere kan tilgå denne funktion");
+            return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         }
 
-        return "errorPage";
+        try {
+            subprojectService.createSubproject(subproject);
+            projectService.assignSubprojectToProject(subproject, projectId);
+
+            redirectAttributes.addFlashAttribute("message", "Projektet er oprettet");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "Noget galt. Prøv venligst igen.");
+        }
+
+        return "redirect:/projects/overviewDisplay?projectId=" + projectId;
     }
+
 
     // Delete sub project
 
     @PostMapping("/delete")
     public String deleteSubproject(@RequestParam("subprojectId") Long subprojectId,
-                             @RequestParam("projectId") Long projectId,
-                             HttpSession session,
-                             RedirectAttributes redirectAttributes) {
+                                   @RequestParam("projectId") Long projectId,
+                                   HttpSession session,
+                                   RedirectAttributes redirectAttributes) {
 
         if (AppUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
@@ -99,28 +94,28 @@ public class SubprojectController {
 
         Long userId = (Long) session.getAttribute("userId");
         User user = userService.findUserById(userId);
-        Role role = user.getUserRole();
 
-        if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
-            redirectAttributes.addFlashAttribute("message", "You are not authorized to delete subprojects");
+        if (!AppUtility.isAdminOrManager(user)) {
+            redirectAttributes.addFlashAttribute("message", "Kun ADMIN og MANAGER brugere kan slette subprojekter");
             return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         }
 
         try {
             Subproject subprojectToDelete = subprojectService.findBySubprojectId(subprojectId);
-            if (subprojectToDelete != null) {
-                subprojectService.deleteSubproject(subprojectId, projectId);
-                redirectAttributes.addFlashAttribute("message",
-                        "You have successfully deleted sub project: " + subprojectToDelete.getSubprojectName());
+
+            if (subprojectToDelete == null) {
+                redirectAttributes.addFlashAttribute("message", "Subprojektet blev ikke fundet");
             } else {
-                redirectAttributes.addFlashAttribute("message", "Subproject not found.");
+                subprojectService.deleteSubproject(subprojectId, projectId);
+                redirectAttributes.addFlashAttribute("message", "Subprojektet er slettet");
             }
-            return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Error deleting subproject");
-            return "redirect:/projects/overviewDisplay?projectId=" + projectId;
+            redirectAttributes.addFlashAttribute("message", "Fejl under sletning af subprojektet");
         }
+
+        return "redirect:/projects/overviewDisplay?projectId=" + projectId;
     }
+
 
     // edit subproject
 
@@ -135,18 +130,9 @@ public class SubprojectController {
             return "redirect:/users/loginDisplay";
         }
 
-        Long currentUserId = (Long) session.getAttribute("userId");
-        User currentUser = userService.findUserById(currentUserId);
-        Role role = currentUser.getUserRole();
-
-        if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
-            redirectAttributes.addFlashAttribute("message", "User not authorized to edit subprojects");
-            return "redirect:/projects/overviewDisplay?projectId=" + projectId;
-        }
-
         Subproject subprojectToEdit = subprojectService.findBySubprojectId(subprojectId);
         if (subprojectToEdit == null) {
-            redirectAttributes.addFlashAttribute("message", "Subproject to edit was not found");
+            redirectAttributes.addFlashAttribute("message", "Subprojektet til redigering blev ikke fundet");
             return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         }
 
@@ -169,22 +155,25 @@ public class SubprojectController {
         }
 
         Long currentUserId = (Long) session.getAttribute("userId");
-        User currentUser = userService.findUserById(currentUserId);
-        Role role = currentUser.getUserRole();
+        User user = userService.findUserById(currentUserId);
 
-        if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
-            redirectAttributes.addFlashAttribute("message", "User not authorized to edit subprojects");
+        if (!AppUtility.isAdminOrManager(user)) {
+            redirectAttributes.addFlashAttribute("message", "Kun ADMIN og MANAGER brugere har tilladelse til denne function");
             return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         }
 
         Subproject existingSubproject = subprojectService.findBySubprojectId(subprojectId);
         if (existingSubproject == null) {
-            redirectAttributes.addFlashAttribute("message", "Subproject to edit was not found");
+            redirectAttributes.addFlashAttribute("message", "Subprojektet til redigering blev ikke fundet");
             return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         }
 
-
-        subprojectService.updateSubproject(subprojectId, subprojectDetails);
+        try {
+            subprojectService.updateSubproject(subprojectId, subprojectDetails);
+            redirectAttributes.addFlashAttribute("message", "Subprojektet blev opdateret succesfuldt");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "Noget gik galt. Prøv venligst igen.");
+        }
 
         redirectAttributes.addFlashAttribute("message", "Subproject updated successfully");
         return "redirect:/projects/overviewDisplay?projectId=" + projectId;
