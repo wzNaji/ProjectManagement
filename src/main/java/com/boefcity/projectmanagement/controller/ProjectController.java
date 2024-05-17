@@ -97,8 +97,6 @@ public class ProjectController {
         return "redirect:/projects/display";
     }
 
-
-    // OVERVIEW DISPLAY
     @GetMapping("/overviewDisplay")
     public String projectsOverviewDisplay(HttpSession session, Model model, @RequestParam Long projectId,
                                     RedirectAttributes redirectAttributes) {
