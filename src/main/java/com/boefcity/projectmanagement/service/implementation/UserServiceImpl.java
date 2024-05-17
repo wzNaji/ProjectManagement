@@ -96,12 +96,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> findUserByUsername(String username) {
-        //Skal ændres ifht. når JPA repository ændres
-        Optional<User> userToFind = userRepository.findUserByUsername(username);
-        if(userToFind.isEmpty()){
-            throw new IllegalArgumentException("Brugernavn:" + username + " blev ikke fundet");
-        }
-        return userToFind;
-    }
+        return userRepository.findUserByUsername(username);
 
+    }
 }

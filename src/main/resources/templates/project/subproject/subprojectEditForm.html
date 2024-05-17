@@ -2,33 +2,33 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Sub Project Form</title>
+    <title>Rediger Subprojekt</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="d-flex flex-column min-vh-100">
 <main>
     <header class="m-3 text-center">
-        <h1>Edit Subproject</h1>
+        <h1>Rediger Subprojekt</h1>
     </header>
     <form th:action="@{/subprojects/editForm/{subprojectId}(subprojectId=${subprojectId}, projectId=${projectId})}" th:method="post" th:object="${subproject}">
         <div class="m-3">
-            <label for="title" class="form-label">Title</label>
+            <label for="title" class="form-label">Navn</label>
             <input type="text" th:field="*{subprojectName}" class="form-control" id="title">
         </div>
         <div class="m-3">
-            <label for="description" class="form-label">Description</label>
+            <label for="description" class="form-label">Beskrivelse</label>
             <textarea th:field="*{subprojectDescription}" class="form-control" id="description"></textarea>
         </div>
         <div class="m-3">
-            <label for="startDate" class="form-label">Start Date</label>
+            <label for="startDate" class="form-label">Start dato</label>
             <input type="date" th:field="*{subprojectStartDate}" class="form-control" id="startDate">
         </div>
         <div class="m-3">
-            <label for="dueDate" class="form-label">Due Date</label>
+            <label for="dueDate" class="form-label">Slut dato</label>
             <input type="date" th:field="*{subprojectDueDate}" class="form-control" id="dueDate">
         </div>
         <div class="m-3">
-            <label for="priority" class="form-label">Priority</label>
+            <label for="priority" class="form-label">Prioritet</label>
             <select th:field="*{priorityLevel}" id="priority" class="form-select">
                 <th:block th:each="priority : ${priorityLevel}">
                     <option th:value="${priority}" th:text="${priority}"></option>
@@ -44,15 +44,15 @@
             </select>
         </div>
         <div class="m-3">
-            <label for="subprojectCost" class="form-label">Cost</label>
+            <label for="subprojectCost" class="form-label">Pris</label>
             <input type="number" step="0.01" th:field="*{subprojectCost}" class="form-control" id="subprojectCost">
         </div>
         <div class="m-3">
-            <label for="subprojectHours" class="form-label">Hours</label>
+            <label for="subprojectHours" class="form-label">Timer</label>
             <input type="number" step="0.5" th:field="*{subprojectHours}" class="form-control" id="subprojectHours">
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-        <a href="/projects/overviewDisplay" th:href="@{/projects/overviewDisplay(projectId=${projectId})}" class="btn btn-secondary m-3">Cancel</a>
+        <button type="submit" class="btn btn-primary">Tilføj</button>
+        <a href="/projects/overviewDisplay" th:href="@{/projects/overviewDisplay(projectId=${projectId})}" class="btn btn-secondary m-3">Annuler</a>
     </form>
 </main>
 <footer class="mt-auto text-center">
