@@ -5,15 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-@Data // Getters, setters, toString osv.
-@Entity // Maps 'task' entity/class to a table named "task" in the database
-@Table(name = "task")
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Entity
+@Table(name = "task")
 public class Task {
 
     @Id
@@ -27,13 +23,8 @@ public class Task {
     @Column(name = "task_description", nullable = true)
     private String taskDescription;
 
-    @Column(name = "start_date", nullable = true)
-    private LocalDateTime taskStartDate;
 
-    @Column(name = "due_date", nullable = true)
-    private LocalDateTime taskDueDate;
-
-    @Enumerated(EnumType.STRING) // Enum bliver gemt som en String i databasen.
+    @Enumerated(EnumType.STRING)
     @Column(name = "priority_level", nullable = true)
     private PriorityLevel priorityLevel;
 
@@ -41,21 +32,11 @@ public class Task {
     @Column(name = "status", nullable = true)
     private Status status;
 
-    @Column(name = "task_cost", nullable = true)
-    private Double taskCost;
-
-    @Column(name = "task_hours", nullable = true)
-    private Double taskHours;
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinTable(
-            name = "task_users",
-            joinColumns = @JoinColumn(name = "task_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private List<User> users = new ArrayList<>();
-
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE,})
-    @JoinColumn(name = "project_id", nullable = true)
-    private Project project;
+    @JoinColumn(name = "subproject_id", nullable = true)
+
+    private Subproject subproject;
+
+
+
 }

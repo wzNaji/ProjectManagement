@@ -1,6 +1,7 @@
 package com.boefcity.projectmanagement.controller;
 
-import com.boefcity.projectmanagement.config.SessionUtility;
+
+import com.boefcity.projectmanagement.config.AppUtility;
 import com.boefcity.projectmanagement.model.Role;
 import com.boefcity.projectmanagement.model.User;
 import com.boefcity.projectmanagement.service.UserService;
@@ -41,7 +42,9 @@ public class UserController {
                 redirectAttributes.addFlashAttribute("message", "Username already exists.");
                 return "redirect:/users/registerDisplay";
             }
+            System.out.println("for create");
             userService.createUser(user);
+            System.out.println("efter create");
             redirectAttributes.addFlashAttribute("message", "User registered successfully!");
             return "redirect:/users/loginDisplay";
         } catch (Exception e) {
@@ -78,10 +81,10 @@ public class UserController {
     @GetMapping("/userListDisplay")
     public String userListDisplay(HttpSession session,
                                   Model model, RedirectAttributes redirectAttributes) {
-        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+        if (AppUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
         }
-// worker skal ikke kunne se alle brugere
+
         try {
             List<User> userList = userService.findAllUsers();
             model.addAttribute("userList", userList);
@@ -94,7 +97,7 @@ public class UserController {
     @PostMapping("/delete/{userToDeleteId}")
     public String deleteUser(@PathVariable Long userToDeleteId, HttpSession session,
                              RedirectAttributes redirectAttributes) {
-        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+        if (AppUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
         }
 
@@ -125,7 +128,7 @@ public class UserController {
                            HttpSession session,
                            RedirectAttributes redirectAttributes) {
 
-        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+        if (AppUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
         }
 
@@ -155,7 +158,7 @@ public class UserController {
                              HttpSession session,
                              RedirectAttributes redirectAttributes) {
 
-        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+        if (AppUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
         }
 
@@ -168,7 +171,7 @@ public class UserController {
             return "redirect:/menu";
         }
 
-        userService.updateUser(userId, userDetails);
+        userService.editUser(userId, userDetails);
         redirectAttributes.addFlashAttribute("message", "User updated successfully");
         return "redirect:/users/userListDisplay";
     }

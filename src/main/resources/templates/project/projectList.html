@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Projects</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+<header>
+    <nav class="mt-3 d-flex justify-content-center">
+        <h1>Projekter</h1>
+    </nav>
+</header>
+<main>
+    <div th:if="${message}" class="alert alert-primary" role="alert">
+        <p th:text="${message}"></p>
+    </div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Navn</th>
+            <th scope="col">Beskrivelse</th>
+            <th scope="col">Start dato</th>
+            <th scope="col">Slut dato</th>
+            <th scope="col">Budget</th>
+            <th scope="col">Pris</th>
+            <th scope="col">Estimeret tid</th>
+            <th scope="col">Reel tid</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="project, stat : ${projectList}">
+            <th scope="row" th:text="${stat.index + 1}"></th>
+            <td th:text="${project.projectName}">Navn</td>
+            <td th:text="${project.projectDescription}">Beskrivelse</td>
+            <td th:text="${project.projectStartDate}">Start dato</td>
+            <td th:text="${project.projectEndDate}">Slut dato</td>
+            <td th:text="${project.projectBudget}">Budget</td>
+            <td th:text="${project.projectCost}">Pris</td>
+            <td th:text="${project.projectEstimatedHours}">Estimeret tid</td>
+            <td th:text="${project.projectActualdHours}">Reel tid</td>
+            <td>
+                <a th:href="@{/projects/overviewDisplay(projectId=${project.projectId})}" class="btn btn-primary">View</a>
+            </td>
+            <td>
+                <form th:action="@{/projects/delete/{projectToDeleteId}(projectToDeleteId=${project.projectId})}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Slet</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a href="/menu"><button type="button" class="btn btn-primary ms-3">Tilbage</button></a>
+    <a href="/projects/addForm"><button type="button" class="btn btn-success ms-3">Tilføj projekt</button></a>
+</main>
+<footer class="mt-auto text-center">
+    <p>BoefCity@EMC.com</p>
+</footer>
+</body>
+</html>

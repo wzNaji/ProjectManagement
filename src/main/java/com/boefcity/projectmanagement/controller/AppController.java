@@ -1,5 +1,6 @@
 package com.boefcity.projectmanagement.controller;
 
+import com.boefcity.projectmanagement.config.AppUtility;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,18 +16,20 @@ public class AppController {
     }
 
     @GetMapping("/menu")
-    public String menuPageDisplay() {
-        return "menuPage";
-    }
+    public String menuPageDisplay(HttpSession session, RedirectAttributes redirectAttributes) {
 
-    @GetMapping("/errorPage") // Kan ikke få expection message til at virke
-    public String errorPageDisplay(Exception exception, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("message", "hm" + exception.getMessage());
-        return "errorPage";
+        if (AppUtility.isNotAuthenticated(session, redirectAttributes)) {
+            return "redirect:/users/loginDisplay";
+        }
+        return "menuPage";
     }
 
     @PostMapping("/logout")
     public String logout(HttpSession session, RedirectAttributes redirectAttributes) {
+
+        if (AppUtility.isNotAuthenticated(session, redirectAttributes)) {
+            return "redirect:/users/loginDisplay";
+        }
         session.invalidate();
         redirectAttributes.addFlashAttribute("message", "You have been logged out");
         return "redirect:/users/loginDisplay";

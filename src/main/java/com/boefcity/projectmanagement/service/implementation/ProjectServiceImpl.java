@@ -1,10 +1,10 @@
 package com.boefcity.projectmanagement.service.implementation;
 
 import com.boefcity.projectmanagement.model.Project;
-import com.boefcity.projectmanagement.model.Task;
+import com.boefcity.projectmanagement.model.Subproject;
 import com.boefcity.projectmanagement.model.User;
 import com.boefcity.projectmanagement.repository.ProjectRepository;
-import com.boefcity.projectmanagement.repository.TaskRepository;
+import com.boefcity.projectmanagement.repository.SubprojectRepository;
 import com.boefcity.projectmanagement.repository.UserRepository;
 import com.boefcity.projectmanagement.service.ProjectService;
 import jakarta.persistence.EntityNotFoundException;
@@ -20,42 +20,51 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
-    private final TaskRepository taskRepository;
+    private final SubprojectRepository subprojectRepository;
 
     @Autowired
-    public ProjectServiceImpl(ProjectRepository projectRepository, UserRepository userRepository, TaskRepository taskRepository) {
+    public ProjectServiceImpl(ProjectRepository projectRepository, UserRepository userRepository, SubprojectRepository subprojectRepository) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
-        this.taskRepository = taskRepository;
+        this.subprojectRepository = subprojectRepository;
     }
 
 
     @Override
-    public Project createProject(Project project) {
-        return projectRepository.save(project);
+    public void createProject(Project project) {
+        if (project == null) {
+            throw new IllegalArgumentException("projektet blev ikke fundet");
+        }
+        projectRepository.save(project);
     }
 
-    @Transactional(readOnly = true)
     @Override
-    public Project findById(Long id) {
-        return projectRepository.findProjectByIdNative(id);
+    public Project findProjectById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("projekt Id blev ikke fundet");
+        }
+        Project project = projectRepository.findProjectByIdNative(id);
+        if (project == null) {
+            throw new RuntimeException("Projektet blev ikke fundet");
+        }
+        return project;
     }
 
     @Override
     @Transactional
-    public void deleteById(Long projectId) {
+    public void deleteProjectById(Long projectId) {
         Project projectToDelete = projectRepository.findProjectByIdNative(projectId);
         if (projectToDelete != null) {
-            // Detacher users fra projektet
+            // Detacher users fra projektet for at kunne slette projektet uden komplikationer ved sletning
             projectToDelete.removeAllUsers();
 
-            // Laver en kopi for at undgå listen bliver null.
-            List<Task> tasksToDelete = new ArrayList<>(projectToDelete.getTasks());
-            projectToDelete.removeAllTasks();
+            // Laver en kopi af underprojekter listen for at undgå problemer med ændringer under sletning
+            List<Subproject> subprojectsToDelete = new ArrayList<>(projectToDelete.getSubprojects());
+            projectToDelete.removeAllSubprojects();
 
-            // Sletter tasks fra databasen
-            if (!tasksToDelete.isEmpty()) {
-                taskRepository.deleteAll(tasksToDelete);
+            // Sletter underprojekter fra databasen - if statement for at undgå unødige database kald
+            if (!subprojectsToDelete.isEmpty()) {
+                subprojectRepository.deleteAll(subprojectsToDelete);
             }
 
             projectRepository.delete(projectToDelete);
@@ -63,56 +72,77 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
 
-    @Transactional(readOnly = true)
     @Override
-    public List<Project> findAll() {
-        return projectRepository.findAll();
+    public List<Project> findAllProjects() {
+        List<Project> projectList = projectRepository.findAll();
+        if (projectList == null) {
+            throw new RuntimeException("Fejl under fetching af projekter");
+        }
+        return projectList;
     }
-
-    public Project assignUsersToProject(Long projectID, Long userID) {
+    @Transactional
+    @Override
+    public void assignUsersToProject(Long projectID, Long userID) {
         Project project = projectRepository.findProjectByIdNative(projectID);
         User userToAssign = userRepository.findUserByIdNative(userID);
 
-        if (project != null && userToAssign != null) {
-            project.getUsers().add(userToAssign);
-            userToAssign.getProjects().add(project);
-            userRepository.save(userToAssign);
-
-            return projectRepository.save(project);
-        } else {
-            throw new RuntimeException("Project or User not found");
+        if (project == null) {
+            throw new RuntimeException("Projektet blev ikke fundet");
         }
+
+        if (userToAssign == null) {
+            throw new RuntimeException("Brugeren blev ikke fundet");
+        }
+
+        // Brug metoden i Project-klassen til at tilføje brugeren og opdatere relationen - Bi-Directional
+        project.addUser(userToAssign);
+
+        userRepository.save(userToAssign);
+        projectRepository.save(project);
     }
+
     public boolean isUserAssignedToProject(Long projectId, Long userId) {
+
+        if (projectId == null) {
+            throw new IllegalArgumentException("Projekt Id blev ikke fundet");
+        }
+        if (userId == null) {
+            throw new IllegalArgumentException("Brugerens Id blev ikke fundet");
+        }
+
         return projectRepository.existsByProjectIdAndUsersUserId(projectId, userId);
     }
 
     @Transactional
     @Override
-    public Project assignTaskToProject(Task task, Long projectId) {
+    public void assignSubprojectToProject(Subproject subproject, Long projectId) {
 
         Project project = projectRepository.findProjectByIdNative(projectId);
-        Task taskToAssign = taskRepository.findTaskByIdNative(task.getTaskId());
+        Subproject subprojectToAssign = subprojectRepository.findSubprojectByIdNative(subproject.getSubprojectId());
 
-        if (project == null || taskToAssign == null) {
-            throw new IllegalArgumentException("Project or Task not found");
+        if (project == null) {
+            throw new IllegalArgumentException("Project not found");
+        }
+
+        if (subprojectToAssign == null) {
+            throw new IllegalArgumentException("Subproject not found");
         }
 
         // Default values '0.0' hvis cost eller hours er 'null'
-        double taskCost = (task.getTaskCost() != null) ? task.getTaskCost() : 0.0;
-        double taskHours = (task.getTaskHours() != null) ? task.getTaskHours() : 0.0;
+        double subprojectCost = (subproject.getSubprojectCost() != null) ? subproject.getSubprojectCost() : 0.0;
+        double subprojectHours = (subproject.getSubprojectHours() != null) ? subproject.getSubprojectHours() : 0.0;
 
-        // Opdatér project cost
+        // Opdaterer projekt cost
         double projectCost = (project.getProjectCost() != null) ? project.getProjectCost() : 0.0;
-        project.setProjectCost(projectCost + taskCost);
+        project.setProjectCost(projectCost + subprojectCost);
 
-        // Opdatér project hours
+        // Opdaterer projekt hours
         double projectHours = (project.getProjectActualdHours() != null) ? project.getProjectActualdHours() : 0.0;
-        project.setProjectActualdHours(projectHours + taskHours);
+        project.setProjectActualdHours(projectHours + subprojectHours);
 
-        project.addTaskToProject(task);
+        project.addSubprojectToProject(subproject);
 
-        return projectRepository.save(project);
+        projectRepository.save(project);
     }
 
     @Transactional
@@ -125,13 +155,12 @@ public class ProjectServiceImpl implements ProjectService {
         if (user == null || project == null) {
             throw new IllegalArgumentException("Could not find user or project. userId: " + userId + ", projectId: " + projectId);
         }
-            user.removeProject(project); /* Fjerner projektet fra useren og fjerner useren fra projektet.
-                                                          Se 'removeProject' i User klassen */
+            user.removeProject(project); // Fjerner projektet fra useren og fjerner useren fra projektet. Se 'removeProject' i User klassen
     }
 
     @Transactional
     @Override
-    public Project updateProject(Long projectId, Project projectDetails) {
+    public void editProject(Long projectId, Project projectDetails) {
 
         Project projectToUpdate = projectRepository.findProjectByIdNative(projectId);
         if (projectToUpdate == null) {
@@ -145,7 +174,7 @@ public class ProjectServiceImpl implements ProjectService {
         projectToUpdate.setProjectBudget(projectDetails.getProjectBudget());
         projectToUpdate.setProjectEstimatedHours(projectDetails.getProjectEstimatedHours());
 
-        return projectRepository.save(projectToUpdate);
+        projectRepository.save(projectToUpdate);
     }
 
 
