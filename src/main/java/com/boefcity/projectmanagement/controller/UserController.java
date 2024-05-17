@@ -1,6 +1,7 @@
 package com.boefcity.projectmanagement.controller;
 
-import com.boefcity.projectmanagement.config.SessionUtility;
+
+import com.boefcity.projectmanagement.config.AppUtility;
 import com.boefcity.projectmanagement.model.Role;
 import com.boefcity.projectmanagement.model.User;
 import com.boefcity.projectmanagement.service.UserService;
@@ -78,7 +79,7 @@ public class UserController {
     @GetMapping("/userListDisplay")
     public String userListDisplay(HttpSession session,
                                   Model model, RedirectAttributes redirectAttributes) {
-        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+        if (AppUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
         }
 // worker skal ikke kunne se alle brugere
@@ -94,7 +95,7 @@ public class UserController {
     @PostMapping("/delete/{userToDeleteId}")
     public String deleteUser(@PathVariable Long userToDeleteId, HttpSession session,
                              RedirectAttributes redirectAttributes) {
-        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+        if (AppUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
         }
 
@@ -125,7 +126,7 @@ public class UserController {
                            HttpSession session,
                            RedirectAttributes redirectAttributes) {
 
-        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+        if (AppUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
         }
 
@@ -155,7 +156,7 @@ public class UserController {
                              HttpSession session,
                              RedirectAttributes redirectAttributes) {
 
-        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+        if (AppUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
         }
 
