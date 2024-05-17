@@ -32,7 +32,7 @@
       <label for="projectHours" class="form-label">Estimeret tid</label>
       <input type="number" step="0.5" th:field="*{projectEstimatedHours}" class="form-control" id="projectHours">
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Tilføj</button>
     <a href="/projects/overviewDisplay" th:href="@{/projects/overviewDisplay(projectId=${project.projectId})}" class="btn btn-secondary m-3">Cancel</a>
   </form>
 </main>
