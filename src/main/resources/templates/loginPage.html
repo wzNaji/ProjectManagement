@@ -7,7 +7,7 @@
 </head>
 <body class="m-3 d-flex flex-column min-vh-100">
 <header class="m-3 d-flex justify-content-center">
-        <h1>Login</h1>
+        <h1>Log ind</h1>
 </header>
 
 <main class="container">
@@ -19,15 +19,15 @@
         <div class="col-md-6">
             <form th:action="@{/users/loginUser}" method="post" class="p-4 border rounded-3">
                 <div class="mb-3">
-                    <label for="username" class="form-label">Username</label>
-                    <input type="text" name="username" class="form-control" id="username" placeholder="Username" required>
+                    <label for="username" class="form-label">Brugernavn</label>
+                    <input type="text" name="username" class="form-control" id="username" placeholder="Brugernavn" required>
                 </div>
                 <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
+                    <label for="password" class="form-label">Kodeord</label>
+                    <input type="password" name="password" class="form-control" id="password" placeholder="Kodeord" required>
                 </div>
-                <button type="submit" class="btn btn-outline-secondary">Login</button>
-                <a href="/" class="btn btn-outline-secondary">Cancel</a>
+                <button type="submit" class="btn btn-outline-secondary">Log ind</button>
+                <a href="/" class="btn btn-outline-secondary">Tilbage</a>
             </form>
 
         </div>

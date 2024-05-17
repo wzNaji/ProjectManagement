@@ -7,7 +7,7 @@
 </head>
 <body class="m-3 d-flex flex-column min-vh-100">
 <header class="m-3 d-flex justify-content-center">
-        <h1>Register User</h1>
+        <h1>Ny bruger</h1>
 </header>
 
 <main class="container">
@@ -19,19 +19,19 @@
         <div class="col-md-6">
             <form th:action="@{/users/registerUser}" th:object="${user}" method="post" class="p-4 border rounded-3">
                 <div class="mb-3">
-                    <label for="username" class="form-label">Username</label>
-                    <input type="text" th:field="*{username}" class="form-control" id="username" placeholder="Username" required>
+                    <label for="username" class="form-label">Brugernavn</label>
+                    <input type="text" th:field="*{username}" class="form-control" id="username" placeholder="Brugernavn" required>
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
                     <input type="email" th:field="*{email}" class="form-control" id="email" placeholder="Email" required>
                 </div>
                 <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" th:field="*{password}" class="form-control" id="password" placeholder="Password" required>
+                    <label for="password" class="form-label">Kodeord</label>
+                    <input type="password" th:field="*{password}" class="form-control" id="password" placeholder="Kodeord" required>
                 </div>
-                <button type="submit" class="btn btn-outline-secondary">Register</button>
-                <a href="/" class="btn btn-outline-secondary">Cancel</a>
+                <button type="submit" class="btn btn-outline-secondary">Registrer ny bruger</button>
+                <a href="/" class="btn btn-outline-secondary">Tilbage</a>
             </form>
         </div>
     </div>
