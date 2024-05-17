@@ -74,4 +74,8 @@ public class Subproject {
             task.setSubproject(null);
         }
     }
+    public void addTaskToSubproject(Task task) {
+        tasks.add(task);
+        task.setSubproject(this);
+    }
 }

@@ -52,7 +52,7 @@
     </tr>
     </tbody>
 </table>
-<a th:href="@{/tasks/addFormDisplay(subprojectId=${subproject.subprojectId})}">
+<a th:href="@{/tasks/addFormDisplay(subprojectId=${subproject.subprojectId}, projectId=${project.projectId})}">
     <button type="button" class="btn btn-success ms-3">Tilføj task</button>
 </a>
 <a href="/projects/overviewDisplay" th:href="@{/projects/overviewDisplay(projectId=${project.projectId})}" class="btn btn-secondary m-3">Tilbage</a>

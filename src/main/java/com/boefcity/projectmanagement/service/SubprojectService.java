@@ -1,6 +1,7 @@
 package com.boefcity.projectmanagement.service;
 
 import com.boefcity.projectmanagement.model.Subproject;
+import com.boefcity.projectmanagement.model.Task;
 
 
 public interface SubprojectService {
@@ -12,5 +13,9 @@ public interface SubprojectService {
     void updateSubproject(Long subprojectId, Subproject subproject);
 
     void deleteSubproject(Long subprojectId, Long projectId);
+
+    void assignTaskToSubproject(Task task, Long subprojectId);
+
+
 
 }
