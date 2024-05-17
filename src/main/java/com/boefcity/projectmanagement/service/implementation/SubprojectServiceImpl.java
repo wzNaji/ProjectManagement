@@ -29,7 +29,7 @@ public class SubprojectServiceImpl implements SubprojectService {
         try {
             subprojectRepository.save(subproject);
         } catch (Exception e) {
-            throw new RuntimeException("Subprojektet blev ikke gemt: " + e.getMessage(), e);
+            throw new RuntimeException("Subprojektet blev ikke gemt");
         }
     }
 

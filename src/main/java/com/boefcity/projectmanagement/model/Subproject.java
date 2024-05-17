@@ -55,7 +55,23 @@ public class Subproject {
     )
     private List<User> users = new ArrayList<>();
 
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @JoinTable(
+            name = "subproject_tasks",
+            joinColumns = @JoinColumn(name = "subproject_id"),
+            inverseJoinColumns = @JoinColumn(name = "task_id")
+    )
+    private List<Task> tasks = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE,})
     @JoinColumn(name = "project_id", nullable = true)
     private Project project;
+
+
+    public void removeTaskFromSubproject(Task task) {
+        if (tasks.remove(task)) {
+            task.setSubproject(null);
+        }
+    }
 }

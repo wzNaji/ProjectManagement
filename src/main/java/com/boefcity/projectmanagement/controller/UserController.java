@@ -42,7 +42,9 @@ public class UserController {
                 redirectAttributes.addFlashAttribute("message", "Username already exists.");
                 return "redirect:/users/registerDisplay";
             }
+            System.out.println("for create");
             userService.createUser(user);
+            System.out.println("efter create");
             redirectAttributes.addFlashAttribute("message", "User registered successfully!");
             return "redirect:/users/loginDisplay";
         } catch (Exception e) {
@@ -82,7 +84,7 @@ public class UserController {
         if (AppUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
         }
-// worker skal ikke kunne se alle brugere
+
         try {
             List<User> userList = userService.findAllUsers();
             model.addAttribute("userList", userList);

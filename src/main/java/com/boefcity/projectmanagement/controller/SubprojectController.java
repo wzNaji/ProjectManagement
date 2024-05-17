@@ -26,7 +26,7 @@ public class SubprojectController {
     }
 
     @GetMapping("/addFormDisplay")
-    public String addFormDisplay(@RequestParam("projectId") Long projectId, Model model, HttpSession session,
+    public String subprojectAddFormDisplay(@RequestParam("projectId") Long projectId, Model model, HttpSession session,
                                  RedirectAttributes redirectAttributes) {
 
         if (AppUtility.isNotAuthenticated(session, redirectAttributes)) {
