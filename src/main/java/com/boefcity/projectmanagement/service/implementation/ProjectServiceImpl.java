@@ -32,12 +32,22 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void createProject(Project project) {
+        if (project == null) {
+            throw new IllegalArgumentException("projektet blev ikke fundet");
+        }
         projectRepository.save(project);
     }
 
     @Override
     public Project findProjectById(Long id) {
-        return projectRepository.findProjectByIdNative(id);
+        if (id == null) {
+            throw new IllegalArgumentException("projekt Id blev ikke fundet");
+        }
+        Project project = projectRepository.findProjectByIdNative(id);
+        if (project == null) {
+            throw new RuntimeException("Projektet blev ikke fundet");
+        }
+        return project;
     }
 
     @Override
@@ -45,14 +55,14 @@ public class ProjectServiceImpl implements ProjectService {
     public void deleteProjectById(Long projectId) {
         Project projectToDelete = projectRepository.findProjectByIdNative(projectId);
         if (projectToDelete != null) {
-            // Detacher users fra projektet
+            // Detacher users fra projektet for at kunne slette projektet uden komplikationer ved sletning
             projectToDelete.removeAllUsers();
 
-            // Laver en kopi for at undgå listen bliver null.
+            // Laver en kopi af underprojekter listen for at undgå problemer med ændringer under sletning
             List<Subproject> subprojectsToDelete = new ArrayList<>(projectToDelete.getSubprojects());
             projectToDelete.removeAllSubprojects();
 
-            // Sletter sub projects fra databasen
+            // Sletter underprojekter fra databasen - if statement for at undgå unødige database kald
             if (!subprojectsToDelete.isEmpty()) {
                 subprojectRepository.deleteAll(subprojectsToDelete);
             }
@@ -64,7 +74,11 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<Project> findAllProjects() {
-        return projectRepository.findAll();
+        List<Project> projectList = projectRepository.findAll();
+        if (projectList == null) {
+            throw new RuntimeException("Fejl under fetching af projekter");
+        }
+        return projectList;
     }
     @Transactional
     @Override
@@ -73,20 +87,29 @@ public class ProjectServiceImpl implements ProjectService {
         User userToAssign = userRepository.findUserByIdNative(userID);
 
         if (project == null) {
-            throw new RuntimeException("Project not found");
+            throw new RuntimeException("Projektet blev ikke fundet");
         }
 
         if (userToAssign == null) {
-            throw new RuntimeException("User not found");
+            throw new RuntimeException("Brugeren blev ikke fundet");
         }
 
-        project.getUsers().add(userToAssign);
-        userToAssign.getProjects().add(project);
+        // Brug metoden i Project-klassen til at tilføje brugeren og opdatere relationen - Bi-Directional
+        project.addUser(userToAssign);
+
         userRepository.save(userToAssign);
         projectRepository.save(project);
     }
 
     public boolean isUserAssignedToProject(Long projectId, Long userId) {
+
+        if (projectId == null) {
+            throw new IllegalArgumentException("Projekt Id blev ikke fundet");
+        }
+        if (userId == null) {
+            throw new IllegalArgumentException("Brugerens Id blev ikke fundet");
+        }
+
         return projectRepository.existsByProjectIdAndUsersUserId(projectId, userId);
     }
 
@@ -109,11 +132,11 @@ public class ProjectServiceImpl implements ProjectService {
         double subprojectCost = (subproject.getSubprojectCost() != null) ? subproject.getSubprojectCost() : 0.0;
         double subprojectHours = (subproject.getSubprojectHours() != null) ? subproject.getSubprojectHours() : 0.0;
 
-        // Opdatér project cost
+        // Opdaterer projekt cost
         double projectCost = (project.getProjectCost() != null) ? project.getProjectCost() : 0.0;
         project.setProjectCost(projectCost + subprojectCost);
 
-        // Opdatér project hours
+        // Opdaterer projekt hours
         double projectHours = (project.getProjectActualdHours() != null) ? project.getProjectActualdHours() : 0.0;
         project.setProjectActualdHours(projectHours + subprojectHours);
 
@@ -132,8 +155,7 @@ public class ProjectServiceImpl implements ProjectService {
         if (user == null || project == null) {
             throw new IllegalArgumentException("Could not find user or project. userId: " + userId + ", projectId: " + projectId);
         }
-            user.removeProject(project); /* Fjerner projektet fra useren og fjerner useren fra projektet.
-                                                          Se 'removeProject' i User klassen */
+            user.removeProject(project); // Fjerner projektet fra useren og fjerner useren fra projektet. Se 'removeProject' i User klassen
     }
 
     @Transactional
