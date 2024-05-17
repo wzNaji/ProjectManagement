@@ -29,38 +29,6 @@ public class TaskController {
         this.projectService = projectService;
     }
 
-    @GetMapping("/overviewDisplay")
-    public String subprojectsOverviewDisplay(HttpSession session, Model model, @RequestParam Long subprojectId,
-                                          @RequestParam Long projectId,
-                                          RedirectAttributes redirectAttributes) {
-        if (AppUtility.isNotAuthenticated(session, redirectAttributes)) {
-            return "redirect:/users/loginDisplay";
-        }
-        Project project;
-        Subproject subproject;
-        try {
-            project = projectService.findProjectById(projectId);
-            subproject = subprojectService.findBySubprojectId(subprojectId);
-            if (subproject == null) {
-                redirectAttributes.addFlashAttribute("message", "Subprojekt blev ikke fundet.");
-                return "redirect:/projects/overviewDisplay?projectId=" + projectId;
-            }
-            if (project == null) {
-                redirectAttributes.addFlashAttribute("message", "Projektet blev ikke fundet.");
-                return "redirect:/projects/overviewDisplay?projectId=" + projectId;
-            }
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Fejl ved hetning af subprojekt. Prøv venligst igen");
-            return "redirect:/projects/overviewDisplay?projectId=" + projectId;
-        }
-
-        List<Task> subprojectTasks = subproject.getTasks(); // Kald fra service!
-
-        model.addAttribute("project", project);
-        model.addAttribute("tasks", subprojectTasks);
-
-        return "project/projectsOverviewDisplay";
-    }
 
     @GetMapping("/addFormDisplay")
     public String taskAddFormDisplay(@RequestParam("subprojectId") Long subprojectId, Model model, HttpSession session,
@@ -73,7 +41,7 @@ public class TaskController {
         Subproject subprojectToFind = subprojectService.findBySubprojectId(subprojectId);
         if (subprojectToFind == null) {
             redirectAttributes.addFlashAttribute("message", "Task blev ikke fundet.");
-            return
+            return "bsajd";
         }
 
 

@@ -94,6 +94,11 @@
         <td th:text="${subproject.subprojectCost}">Pris</td>
         <td th:text="${subproject.subprojectHours}">Timer</td>
         <td>
+        <td>
+            <a th:href="@{/subprojects/overviewDisplay(subprojectId=${subproject.subprojectId}, projectId=${project.projectId})}" class="btn btn-primary">Tasks</a>
+        </td>
+        </td>
+        <td>
             <a th:href="@{/subprojects/editFormDisplay/{subprojectId}(subprojectId=${subproject.subprojectId}, projectId=${project.projectId})}">
                 <button type="button" class="btn btn-primary ms-3">Rediger</button>
             </a>
