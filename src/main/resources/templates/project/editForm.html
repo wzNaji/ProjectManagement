@@ -9,19 +9,19 @@
 <main>
   <form th:action="@{/projects/editForm/{projectId}(projectId=${project.projectId})}" th:method="post" th:object="${project}">
     <div class="m-3">
-      <label for="projectName" class="form-label">Project Name</label>
+      <label for="projectName" class="form-label">Projekt Navn</label>
       <input type="text" th:field="*{projectName}" class="form-control" id="projectName">
     </div>
     <div class="m-3">
-      <label for="projectDescription" class="form-label">Project Description</label>
+      <label for="projectDescription" class="form-label">Projekt beskrivelse</label>
       <textarea th:field="*{projectDescription}" class="form-control" id="projectDescription"></textarea>
     </div>
     <div class="m-3">
-      <label for="startDate" class="form-label">Start Date</label>
+      <label for="startDate" class="form-label">Start dato</label>
       <input type="datetime-local" th:field="*{projectStartDate}" id="startDate" class="form-control">
     </div>
     <div class="m-3">
-      <label for="endDate" class="form-label">Start Date</label>
+      <label for="endDate" class="form-label">Slut dato</label>
       <input type="datetime-local" th:field="*{projectStartDate}" id="endDate" class="form-control">
     </div>
     <div class="m-3">
@@ -29,7 +29,7 @@
       <input type="number" step="0.01" th:field="*{projectBudget}" class="form-control" id="projectBudget">
     </div>
     <div class="m-3">
-      <label for="projectHours" class="form-label">Estimated Hours</label>
+      <label for="projectHours" class="form-label">Estimeret tid</label>
       <input type="number" step="0.5" th:field="*{projectEstimatedHours}" class="form-control" id="projectHours">
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
