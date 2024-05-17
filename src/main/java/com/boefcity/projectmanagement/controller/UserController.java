@@ -168,7 +168,7 @@ public class UserController {
             return "redirect:/menu";
         }
 
-        userService.updateUser(userId, userDetails);
+        userService.editUser(userId, userDetails);
         redirectAttributes.addFlashAttribute("message", "User updated successfully");
         return "redirect:/users/userListDisplay";
     }

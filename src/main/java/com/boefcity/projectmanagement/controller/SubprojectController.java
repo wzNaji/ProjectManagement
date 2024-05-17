@@ -35,7 +35,7 @@ public class SubprojectController {
 
         Long userId = (Long) session.getAttribute("userId");
         User user = userService.findUserById(userId);
-        Project projectToFind = projectService.findById(projectId);
+        Project projectToFind = projectService.findProjectById(projectId);
 
         Role role = user.getUserRole();
 
@@ -75,10 +75,10 @@ public class SubprojectController {
 
                 redirectAttributes.addFlashAttribute("message",
                         "You have successfully created a new subproject: " + subproject.getSubprojectName());
-                return "redirect:/projects/editDisplay?projectId=" + projectId;
+                return "redirect:/projects/overviewDisplay?projectId=" + projectId;
             } catch (Exception e) {
                 redirectAttributes.addFlashAttribute("message", "Something went wrong. Please try again.");
-                return "redirect:/projects/editDisplay?projectId=" + projectId;
+                return "redirect:/projects/overviewDisplay?projectId=" + projectId;
             }
         }
 
@@ -103,7 +103,7 @@ public class SubprojectController {
 
         if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
             redirectAttributes.addFlashAttribute("message", "You are not authorized to delete subprojects");
-            return "redirect:/projects/editDisplay?projectId=" + projectId;
+            return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         }
 
         try {
@@ -115,10 +115,10 @@ public class SubprojectController {
             } else {
                 redirectAttributes.addFlashAttribute("message", "Subproject not found.");
             }
-            return "redirect:/projects/editDisplay?projectId=" + projectId;
+            return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", "Error deleting subproject");
-            return "redirect:/projects/editDisplay?projectId=" + projectId;
+            return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         }
     }
 
@@ -141,13 +141,13 @@ public class SubprojectController {
 
         if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
             redirectAttributes.addFlashAttribute("message", "User not authorized to edit subprojects");
-            return "redirect:/projects/editDisplay?projectId=" + projectId;
+            return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         }
 
         Subproject subprojectToEdit = subprojectService.findBySubprojectId(subprojectId);
         if (subprojectToEdit == null) {
             redirectAttributes.addFlashAttribute("message", "Subproject to edit was not found");
-            return "redirect:/projects/editDisplay?projectId=" + projectId;
+            return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         }
 
         model.addAttribute("priorityLevel", PriorityLevel.values());
@@ -174,20 +174,20 @@ public class SubprojectController {
 
         if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
             redirectAttributes.addFlashAttribute("message", "User not authorized to edit subprojects");
-            return "redirect:/projects/editDisplay?projectId=" + projectId;
+            return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         }
 
         Subproject existingSubproject = subprojectService.findBySubprojectId(subprojectId);
         if (existingSubproject == null) {
             redirectAttributes.addFlashAttribute("message", "Subproject to edit was not found");
-            return "redirect:/projects/editDisplay?projectId=" + projectId;
+            return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         }
 
 
         subprojectService.updateSubproject(subprojectId, subprojectDetails);
 
         redirectAttributes.addFlashAttribute("message", "Subproject updated successfully");
-        return "redirect:/projects/editDisplay?projectId=" + projectId;
+        return "redirect:/projects/overviewDisplay?projectId=" + projectId;
     }
 
 

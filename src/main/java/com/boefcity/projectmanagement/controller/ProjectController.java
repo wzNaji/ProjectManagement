@@ -26,6 +26,29 @@ public class ProjectController {
         this.userService = userService;
     }
 
+    @GetMapping("/display")
+    public String projectsDisplay(HttpSession session, Model model,
+                                  RedirectAttributes redirectAttributes) {
+
+        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+            return "redirect:/users/loginDisplay";
+        }
+
+        Long userId = (Long) session.getAttribute("userId");
+        User user = userService.findUserById(userId);
+
+        Role role = user.getUserRole();
+
+        if (Role.ADMIN.equals(role) || Role.MANAGER.equals(role)) {
+            List<Project> projectList = projectService.findAllProjects();
+            model.addAttribute("projectList", projectList);
+            return "/project/projectList";
+        } else {
+            List<Project> projectList = user.getProjects();
+            model.addAttribute("projectList", projectList);
+            return "/project/projectList";
+        }
+    }
     @GetMapping("/addForm")
     public String projectsAddFormDisplay(Model model, HttpSession session,
                                          RedirectAttributes redirectAttributes) {
@@ -42,14 +65,13 @@ public class ProjectController {
         if (Role.ADMIN.equals(role) || Role.MANAGER.equals(role)) {
             model.addAttribute("project", new Project());
             return "/project/projectAddForm";
-        } else if (Role.WORKER.equals(role)) {
+        } else {
             redirectAttributes.addFlashAttribute("message", "User not authorized to add new projects");
             return "redirect:/projects/display";
         }
-        return "redirect:/errorPage";
     }
 
-    @PostMapping("/createProject")
+    @PostMapping("/create")
     public String createProject(@ModelAttribute Project project,
                                 HttpSession session,
                                 RedirectAttributes redirectAttributes) {
@@ -71,74 +93,43 @@ public class ProjectController {
                 return "redirect:/projects/display";
             } catch (Exception e) {
                 redirectAttributes.addFlashAttribute("message", "Something went wrong. Please try again.");
-                return "redirect:/projects/display";
             }
+        } else {
+            redirectAttributes.addFlashAttribute("message", "User not authorized to create a new project");
         }
-
-        return "redirect:/errorPage";
-    }
-
-    @GetMapping("/display")
-    public String projectsDisplay(HttpSession session, Model model,
-                                  RedirectAttributes redirectAttributes) {
-
-        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
-            return "redirect:/users/loginDisplay";
-        }
-
-        Long userId = (Long) session.getAttribute("userId");
-        User user = userService.findUserById(userId);
-
-        Role role = user.getUserRole();
-
-        if (Role.ADMIN.equals(role)) {
-            List<Project> adminProjectList = projectService.findAll();
-            model.addAttribute("adminProjectList", adminProjectList);
-            return "/project/adminProjectList";
-        } else if (Role.WORKER.equals(role) || Role.MANAGER.equals(role)) {
-            List<Project> projectList = user.getProjects();
-            model.addAttribute("userProjectList", projectList);
-            return "/project/userProjectList";
-        }
-        return "redirect:/errorPage";
+        return "redirect:/projects/display";
     }
 
 // OVERVIEW DISPLAY
-    @GetMapping("/editDisplay")
-    public String editProjectDisplay(HttpSession session, Model model, @RequestParam Long projectId,
+    @GetMapping("/overviewDisplay")
+    public String projectsOverviewDisplay(HttpSession session, Model model, @RequestParam Long projectId,
                                     RedirectAttributes redirectAttributes) {
         if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
         }
 
-        Long userId = (Long) session.getAttribute("userId");
-        User currentUser = userService.findUserById(userId);
-
-        Role role = currentUser.getUserRole();
-
-        if (Role.ADMIN.equals(role) || Role.MANAGER.equals(role)) {
-            Project project = projectService.findById(projectId);
-            List<User> allUsers = userService.findAllUsers();
-            List<User> assignedUsers = project.getUsers().stream().toList();
-
-            Project projectToFind = projectService.findById(projectId);
-            List<Subproject> projectSubprojects = projectToFind.getSubprojects();
-
-            model.addAttribute("project", project);
-            model.addAttribute("allUsers", allUsers);
-            model.addAttribute("assignedUsers", assignedUsers);
-            model.addAttribute("projectSubprojects", projectSubprojects);
-
-            String message = (String) session.getAttribute("message");
-            if (message != null) {
-                model.addAttribute("message", message);
-                session.removeAttribute("message");
+        Project project;
+        try {
+            project = projectService.findProjectById(projectId);
+            if (project == null) {
+                redirectAttributes.addFlashAttribute("message", "Project not found.");
+                return "redirect:/projects/display";
             }
-
-            return "project/editDisplay";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "Error retrieving project. Please try again.");
+            return "redirect:/projects/display";
         }
 
-        return "errorPage";
+        List<User> allUsers = userService.findAllUsers();
+        List<User> assignedUsers = project.getUsers();
+        List<Subproject> projectSubprojects = project.getSubprojects(); // brug service til at kalde
+
+        model.addAttribute("project", project);
+        model.addAttribute("allUsers", allUsers);
+        model.addAttribute("assignedUsers", assignedUsers);
+        model.addAttribute("projectSubprojects", projectSubprojects);
+
+        return "project/projectsOverviewDisplay";
     }
 
     @PostMapping("/assignUser")
@@ -152,23 +143,22 @@ public class ProjectController {
         Long currentUserId = (Long) session.getAttribute("userId");
         User currentUser = userService.findUserById(currentUserId);
 
-        Role role = currentUser.getUserRole();
-        if (Role.ADMIN.equals(role) || Role.MANAGER.equals(role)) {
-            try {
-                if (projectService.isUserAssignedToProject(projectId, userId)) {
-                    redirectAttributes.addFlashAttribute("message", "User is already assigned to the project.");
-                    return "redirect:/projects/editDisplay?projectId=" + projectId;
-                }
+        if (!isAdminOrManager(currentUser)) {
+            redirectAttributes.addFlashAttribute("message", "User not authorized to assign users to this project.");
+            return "redirect:/projects/overviewDisplay?projectId=" + projectId;
+        }
 
+        try {
+            if (projectService.isUserAssignedToProject(projectId, userId)) {
+                redirectAttributes.addFlashAttribute("message", "User is already assigned to the project.");
+            } else {
                 projectService.assignUsersToProject(projectId, userId);
                 redirectAttributes.addFlashAttribute("message", "User successfully assigned to the project.");
-                return "redirect:/projects/editDisplay?projectId=" + projectId;
-            } catch (RuntimeException e) {
-                redirectAttributes.addFlashAttribute("message", "Something went wrong. User was not assigned.");
-                return "redirect:/projects/editDisplay?projectId=" + projectId;
             }
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("message", "Something went wrong. User was not assigned.");
         }
-        return "redirect:/errorPage";
+        return "redirect:/projects/overviewDisplay?projectId=" + projectId;
     }
 
     @PostMapping("/delete/{projectToDeleteId}")
@@ -187,9 +177,9 @@ public class ProjectController {
             return "errorPage";
         }
 
-        Project projectToDelete = projectService.findById(projectToDeleteId);
+        Project projectToDelete = projectService.findProjectById(projectToDeleteId);
         if (projectToDelete != null) {
-            projectService.deleteById(projectToDeleteId);
+            projectService.deleteProjectById(projectToDeleteId);
             redirectAttributes.addFlashAttribute("message", projectToDelete.getProjectName() + " was successfully deleted.");
         } else {
             redirectAttributes.addFlashAttribute("message", "Project not found.");
@@ -213,7 +203,7 @@ public class ProjectController {
         Role role = currentUser.getUserRole();
         if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
             redirectAttributes.addFlashAttribute("message", "You are not authorized to remove assigned users");
-            return "redirect:/projects/editDisplay?projectId=" + projectId;
+            return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         }
 
         if (projectId == null || userId == null) {
@@ -224,7 +214,7 @@ public class ProjectController {
         try {
             projectService.removeUserFromProject(userId, projectId);
             redirectAttributes.addFlashAttribute("message", "User was successfully removed from the project.");
-            return "redirect:/projects/editDisplay?projectId=" + projectId;
+            return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", "Failed to remove user from the project due to unexpected error.");
             return "redirect:/errorPage";
@@ -232,7 +222,6 @@ public class ProjectController {
     }
 
 
-    // Skal have en request param til ORGANIZATION
     @GetMapping("/editFormDisplay/{projectId}")
     public String projectEditFormDisplay(@PathVariable Long projectId,
                                          Model model,
@@ -249,13 +238,13 @@ public class ProjectController {
 
         if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
             redirectAttributes.addFlashAttribute("message", "User not authorized to edit this project");
-            return "redirect:/projects/editDisplay?projectId=" + projectId;
+            return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         }
 
-        Project projectToEdit = projectService.findById(projectId);
+        Project projectToEdit = projectService.findProjectById(projectId);
         if (projectToEdit == null) {
             redirectAttributes.addFlashAttribute("message", "Project to edit was not found");
-            return "redirect:/projects/editDisplay?projectId=" + projectId;
+            return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         }
 
         model.addAttribute("project", projectToEdit);
@@ -263,7 +252,7 @@ public class ProjectController {
     }
 
     @PostMapping("/editForm/{projectId}")
-    public String updateProject(@PathVariable Long projectId,
+    public String editProject(@PathVariable Long projectId,
                                 @ModelAttribute("project") Project projectDetails,
                                 HttpSession session,
                                 RedirectAttributes redirectAttributes) {
@@ -278,25 +267,25 @@ public class ProjectController {
 
         if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
             redirectAttributes.addFlashAttribute("message", "User not authorized to edit this project");
-            return "redirect:/projects/editDisplay?projectId=" + projectId;
+            return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         }
 
-        Project existingProject = projectService.findById(projectId);
+        Project existingProject = projectService.findProjectById(projectId);
         if (existingProject == null) {
             redirectAttributes.addFlashAttribute("message", "Project to edit was not found");
-            return "redirect:/projects/editDisplay?projectId=" + projectId;
+            return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         }
 
 
-        projectService.updateProject(projectId, projectDetails);
+        projectService.editProject(projectId, projectDetails);
 
         redirectAttributes.addFlashAttribute("message", "Project updated successfully");
-        return "redirect:/projects/editDisplay?projectId=" + projectId;
+        return "redirect:/projects/overviewDisplay?projectId=" + projectId;
     }
 
-
+    private boolean isAdminOrManager(User user) {
+        Role role = user.getUserRole();
+        return Role.ADMIN.equals(role) || Role.MANAGER.equals(role);
+    }
 
 }
-
-
-

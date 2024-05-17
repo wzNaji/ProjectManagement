@@ -162,7 +162,7 @@ public class ProjectControllerTest {
 
             Project project = new Project();
             String result = projectController.createProject(project, session, redirectAttributes);
-            assertEquals("redirect:/errorPage", result);
+            assertEquals("redirect:/projects/display", result);
         }
     }
 
@@ -178,7 +178,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void testProjectsDisplay_AdminRole() {
+    public void testProjectsDisplay_AdminOrManagerRole() {
         try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
             Long userId = 1L;
             User adminUser = new User();
@@ -190,14 +190,14 @@ public class ProjectControllerTest {
             when(session.getAttribute("userId")).thenReturn(userId);
             when(userService.findUserById(userId)).thenReturn(adminUser);
 
-            List<Project> adminProjectList = new ArrayList<>();
-            adminProjectList.add(new Project());
+            List<Project> projectList = new ArrayList<>();
+            projectList.add(new Project());
 
-            when(projectService.findAll()).thenReturn(adminProjectList);
+            when(projectService.findAllProjects()).thenReturn(projectList);
 
             String result = projectController.projectsDisplay(session, model, redirectAttributes);
-            assertEquals("/project/adminProjectList", result);
-            verify(model).addAttribute("adminProjectList", adminProjectList);
+            assertEquals("/project/projectList", result);
+            verify(model).addAttribute("projectList", projectList);
         }
     }
 
@@ -209,8 +209,8 @@ public class ProjectControllerTest {
             workerUser.setUserId(userId);
             workerUser.setUserRole(Role.WORKER);
 
-            List<Project> userProjects = new ArrayList<>();
-            workerUser.setProjects(userProjects);
+            List<Project> projectList = new ArrayList<>();
+            workerUser.setProjects(projectList);
 
             mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
 
@@ -218,30 +218,8 @@ public class ProjectControllerTest {
             when(userService.findUserById(userId)).thenReturn(workerUser);
 
             String result = projectController.projectsDisplay(session, model, redirectAttributes);
-            assertEquals("/project/userProjectList", result);
-            verify(model).addAttribute("userProjectList", userProjects);
-        }
-    }
-
-    @Test
-    public void testProjectsDisplay_ManagerRole() {
-        try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
-            Long userId = 1L;
-            User managerUser = new User();
-            managerUser.setUserId(userId);
-            managerUser.setUserRole(Role.WORKER);
-
-            List<Project> userProjects = new ArrayList<>();
-            managerUser.setProjects(userProjects);
-
-            mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
-
-            when(session.getAttribute("userId")).thenReturn(userId);
-            when(userService.findUserById(userId)).thenReturn(managerUser);
-
-            String result = projectController.projectsDisplay(session, model, redirectAttributes);
-            assertEquals("/project/userProjectList", result);
-            verify(model).addAttribute("userProjectList", userProjects);
+            assertEquals("/project/projectList", result);
+            verify(model).addAttribute("projectList", projectList);
         }
     }
 
@@ -251,55 +229,8 @@ public class ProjectControllerTest {
         try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
             mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(true);
 
-            String result = projectController.editProjectDisplay(session, model, 1L, redirectAttributes);
+            String result = projectController.projectsOverviewDisplay(session, model, 1L, redirectAttributes);
             assertEquals("redirect:/users/loginDisplay", result);
-        }
-    }
-
-    @Test
-    public void testAssignUserDisplay_AdminRole() {
-        try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
-            Long userId = 1L;
-            Long projectId = 1L;
-            User adminUser = new User();
-            adminUser.setUserId(userId);
-            adminUser.setUserRole(Role.ADMIN);
-
-            Project project = new Project();
-            List<User> allUsers = new ArrayList<>();
-            List<User> assignedUsers = new ArrayList<>();
-
-            mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
-
-            when(session.getAttribute("userId")).thenReturn(userId);
-            when(userService.findUserById(userId)).thenReturn(adminUser);
-            when(projectService.findById(projectId)).thenReturn(project);
-            when(userService.findAllUsers()).thenReturn(allUsers);
-
-            String result = projectController.editProjectDisplay(session, model, projectId, redirectAttributes);
-            assertEquals("project/editDisplay", result);
-            verify(model).addAttribute("project", project);
-            verify(model).addAttribute("allUsers", allUsers);
-            verify(model).addAttribute("assignedUsers", assignedUsers);
-        }
-    }
-
-    @Test
-    public void testAssignUserDisplay_ErrorPage() {
-        try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
-            Long userId = 1L;
-            Long projectId = 1L;
-            User unauthorizedUser = new User();
-            unauthorizedUser.setUserId(userId);
-            unauthorizedUser.setUserRole(Role.WORKER);
-
-            mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
-
-            when(session.getAttribute("userId")).thenReturn(userId);
-            when(userService.findUserById(userId)).thenReturn(unauthorizedUser);
-
-            String result = projectController.editProjectDisplay(session, model, projectId, redirectAttributes);
-            assertEquals("errorPage", result);
         }
     }
 
@@ -331,7 +262,7 @@ public class ProjectControllerTest {
             when(projectService.isUserAssignedToProject(projectId, userId)).thenReturn(false);
 
             String result = projectController.assignUserToProject(projectId, userId, session, redirectAttributes);
-            assertEquals("redirect:/projects/editDisplay?projectId=" + projectId, result);
+            assertEquals("redirect:/projects/overviewDisplay?projectId=" + projectId, result);
             verify(projectService).assignUsersToProject(projectId, userId);
             verify(redirectAttributes).addFlashAttribute("message", "User successfully assigned to the project.");
         }
@@ -354,7 +285,7 @@ public class ProjectControllerTest {
             when(projectService.isUserAssignedToProject(projectId, userId)).thenReturn(true);
 
             String result = projectController.assignUserToProject(projectId, userId, session, redirectAttributes);
-            assertEquals("redirect:/projects/editDisplay?projectId=" + projectId, result);
+            assertEquals("redirect:/projects/overviewDisplay?projectId=" + projectId, result);
             verify(redirectAttributes).addFlashAttribute("message", "User is already assigned to the project.");
         }
     }
@@ -376,7 +307,7 @@ public class ProjectControllerTest {
             when(projectService.isUserAssignedToProject(projectId, userId)).thenThrow(new RuntimeException("Service error"));
 
             String result = projectController.assignUserToProject(projectId, userId, session, redirectAttributes);
-            assertEquals("redirect:/projects/editDisplay?projectId=" + projectId, result);
+            assertEquals("redirect:/projects/overviewDisplay?projectId=" + projectId, result);
             verify(redirectAttributes).addFlashAttribute("message", "Something went wrong. User was not assigned.");
         }
     }
@@ -397,7 +328,7 @@ public class ProjectControllerTest {
             when(userService.findUserById(currentUserId)).thenReturn(currentUser);
 
             String result = projectController.assignUserToProject(projectId, userId, session, redirectAttributes);
-            assertEquals("redirect:/errorPage", result);
+            assertEquals("redirect:/projects/overviewDisplay?projectId=1", result);
         }
     }
 }

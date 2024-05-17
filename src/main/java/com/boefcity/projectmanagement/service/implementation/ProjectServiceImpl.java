@@ -31,18 +31,18 @@ public class ProjectServiceImpl implements ProjectService {
 
 
     @Override
-    public Project createProject(Project project) {
-        return projectRepository.save(project);
+    public void createProject(Project project) {
+        projectRepository.save(project);
     }
 
     @Override
-    public Project findById(Long id) {
+    public Project findProjectById(Long id) {
         return projectRepository.findProjectByIdNative(id);
     }
 
     @Override
     @Transactional
-    public void deleteById(Long projectId) {
+    public void deleteProjectById(Long projectId) {
         Project projectToDelete = projectRepository.findProjectByIdNative(projectId);
         if (projectToDelete != null) {
             // Detacher users fra projektet
@@ -63,37 +63,46 @@ public class ProjectServiceImpl implements ProjectService {
 
 
     @Override
-    public List<Project> findAll() {
+    public List<Project> findAllProjects() {
         return projectRepository.findAll();
     }
-
-    public Project assignUsersToProject(Long projectID, Long userID) {
+    @Transactional
+    @Override
+    public void assignUsersToProject(Long projectID, Long userID) {
         Project project = projectRepository.findProjectByIdNative(projectID);
         User userToAssign = userRepository.findUserByIdNative(userID);
 
-        if (project != null && userToAssign != null) {
-            project.getUsers().add(userToAssign);
-            userToAssign.getProjects().add(project);
-            userRepository.save(userToAssign);
-
-            return projectRepository.save(project);
-        } else {
-            throw new RuntimeException("Project or User not found");
+        if (project == null) {
+            throw new RuntimeException("Project not found");
         }
+
+        if (userToAssign == null) {
+            throw new RuntimeException("User not found");
+        }
+
+        project.getUsers().add(userToAssign);
+        userToAssign.getProjects().add(project);
+        userRepository.save(userToAssign);
+        projectRepository.save(project);
     }
+
     public boolean isUserAssignedToProject(Long projectId, Long userId) {
         return projectRepository.existsByProjectIdAndUsersUserId(projectId, userId);
     }
 
     @Transactional
     @Override
-    public Project assignSubprojectToProject(Subproject subproject, Long projectId) {
+    public void assignSubprojectToProject(Subproject subproject, Long projectId) {
 
         Project project = projectRepository.findProjectByIdNative(projectId);
         Subproject subprojectToAssign = subprojectRepository.findSubprojectByIdNative(subproject.getSubprojectId());
 
-        if (project == null || subprojectToAssign == null) {
-            throw new IllegalArgumentException("Project or subproject not found");
+        if (project == null) {
+            throw new IllegalArgumentException("Project not found");
+        }
+
+        if (subprojectToAssign == null) {
+            throw new IllegalArgumentException("Subproject not found");
         }
 
         // Default values '0.0' hvis cost eller hours er 'null'
@@ -110,7 +119,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         project.addSubprojectToProject(subproject);
 
-        return projectRepository.save(project);
+        projectRepository.save(project);
     }
 
     @Transactional
@@ -129,7 +138,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Transactional
     @Override
-    public Project updateProject(Long projectId, Project projectDetails) {
+    public void editProject(Long projectId, Project projectDetails) {
 
         Project projectToUpdate = projectRepository.findProjectByIdNative(projectId);
         if (projectToUpdate == null) {
@@ -143,7 +152,7 @@ public class ProjectServiceImpl implements ProjectService {
         projectToUpdate.setProjectBudget(projectDetails.getProjectBudget());
         projectToUpdate.setProjectEstimatedHours(projectDetails.getProjectEstimatedHours());
 
-        return projectRepository.save(projectToUpdate);
+        projectRepository.save(projectToUpdate);
     }
 
 
