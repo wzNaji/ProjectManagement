@@ -1,6 +1,7 @@
 package com.boefcity.projectmanagement.controller;
 
-import com.boefcity.projectmanagement.config.SessionUtility;
+
+import com.boefcity.projectmanagement.config.AppUtility;
 import com.boefcity.projectmanagement.model.Project;
 import com.boefcity.projectmanagement.model.Role;
 import com.boefcity.projectmanagement.model.User;
@@ -42,8 +43,8 @@ public class ProjectControllerTest {
     // Test: projectsAddFormDisplay
     @Test
     public void testProjectsAddFormDisplay_NotAuthenticated() {
-        try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
-            mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(true);
+        try (var mockedAppUtility = mockStatic(AppUtility.class)) {
+            mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(true);
 
             String result = projectController.projectsAddFormDisplay(model, session, redirectAttributes);
             assertEquals("redirect:/users/loginDisplay", result);
@@ -52,13 +53,13 @@ public class ProjectControllerTest {
 
     @Test
     public void testProjectsAddFormDisplay_AdminRole() {
-        try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
+        try (var mockedAppUtility = mockStatic(AppUtility.class)) {
             Long userId = 1L;
             User adminUser = new User();
             adminUser.setUserId(userId);
             adminUser.setUserRole(Role.ADMIN);
 
-            mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
+            mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
 
             when(session.getAttribute("userId")).thenReturn(userId);
             when(userService.findUserById(userId)).thenReturn(adminUser);
@@ -71,13 +72,13 @@ public class ProjectControllerTest {
 
     @Test
     public void testProjectsAddFormDisplay_WorkerRole() {
-        try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
+        try (var mockedAppUtility = mockStatic(AppUtility.class)) {
             Long userId = 1L;
             User workerUser = new User();
             workerUser.setUserId(userId);
             workerUser.setUserRole(Role.WORKER);
 
-            mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
+            mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
 
             when(session.getAttribute("userId")).thenReturn(userId);
             when(userService.findUserById(userId)).thenReturn(workerUser);
@@ -91,8 +92,8 @@ public class ProjectControllerTest {
     // Test: createProject
     @Test
     public void testCreateProject_NotAuthenticated() {
-        try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
-            mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(true);
+        try (var mockedAppUtility = mockStatic(AppUtility.class)) {
+            mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(true);
 
             Project project = new Project();
             String result = projectController.createProject(project, session, redirectAttributes);
@@ -102,13 +103,13 @@ public class ProjectControllerTest {
 
     @Test
     public void testCreateProject_AdminRole_Success() {
-        try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
+        try (var mockedAppUtility = mockStatic(AppUtility.class)) {
             Long userId = 1L;
             User adminUser = new User();
             adminUser.setUserId(userId);
             adminUser.setUserRole(Role.ADMIN);
 
-            mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
+            mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
 
             when(session.getAttribute("userId")).thenReturn(userId);
             when(userService.findUserById(userId)).thenReturn(adminUser);
@@ -125,13 +126,13 @@ public class ProjectControllerTest {
 
     @Test
     public void testCreateProject_AdminRole_Exception() {
-        try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
+        try (var mockedAppUtility = mockStatic(AppUtility.class)) {
             Long userId = 1L;
             User adminUser = new User();
             adminUser.setUserId(userId);
             adminUser.setUserRole(Role.ADMIN);
 
-            mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
+            mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
 
             when(session.getAttribute("userId")).thenReturn(userId);
             when(userService.findUserById(userId)).thenReturn(adminUser);
@@ -149,13 +150,13 @@ public class ProjectControllerTest {
 
     @Test
     public void testCreateProject_UnauthorizedRole() {
-        try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
+        try (var mockedAppUtility = mockStatic(AppUtility.class)) {
             Long userId = 1L;
             User unauthorizedUser = new User();
             unauthorizedUser.setUserId(userId);
             unauthorizedUser.setUserRole(Role.WORKER);
 
-            mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
+            mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
 
             when(session.getAttribute("userId")).thenReturn(userId);
             when(userService.findUserById(userId)).thenReturn(unauthorizedUser);
@@ -169,8 +170,8 @@ public class ProjectControllerTest {
     // Test: projectsDisplay
     @Test
     public void testProjectsDisplay_NotAuthenticated() {
-        try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
-            mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(true);
+        try (var mockedAppUtility = mockStatic(AppUtility.class)) {
+            mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(true);
 
             String result = projectController.projectsDisplay(session, model, redirectAttributes);
             assertEquals("redirect:/users/loginDisplay", result);
@@ -179,13 +180,13 @@ public class ProjectControllerTest {
 
     @Test
     public void testProjectsDisplay_AdminOrManagerRole() {
-        try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
+        try (var mockedAppUtility = mockStatic(AppUtility.class)) {
             Long userId = 1L;
             User adminUser = new User();
             adminUser.setUserId(userId);
             adminUser.setUserRole(Role.ADMIN);
 
-            mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
+            mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
 
             when(session.getAttribute("userId")).thenReturn(userId);
             when(userService.findUserById(userId)).thenReturn(adminUser);
@@ -203,7 +204,7 @@ public class ProjectControllerTest {
 
     @Test
     public void testProjectsDisplay_WorkerRole() {
-        try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
+        try (var mockedAppUtility = mockStatic(AppUtility.class)) {
             Long userId = 1L;
             User workerUser = new User();
             workerUser.setUserId(userId);
@@ -212,7 +213,7 @@ public class ProjectControllerTest {
             List<Project> projectList = new ArrayList<>();
             workerUser.setProjects(projectList);
 
-            mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
+            mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
 
             when(session.getAttribute("userId")).thenReturn(userId);
             when(userService.findUserById(userId)).thenReturn(workerUser);
@@ -226,8 +227,8 @@ public class ProjectControllerTest {
     // Test: assignUserDisplay
     @Test
     public void testAssignUserDisplay_NotAuthenticated() {
-        try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
-            mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(true);
+        try (var mockedAppUtility = mockStatic(AppUtility.class)) {
+            mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(true);
 
             String result = projectController.projectsOverviewDisplay(session, model, 1L, redirectAttributes);
             assertEquals("redirect:/users/loginDisplay", result);
@@ -237,8 +238,8 @@ public class ProjectControllerTest {
     // Test: assignUserToProject
     @Test
     public void testAssignUserToProject_NotAuthenticated() {
-        try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
-            mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(true);
+        try (var mockedAppUtility = mockStatic(AppUtility.class)) {
+            mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(true);
 
             String result = projectController.assignUserToProject(1L, 2L, session, redirectAttributes);
             assertEquals("redirect:/users/loginDisplay", result);
@@ -247,7 +248,7 @@ public class ProjectControllerTest {
 
     @Test
     public void testAssignUserToProject_AdminRole_Success() {
-        try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
+        try (var mockedAppUtility = mockStatic(AppUtility.class)) {
             Long projectId = 1L;
             Long userId = 2L;
             Long currentUserId = 3L;
@@ -255,7 +256,7 @@ public class ProjectControllerTest {
             currentUser.setUserId(currentUserId);
             currentUser.setUserRole(Role.ADMIN);
 
-            mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
+            mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
 
             when(session.getAttribute("userId")).thenReturn(currentUserId);
             when(userService.findUserById(currentUserId)).thenReturn(currentUser);
@@ -270,7 +271,7 @@ public class ProjectControllerTest {
 
     @Test
     public void testAssignUserToProject_UserAlreadyAssigned() {
-        try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
+        try (var mockedAppUtility = mockStatic(AppUtility.class)) {
             Long projectId = 1L;
             Long userId = 2L;
             Long currentUserId = 3L;
@@ -278,7 +279,7 @@ public class ProjectControllerTest {
             currentUser.setUserId(currentUserId);
             currentUser.setUserRole(Role.ADMIN);
 
-            mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
+            mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
 
             when(session.getAttribute("userId")).thenReturn(currentUserId);
             when(userService.findUserById(currentUserId)).thenReturn(currentUser);
@@ -292,7 +293,7 @@ public class ProjectControllerTest {
 
     @Test
     public void testAssignUserToProject_Exception() {
-        try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
+        try (var mockedAppUtility = mockStatic(AppUtility.class)) {
             Long projectId = 1L;
             Long userId = 2L;
             Long currentUserId = 3L;
@@ -300,7 +301,7 @@ public class ProjectControllerTest {
             currentUser.setUserId(currentUserId);
             currentUser.setUserRole(Role.ADMIN);
 
-            mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
+            mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
 
             when(session.getAttribute("userId")).thenReturn(currentUserId);
             when(userService.findUserById(currentUserId)).thenReturn(currentUser);
@@ -314,7 +315,7 @@ public class ProjectControllerTest {
 
     @Test
     public void testAssignUserToProject_UnauthorizedRole() {
-        try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
+        try (var mockedAppUtility = mockStatic(AppUtility.class)) {
             Long projectId = 1L;
             Long userId = 2L;
             Long currentUserId = 3L;
@@ -322,7 +323,7 @@ public class ProjectControllerTest {
             currentUser.setUserId(currentUserId);
             currentUser.setUserRole(Role.WORKER);
 
-            mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
+            mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
 
             when(session.getAttribute("userId")).thenReturn(currentUserId);
             when(userService.findUserById(currentUserId)).thenReturn(currentUser);

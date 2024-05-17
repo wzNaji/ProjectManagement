@@ -1,6 +1,6 @@
 package com.boefcity.projectmanagement.controller;
 
-import com.boefcity.projectmanagement.config.SessionUtility;
+import com.boefcity.projectmanagement.config.AppUtility;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +18,7 @@ public class AppController {
     @GetMapping("/menu")
     public String menuPageDisplay(HttpSession session, RedirectAttributes redirectAttributes) {
 
-        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+        if (AppUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
         }
         return "menuPage";
@@ -27,7 +27,7 @@ public class AppController {
     @PostMapping("/logout")
     public String logout(HttpSession session, RedirectAttributes redirectAttributes) {
 
-        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+        if (AppUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
         }
         session.invalidate();

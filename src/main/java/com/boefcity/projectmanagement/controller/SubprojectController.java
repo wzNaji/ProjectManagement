@@ -1,6 +1,6 @@
 package com.boefcity.projectmanagement.controller;
 
-import com.boefcity.projectmanagement.config.SessionUtility;
+import com.boefcity.projectmanagement.config.AppUtility;
 import com.boefcity.projectmanagement.model.*;
 import com.boefcity.projectmanagement.service.ProjectService;
 import com.boefcity.projectmanagement.service.SubprojectService;
@@ -29,7 +29,7 @@ public class SubprojectController {
     public String addFormDisplay(@RequestParam("projectId") Long projectId, Model model, HttpSession session,
                                  RedirectAttributes redirectAttributes) {
 
-        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+        if (AppUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
         }
 
@@ -58,7 +58,7 @@ public class SubprojectController {
                                       HttpSession session,
                                       RedirectAttributes redirectAttributes) {
 
-        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+        if (AppUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
         }
 
@@ -93,7 +93,7 @@ public class SubprojectController {
                              HttpSession session,
                              RedirectAttributes redirectAttributes) {
 
-        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+        if (AppUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
         }
 
@@ -131,7 +131,7 @@ public class SubprojectController {
                            HttpSession session,
                            RedirectAttributes redirectAttributes) {
 
-        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+        if (AppUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
         }
 
@@ -164,7 +164,7 @@ public class SubprojectController {
                              HttpSession session,
                              RedirectAttributes redirectAttributes) {
 
-        if (SessionUtility.isNotAuthenticated(session, redirectAttributes)) {
+        if (AppUtility.isNotAuthenticated(session, redirectAttributes)) {
             return "redirect:/users/loginDisplay";
         }
 

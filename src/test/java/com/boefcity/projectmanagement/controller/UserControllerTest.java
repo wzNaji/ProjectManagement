@@ -1,8 +1,8 @@
 package com.boefcity.projectmanagement.controller;
 
+import com.boefcity.projectmanagement.config.AppUtility;
 import com.boefcity.projectmanagement.model.User;
 import com.boefcity.projectmanagement.service.UserService;
-import com.boefcity.projectmanagement.config.SessionUtility;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -134,8 +134,8 @@ public class UserControllerTest {
     // User List Display Tests
     @Test
     public void testUserListDisplay_NotAuthenticated() {
-        try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
-            mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(true);
+        try (var mockedAppUtility = mockStatic(AppUtility.class)) {
+            mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(true);
 
             String result = userController.userListDisplay(session, model, redirectAttributes);
             assertEquals("redirect:/users/loginDisplay", result);
@@ -144,8 +144,8 @@ public class UserControllerTest {
 
     @Test
     public void testUserListDisplay_Authenticated() {
-        try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
-            mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
+        try (var mockedAppUtility = mockStatic(AppUtility.class)) {
+            mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
 
             List<User> userList = new ArrayList<>();
             userList.add(new User());
@@ -159,8 +159,8 @@ public class UserControllerTest {
 
     @Test
     public void testUserListDisplay_Exception() {
-        try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
-            mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
+        try (var mockedAppUtility = mockStatic(AppUtility.class)) {
+            mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
             when(userService.findAllUsers()).thenThrow(new RuntimeException("Service error"));
 
             String result = userController.userListDisplay(session, model, redirectAttributes);
