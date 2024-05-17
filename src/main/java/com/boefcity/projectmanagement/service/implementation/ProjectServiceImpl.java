@@ -31,8 +31,8 @@ public class ProjectServiceImpl implements ProjectService {
 
 
     @Override
-    public Project createProject(Project project) {
-        return projectRepository.save(project);
+    public void createProject(Project project) {
+        projectRepository.save(project);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Transactional
     @Override
-    public Project assignSubprojectToProject(Subproject subproject, Long projectId) {
+    public void assignSubprojectToProject(Subproject subproject, Long projectId) {
 
         Project project = projectRepository.findProjectByIdNative(projectId);
         Subproject subprojectToAssign = subprojectRepository.findSubprojectByIdNative(subproject.getSubprojectId());
@@ -119,7 +119,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         project.addSubprojectToProject(subproject);
 
-        return projectRepository.save(project);
+        projectRepository.save(project);
     }
 
     @Transactional

@@ -4,13 +4,10 @@ import com.boefcity.projectmanagement.model.Project;
 import com.boefcity.projectmanagement.model.Subproject;
 import com.boefcity.projectmanagement.repository.ProjectRepository;
 import com.boefcity.projectmanagement.repository.SubprojectRepository;
-import com.boefcity.projectmanagement.repository.UserRepository;
 import com.boefcity.projectmanagement.service.SubprojectService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class SubprojectServiceImpl implements SubprojectService {

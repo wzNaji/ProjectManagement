@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ProjectService {
 
-    Project createProject (Project project);
+    void createProject (Project project);
 
     Project findProjectById (Long id);
 
@@ -19,7 +19,7 @@ public interface ProjectService {
 
     boolean isUserAssignedToProject(Long projectID, Long userID);
 
-    Project assignSubprojectToProject(Subproject subproject, Long projectId);
+    void assignSubprojectToProject(Subproject subproject, Long projectId);
 
     void removeUserFromProject(Long userId, Long projectId);
 

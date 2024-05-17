@@ -251,7 +251,7 @@ public class ProjectControllerTest {
         try (var mockedSessionUtility = mockStatic(SessionUtility.class)) {
             mockedSessionUtility.when(() -> SessionUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(true);
 
-            String result = projectController.editProjectDisplay(session, model, 1L, redirectAttributes);
+            String result = projectController.projectsOverviewDisplay(session, model, 1L, redirectAttributes);
             assertEquals("redirect:/users/loginDisplay", result);
         }
     }
@@ -276,7 +276,7 @@ public class ProjectControllerTest {
             when(projectService.findProjectById(projectId)).thenReturn(project);
             when(userService.findAllUsers()).thenReturn(allUsers);
 
-            String result = projectController.editProjectDisplay(session, model, projectId, redirectAttributes);
+            String result = projectController.projectsOverviewDisplay(session, model, projectId, redirectAttributes);
             assertEquals("project/editDisplay", result);
             verify(model).addAttribute("project", project);
             verify(model).addAttribute("allUsers", allUsers);
@@ -298,7 +298,7 @@ public class ProjectControllerTest {
             when(session.getAttribute("userId")).thenReturn(userId);
             when(userService.findUserById(userId)).thenReturn(unauthorizedUser);
 
-            String result = projectController.editProjectDisplay(session, model, projectId, redirectAttributes);
+            String result = projectController.projectsOverviewDisplay(session, model, projectId, redirectAttributes);
             assertEquals("errorPage", result);
         }
     }

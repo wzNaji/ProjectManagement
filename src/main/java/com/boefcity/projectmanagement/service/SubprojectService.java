@@ -2,7 +2,6 @@ package com.boefcity.projectmanagement.service;
 
 import com.boefcity.projectmanagement.model.Subproject;
 
-import java.util.List;
 
 public interface SubprojectService {
 
