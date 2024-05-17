@@ -14,11 +14,11 @@
 <main>
     <form th:action="@{/projects/create}" th:method="post" th:object="${project}">
         <div class="m-3">
-            <label for="name" class="form-label">Name</label>
+            <label for="name" class="form-label">Projekt navn</label>
             <input type="text" th:field="*{projectName}" id="name" required class="form-control">
         </div>
         <div class="m-3">
-            <label for="description" class="form-label">Description</label>
+            <label for="description" class="form-label">Beskrivelse</label>
             <textarea th:field="*{projectDescription}" id="description" class="form-control"></textarea>
         </div>
         <div class="m-3">
@@ -26,23 +26,23 @@
             <input type="number" step="0.01" th:field="*{projectBudget}" id="budget" class="form-control">
         </div>
         <div class="m-3">
-            <label for="cost" class="form-label">Cost</label>
+            <label for="cost" class="form-label">Pris</label>
             <input type="number" step="0.01" th:field="*{projectCost}" id="cost" class="form-control" placeholder="Updates based on subprojects costs" readonly>
         </div>
         <div class="m-3">
-            <label for="esitmatedHours" class="form-label">Estimated Hours</label>
+            <label for="esitmatedHours" class="form-label">Estimeret tid</label>
             <input type="number" step="0.5" th:field="*{projectEstimatedHours}" id="esitmatedHours" class="form-control">
         </div>
         <div class="m-3">
-            <label for="actualHours" class="form-label">Actual Hours</label>
+            <label for="actualHours" class="form-label">Reel tid</label>
             <input type="number" step="0.5" th:field="*{projectActualdHours}" id="actualHours" class="form-control" placeholder="Updates based on subprojects hours" readonly>
         </div>
         <div class="m-3">
-            <label for="startDate" class="form-label">Start Date</label>
+            <label for="startDate" class="form-label">Start dato</label>
             <input type="datetime-local" th:field="*{projectStartDate}" id="startDate" class="form-control">
         </div>
         <div class="m-3">
-            <label for="dueDate" class="form-label">Due Date</label>
+            <label for="dueDate" class="form-label">Slut dato</label>
             <input type="datetime-local" th:field="*{projectEndDate}" id="dueDate" class="form-control">
         </div>
 

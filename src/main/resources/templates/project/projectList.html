@@ -19,14 +19,14 @@
         <thead>
         <tr>
             <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Description</th>
-            <th scope="col">Start Date</th>
-            <th scope="col">Due Date</th>
+            <th scope="col">Navn</th>
+            <th scope="col">Beskrivelse</th>
+            <th scope="col">Start dato</th>
+            <th scope="col">Slut dato</th>
             <th scope="col">Budget</th>
-            <th scope="col">Actual Cost</th>
-            <th scope="col">Estimated Hours</th>
-            <th scope="col">Actual Hours</th>
+            <th scope="col">Pris</th>
+            <th scope="col">Estimeret tid</th>
+            <th scope="col">Reel tid</th>
             <th scope="col"></th>
             <th scope="col"></th>
         </tr>
@@ -34,28 +34,28 @@
         <tbody>
         <tr th:each="project, stat : ${projectList}">
             <th scope="row" th:text="${stat.index + 1}"></th>
-            <td th:text="${project.projectName}">TestName1</td>
-            <td th:text="${project.projectDescription}">TestDescription1</td>
-            <td th:text="${project.projectStartDate}">TestStartDate1</td>
-            <td th:text="${project.projectEndDate}">TestEndDate1</td>
-            <td th:text="${project.projectBudget}">TestBudget1</td>
-            <td th:text="${project.projectCost}">TestCost1</td>
-            <td th:text="${project.projectEstimatedHours}">TestEstimatedHours1</td>
-            <td th:text="${project.projectActualdHours}">TestActualHours1</td>
+            <td th:text="${project.projectName}">Navn</td>
+            <td th:text="${project.projectDescription}">Beskrivelse</td>
+            <td th:text="${project.projectStartDate}">Start dato</td>
+            <td th:text="${project.projectEndDate}">Slut dato</td>
+            <td th:text="${project.projectBudget}">Budget</td>
+            <td th:text="${project.projectCost}">Pris</td>
+            <td th:text="${project.projectEstimatedHours}">Estimeret tid</td>
+            <td th:text="${project.projectActualdHours}">Reel tid</td>
             <td>
                 <a th:href="@{/projects/overviewDisplay(projectId=${project.projectId})}" class="btn btn-primary">View</a>
             </td>
             <td>
                 <form th:action="@{/projects/delete/{projectToDeleteId}(projectToDeleteId=${project.projectId})}" method="post" style="display: inline;">
-                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="submit" class="btn btn-danger">Slet</button>
                 </form>
             </td>
         </tr>
         </tbody>
     </table>
 
-    <a href="/menu"><button type="button" class="btn btn-primary ms-3">Back to Menu</button></a>
-    <a href="/projects/addForm"><button type="button" class="btn btn-success ms-3">Create A Project</button></a>
+    <a href="/menu"><button type="button" class="btn btn-primary ms-3">Tilbage</button></a>
+    <a href="/projects/addForm"><button type="button" class="btn btn-success ms-3">Tilføj projekt</button></a>
 </main>
 <footer class="mt-auto text-center">
     <p>BoefCity@EMC.com</p>

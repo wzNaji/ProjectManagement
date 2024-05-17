@@ -8,18 +8,18 @@
 <body class="d-flex flex-column min-vh-100">
 <header>
     <nav class="d-flex justify-content-center">
-        <h1>Error</h1>
+        <h1>Noget er gået galt</h1>
     </nav>
 </header>
 <main class="container mt-5">
     <div class="alert alert-danger" role="alert">
-        <h4 class="alert-heading">An Error Occurred</h4>
-        <p th:text="${message}">Error message goes here</p>
+        <h4 class="alert-heading">Der er sket en fejl</h4>
+        <p th:text="${message}">Beskrivelse af fejl</p>
         <hr>
         <p class="mb-0">
             <!-- fix navigation -->
-            <a href="/" class="btn btn-primary">Go Home</a>
-            <a href="" class="btn btn-secondary">Go Back</a>
+            <a href="/" class="btn btn-primary">Til forsiden</a>
+            <a href="" class="btn btn-secondary">Tilbage</a>
         </p>
     </div>
 </main>

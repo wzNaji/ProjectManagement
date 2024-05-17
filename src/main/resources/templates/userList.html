@@ -20,9 +20,9 @@
     <thead>
     <tr>
       <th scope="col"></th>
-      <th scope="col">Username</th>
+      <th scope="col">Brugernavn</th>
       <th scope="col">Email</th>
-      <th scope="col">Role</th>
+      <th scope="col">Rolle</th>
       <th scope="col"></th>
       <th scope="col"></th>
     </tr>
@@ -30,22 +30,22 @@
     <tbody>
     <tr th:each="user : ${userList}">
       <th scope="row"></th>
-      <td th:text="${user.username}">TestName1</td>
-      <td th:text="${user.email}">TestEmail1</td>
-      <td th:text="${user.userRole}">TestRole1</td>
+      <td th:text="${user.username}">Brugernavn</td>
+      <td th:text="${user.email}">Email</td>
+      <td th:text="${user.userRole}">Rolle</td>
       <td>
-        <a th:href="@{/users/editDisplay/{userId}(userId=${user.userId})}" class="btn btn-primary">Edit</a>
+        <a th:href="@{/users/editDisplay/{userId}(userId=${user.userId})}" class="btn btn-primary">Rediger</a>
       </td>
       <td>
-        <form th:action="@{/users/delete/{userToDeleteId}(userToDeleteId=${user.userId})}" method="post" onsubmit="return confirm('Are you sure you want to delete this user?');">
-          <button type="submit" class="btn btn-danger">Delete</button>
+        <form th:action="@{/users/delete/{userToDeleteId}(userToDeleteId=${user.userId})}" method="post" onsubmit="return confirm('Vil du slette denne bruger?');">
+          <button type="submit" class="btn btn-danger">Slet</button>
         </form>
       </td>
     </tr>
     </tbody>
   </table>
 
-  <a href="/menu"><button type="button" class="btn btn-primary ms-3">Back to Menu</button></a>
+  <a href="/menu"><button type="button" class="btn btn-primary ms-3">Tilbage</button></a>
 </main>
 
 <footer class="mt-auto text-center">
