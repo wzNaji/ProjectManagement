@@ -23,13 +23,13 @@ public class SubprojectServiceImpl implements SubprojectService {
     @Override
     public void createSubproject(Subproject subproject) {
         if (subproject == null) {
-            throw new IllegalArgumentException("Subproject cannot be null");
+            throw new IllegalArgumentException("Subprojekt blev ikke fundet");
         }
 
         try {
             subprojectRepository.save(subproject);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to save subproject: " + e.getMessage(), e);
+            throw new RuntimeException("Subprojektet blev ikke gemt: " + e.getMessage(), e);
         }
     }
 
@@ -39,27 +39,27 @@ public class SubprojectServiceImpl implements SubprojectService {
         Project project = projectRepository.findProjectByIdNative(projectId);
         Subproject subproject = subprojectRepository.findSubprojectByIdNative(subprojectId);
 
-        // undgå unødige database handlinger
+        // Error handling for at undgå unødige database handlinger
         if (project == null) {
-            throw new IllegalArgumentException("Project not found");
+            throw new IllegalArgumentException("Projekt ikke fundet");
         }
 
         if (subproject == null) {
-            throw new IllegalArgumentException("Subproject not found");
+            throw new IllegalArgumentException("Subprojekt ikke fundet");
         }
 
         if (project.getSubprojects().contains(subproject)) {
-            // Fjerner subprojektets hours fra projektets samlede hours.
+            // Fjerner subprojektets hours fra projektets samlede hours, så projektHours opdateres efter deleteSubproject
             Double subprojectHours = subproject.getSubprojectHours();
             Double currentProjectHours = project.getProjectActualdHours() != null ? project.getProjectActualdHours() : 0;
             project.setProjectActualdHours(currentProjectHours - subprojectHours);
 
-            // Fjerner subprojektets cost fra projektets samlede cost.
+            // Fjerner subprojektets cost fra projektets samlede cost, så projektCost opdateres efter deleteSubproject.
             Double subprojectCost = subproject.getSubprojectCost();
             Double currentProjectCost = project.getProjectCost() != null ? project.getProjectCost() : 0;
             project.setProjectCost(currentProjectCost - subprojectCost);
-
-            project.getSubprojects().remove(subproject); // Detach sub project fra project
+            //Fjerner subprojektet fra projektet, så det efterfølgende kan slettes
+            project.getSubprojects().remove(subproject);
             projectRepository.save(project);
         }
 
@@ -69,8 +69,9 @@ public class SubprojectServiceImpl implements SubprojectService {
     @Override
     public Subproject findBySubprojectId(Long subprojectId) {
         Subproject subproject = subprojectRepository.findSubprojectByIdNative(subprojectId);
+        // Error handling for at undgå unødige database handlinger
         if (subproject == null) {
-            throw new IllegalArgumentException("Subproject not found with ID: " + subprojectId);
+            throw new IllegalArgumentException("Subprojekt med ID: " + subprojectId + " findes ikke.");
         }
         return subproject;
     }
@@ -80,10 +81,12 @@ public class SubprojectServiceImpl implements SubprojectService {
     @Override
     public void updateSubproject(Long subprojectId, Subproject subprojectDetails) {
         Subproject subprojectToUpdate = subprojectRepository.findSubprojectByIdNative(subprojectId);
-        if (subprojectToUpdate == null) {
-            throw new EntityNotFoundException("Subproject not found for id: " + subprojectId);
-        }
 
+        // Error handling for at undgå unødige database handlinger
+        if (subprojectToUpdate == null) {
+            throw new EntityNotFoundException("Subprojekt med ID: " + subprojectId + " findes ikke.");
+        }
+        //Setter det eksisterende subprojekts attributer til nye værdier, så vi efterfølgende kan opdatere og gemme.
         subprojectToUpdate.setSubprojectName(subprojectDetails.getSubprojectName());
         subprojectToUpdate.setSubprojectDescription(subprojectDetails.getSubprojectDescription());
         subprojectToUpdate.setSubprojectStartDate(subprojectDetails.getSubprojectStartDate());
