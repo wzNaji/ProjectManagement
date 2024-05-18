@@ -1,20 +1,91 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="da">
 <head>
     <meta charset="UTF-8">
-    <title>Homepage</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Projektstyringsværktøj</title>
+    <link rel="stylesheet" href="/homepage.css"> <!-- Link til ekstern CSS-fil -->
 </head>
 <body>
 
-  <header>
-    <h1>Velkommen til dit Projektstyringsværktøj</h1>
-  </header>
+<!-- Hovedcontainer, der bruger CSS Grid til layout -->
+<main id="main-container"> <!-- Tilføjet id="main-container" -->
 
-  <main>
-    <a href="/users/loginDisplay"><button type="button" class="btn btn-success m-3 btn-overlay">Log ind</button></a>
-    <a href="/users/registerDisplay"><button type="button" class="btn btn-primary m-3 btn-overlay">Ny bruger</button></a>
-  </main>
+    <!-- Header-sektion -->
+    <header id="header" class="header"> <!-- Tilføjet id="header" -->
+        <section class="header-content">
+            <h1>Velkommen til dit Projektstyringsværktøj</h1> <!-- Titel i headeren -->
+            <nav>
+                <ul class="nav">
+                    <!-- Navigation links -->
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#about">Om Os</a></li>
+                    <li><a href="#contact">Kontakt</a></li>
+                    <li><a href="/users/loginDisplay">Log Ind</a></li>
+                    <li><a href="/users/registerDisplay">Registrer</a></li>
+                </ul>
+            </nav>
+        </section>
+    </header>
+
+    <!-- Hovedindhold -->
+    <section id="main-content" class="content"> <!-- Tilføjet id="main-content" -->
+        <!-- Hero-sektion -->
+        <section id="hero" class="hero">
+            <article class="hero-content">
+                <h2>Effektiv Projektstyring</h2> <!-- Overskrift i hero-sektionen -->
+                <p>Hold styr på opgaverne, mød deadlines og nå dine mål med vores kraftfulde projektstyringsværktøj.</p> <!-- Paragraf i hero-sektionen -->
+                <a href="#features" class="btn btn-primary">Læs Mere</a> <!-- Knap i hero-sektionen -->
+            </article>
+        </section>
+
+        <!-- Features-sektion -->
+        <section id="features" class="features">
+            <article class="container">
+                <h2>Features</h2> <!-- Overskrift i features-sektionen -->
+                <section class="feature-list">
+                    <!-- Liste over features -->
+                    <article class="feature">
+                        <h3>Opgavestyring</h3> <!-- Feature 1 -->
+                        <p>Organiser opgaver, sæt prioriteter og tildel ansvar.</p>
+                    </article>
+                    <article class="feature">
+                        <h3>Samarbejde</h3> <!-- Feature 2 -->
+                        <p>Arbejd problemfrit med dit team og følg fremdriften.</p>
+                    </article>
+                    <article class="feature">
+                        <h3>Effektivitet</h3> <!-- Feature 3 -->
+                        <p>Maksimer teamets effektivitet med nem planlægning og opfølgning.</p>
+                    </article>
+                </section>
+            </article>
+        </section>
+
+        <!-- Om os-sektion -->
+        <section id="about" class="about">
+            <article class="container">
+                <h2>Om Os</h2> <!-- Overskrift i om os-sektionen -->
+                <p>Vi er dedikeret til at levere de bedste projektstyringsløsninger for at hjælpe dit team med at få succes.</p> <!-- Paragraf i om os-sektionen -->
+            </article>
+        </section>
+
+        <!-- Kontakt-sektion -->
+        <section id="contact" class="contact">
+            <article class="container">
+                <h2>Kontakt</h2> <!-- Overskrift i kontakt-sektionen -->
+                <p>Kontakt os for mere information eller support.</p> <!-- Paragraf i kontakt-sektionen -->
+                <a href="mailto:BoefCity@EMC.com" class="btn btn-secondary">Send en E-mail</a> <!-- Knap i kontakt-sektionen -->
+            </article>
+        </section>
+    </section>
+
+    <!-- Footer-sektion -->
+    <footer id="footer" class="footer"> <!-- Tilføjet id="footer" -->
+        <section class="footer-content">
+            <p>&copy; 2024 Projektstyringsværktøj. Alle rettigheder forbeholdes. <br> BoefCity@EMC.com</p> <!-- Footer tekst -->
+        </section>
+    </footer>
+
+</main>
 
 </body>
 </html>
