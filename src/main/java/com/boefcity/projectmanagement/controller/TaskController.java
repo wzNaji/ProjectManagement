@@ -170,37 +170,4 @@ public class TaskController {
         return "redirect:/subprojects/overviewDisplay?subprojectId=" + subprojectId + "&projectId=" + projectId;
     }
 
-    @PostMapping("/delete")
-    public String deleteTask(@RequestParam("taskId") Long taskId,
-                             @RequestParam("subprojectId") Long subprojectId,
-                             @RequestParam("projectId") Long projectId,
-                             HttpSession session,
-                             RedirectAttributes redirectAttributes) {
-
-        if (AppUtility.isNotAuthenticated(session, redirectAttributes)) {
-            return "redirect:/users/loginDisplay";
-        }
-
-        Long userId = (Long) session.getAttribute("userId");
-        User user = userService.findUserById(userId);
-        if (!AppUtility.isAdminOrManager(user)) {
-            redirectAttributes.addFlashAttribute("message", "Kun ADMIN og MANAGER brugere har tilladelse til sletning");
-            return "redirect:/subprojects/overviewDisplay?subprojectId=" + subprojectId + "&projectId=" + projectId;
-        }
-
-        try {
-            Task taskToDelete = taskService.findByTaskId(taskId);
-            if (taskToDelete == null) {
-                redirectAttributes.addFlashAttribute("message", "Task blev ikke fundet");
-            } else {
-                taskService.deleteTask(taskId, subprojectId);
-                redirectAttributes.addFlashAttribute("message", "Task blev slettet");
-            }
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Fejl under sletning af task");
-        }
-
-        return "redirect:/subprojects/overviewDisplay?subprojectId=" + subprojectId + "&projectId=" + projectId;
-    }
-
 }
