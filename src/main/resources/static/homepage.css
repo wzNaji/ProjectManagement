@@ -17,7 +17,7 @@ body {
         "content content content"
         "footer footer footer"; /* Definerer grid-områder */
     grid-template-columns: 1fr 1fr 1fr; /* Definerer tre lige brede kolonner */
-    grid-template-rows: 60px auto 80px; /* Definerer rækker: 60px header, auto content, 80px footer */
+    grid-template-rows: 60px auto 100px; /* Definerer rækker: 60px header, auto content, 100px footer */
     grid-gap: 20px; /* Tilføjer mellemrum mellem grid-områder */
     min-height: 100vh; /* Sørger for at containeren fylder hele højden af vinduet */
     background: linear-gradient(to bottom, blue, darkviolet); /* Tilføjer en baggrundsgradient */
