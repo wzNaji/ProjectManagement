@@ -283,8 +283,13 @@ public class ProjectController {
             return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         }
 
-        projectService.editProject(projectId, projectDetails);
-        redirectAttributes.addFlashAttribute("message", "Project updated successfully.");
+        try {
+            projectService.editProject(projectId, projectDetails);
+            redirectAttributes.addFlashAttribute("message", "Projektet blev opdateret");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "Noget gik galt. Prøv venligst igen.");
+        }
+
         return "redirect:/projects/overviewDisplay?projectId=" + projectId;
     }
 

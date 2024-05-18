@@ -69,7 +69,8 @@ public class TaskServiceImpl implements TaskService {
             throw new IllegalArgumentException("Task ikke fundet");
         }
         if (subproject.getTasks().contains(task)) {
-            subproject.getTasks().remove(task); // Bi-directional. Sætter taskens subproject til null. Se subproject class.
+            subproject.removeTaskFromSubproject(task); // Bi-directional. Sætter taskens subproject til null. Se subproject class.
+            taskRepository.delete(task);
             subprojectRepository.save(subproject);
         }
     }
