@@ -43,9 +43,10 @@
             </a>
         </td>
         <td>
-            <form th:action="@{/task/delete}" method="post" onsubmit="return confirm('Er du sikker på at du vil slette denne task?');">
+            <form th:action="@{/tasks/delete}" method="post" onsubmit="return confirm('Er du sikker på at du vil slette denne task?');">
                 <input type="hidden" name="taskId" th:value="${task.taskId}"/>
                 <input type="hidden" name="subprojectId" th:value="${subproject.subprojectId}"/>
+                <input type="hidden" name="projectId" th:value="${project.projectId}"/>
                 <button type="submit" class="btn btn-danger btn-sm">Slet</button>
             </form>
         </td>
