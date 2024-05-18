@@ -30,17 +30,19 @@
         <div class="m-3">
             <label for="priority" class="form-label">Prioritet</label>
             <select th:field="*{priorityLevel}" id="priority" class="form-select">
-                <th:block th:each="priority : ${priorityLevel}">
-                    <option th:value="${priority}" th:text="${priority}"></option>
-                </th:block>
+                <option value="" th:text="'Vælg Prioritetsniveau'" th:if="${subproject.priorityLevel == null}" th:selected="true"></option>
+                <option th:each="priority : ${priorityLevel}" th:value="${priority}" th:text="${priority}"
+                        th:selected="${subproject.priorityLevel} == ${priority}">
+                </option>
             </select>
         </div>
         <div class="m-3">
             <label for="status" class="form-label">Status</label>
             <select th:field="*{status}" id="status" class="form-select">
-                <th:block th:each="status : ${status}">
-                    <option th:value="${status}" th:text="${status}"></option>
-                </th:block>
+                <option value="" th:text="'Vælg Status'" th:if="${subproject.status == null}" th:selected="true"></option>
+                <option th:each="statusItem : ${status}" th:value="${statusItem}" th:text="${statusItem}"
+                        th:selected="${subproject.status} == ${statusItem}">
+                </option>
             </select>
         </div>
         <div class="m-3">

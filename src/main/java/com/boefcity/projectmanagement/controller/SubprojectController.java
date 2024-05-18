@@ -172,12 +172,11 @@ public class SubprojectController {
 
         try {
             subprojectService.updateSubproject(subprojectId, subprojectDetails);
-            redirectAttributes.addFlashAttribute("message", "Subprojektet blev opdateret succesfuldt");
+            redirectAttributes.addFlashAttribute("message", "Subprojektet blev opdateret");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", "Noget gik galt. Prøv venligst igen.");
         }
 
-        redirectAttributes.addFlashAttribute("message", "Subproject updated successfully");
         return "redirect:/projects/overviewDisplay?projectId=" + projectId;
     }
 
