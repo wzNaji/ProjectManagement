@@ -8,9 +8,11 @@
 <body class="d-flex flex-column min-vh-100">
 <main>
     <header class="m-3 text-center">
-        <h1>Rediger task</h1>
+        <h1>Rediger Task</h1>
     </header>
-    <form th:action="@{/tasks/editForm/{taskId}(taskId=${taskId}, subprojectId=${subprojectId})}" th:method="post" th:object="${task}">
+    <form th:action="@{/tasks/editForm/{taskId}(taskId=${task.taskId}, projectId=${project.projectId}, subprojectId=${subproject.subprojectId})}"
+          th:method="post"
+          th:object="${task}">
         <div class="m-3">
             <label for="title" class="form-label">Navn</label>
             <input type="text" th:field="*{taskName}" class="form-control" id="title">
@@ -19,24 +21,28 @@
             <label for="description" class="form-label">Beskrivelse</label>
             <textarea th:field="*{taskDescription}" class="form-control" id="description"></textarea>
         </div>
-        <div class="m-3">
-            <label for="priority" class="form-label">Prioritet</label>
-            <select th:field="*{priorityLevel}" id="priority" class="form-select">
-                <th:block th:each="priority : ${priorityLevel}">
-                    <option th:value="${priority}" th:text="${priority}"></option>
-                </th:block>
+        <div class="form-group">
+            <label for="priorityLevel">Priority Level</label>
+            <select id="priorityLevel" class="form-control" th:field="*{priorityLevel}">
+                <option value="" th:text="'Vælg Prioritetsniveau'" th:if="${task.priorityLevel == null}" th:selected="true"></option>
+                <option th:each="level : ${priorityLevel}" th:value="${level}" th:text="${level}"
+                        th:selected="${task.priorityLevel} == ${level}">
+                </option>
             </select>
         </div>
-        <div class="m-3">
-            <label for="status" class="form-label">Status</label>
-            <select th:field="*{status}" id="status" class="form-select">
-                <th:block th:each="status : ${status}">
-                    <option th:value="${status}" th:text="${status}"></option>
-                </th:block>
+        <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status" class="form-control" th:field="*{status}">
+                <option value="" th:text="'Vælg Status'" th:if="${task.status == null}" th:selected="true"></option>
+                <option th:each="statusItem : ${status}" th:value="${statusItem}" th:text="${statusItem}"
+                        th:selected="${task.status} == ${statusItem}">
+                </option>
             </select>
         </div>
-        <button type="submit" class="btn btn-primary">Tilføj task</button>
-        <a href="/projects/overviewDisplay" th:href="@{/projects/overviewDisplay(projectId=${projectId})}" class="btn btn-secondary m-3">Annuler</a>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a th:href="@{/subprojects/overviewDisplay(subprojectId=${subproject.subprojectId}, projectId=${project.projectId})}">
+            <button type="button" class="btn btn-success ms-3">Annuler</button>
+        </a>
     </form>
 </main>
 <footer class="mt-auto text-center">
