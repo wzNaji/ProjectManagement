@@ -73,7 +73,7 @@ public class SubprojectController {
             subprojectService.createSubproject(subproject);
             projectService.assignSubprojectToProject(subproject, projectId);
 
-            redirectAttributes.addFlashAttribute("message", "Projektet er oprettet");
+            redirectAttributes.addFlashAttribute("message", "Subprojektet er oprettet");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", "Noget galt. Prøv venligst igen.");
         }
@@ -109,7 +109,7 @@ public class SubprojectController {
                 redirectAttributes.addFlashAttribute("message", "Subprojektet blev ikke fundet");
             } else {
                 subprojectService.deleteSubproject(subprojectId, projectId);
-                redirectAttributes.addFlashAttribute("message", "Subprojektet er slettet");
+                redirectAttributes.addFlashAttribute("message", "Subprojektet blev slettet");
             }
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", "Fejl under sletning af subprojektet");
