@@ -5,8 +5,6 @@ body {
     margin: 0; /* Fjerner standard margin */
     padding: 0; /* Fjerner standard padding */
     font-family: 'Arial', sans-serif; /* Sætter standard skrifttype til Arial */
-    box-sizing: border-box; /* Inkluderer padding og border i elementets samlede bredde og højde */
-    /* Fjerner standard margin og padding, sætter skrifttypen til Arial og ændrer box-modellen */
 }
 
 /* Hovedcontainer, der bruger CSS Grid til layout */
@@ -17,10 +15,10 @@ body {
         "content content content"
         "footer footer footer"; /* Definerer grid-områder */
     grid-template-columns: 1fr 1fr 1fr; /* Definerer tre lige brede kolonner */
-    grid-template-rows: 60px auto 100px; /* Definerer rækker: 60px header, auto content, 100px footer */
+    grid-template-rows: 80px auto 100px; /* Definerer rækker: 60px header, auto content, 100px footer */
     grid-gap: 20px; /* Tilføjer mellemrum mellem grid-områder */
     min-height: 100vh; /* Sørger for at containeren fylder hele højden af vinduet */
-    background: linear-gradient(to bottom, blue, darkviolet); /* Tilføjer en baggrundsgradient */
+    background: linear-gradient(to bottom, #060680, darkviolet); /* Tilføjer en baggrundsgradient */
     flex-grow: 1; /* Sikrer at containeren vokser for at fylde tilgængelig plads */
     /* Opretter en grid layout, definerer områder og sørger for, at containeren fylder hele højden af vinduet */
 }
@@ -28,11 +26,11 @@ body {
 /* Header-sektion */
 #header {
     grid-area: header; /* Placerer dette element i header-området i grid layoutet */
-    background-color: #0073e6; /* Sætter baggrundsfarve */
+    background: linear-gradient(to top, #1111ff00, darkviolet); /* Sætter baggrundsfarve */
     color: white; /* Sætter tekstfarve til hvid */
     display: flex; /* Bruger flexbox layout til at arrangere indholdet */
     align-items: center; /* Vertikal centrerer indholdet */
-    padding: 0 20px; /* Tilføjer vandret padding */
+    padding: 0 20px 8px; /* Tilføjer vandret padding */
     /* Stiler headeren med baggrundsfarve, hvid tekst, centrerer indholdet og tilføjer padding */
 }
 
@@ -154,11 +152,6 @@ body {
     /* Stiler disse sektioner med padding, centrerer tekst og sætter tekstfarve til hvid */
 }
 
-/* Features-sektionen */
-.features {
-    background: linear-gradient(to bottom, #4400ff6b, #642be200); /* Tilføjer gradient baggrund */
-}
-
 /* Liste over features */
 .feature-list {
     display: grid; /* Bruger grid layout */
@@ -167,11 +160,11 @@ body {
     /* Bruger grid layout til features-listen */
 }
 
-/* Enkelt feature */
+/* Enkelte feature */
 .feature {
     background-color: #0467ca17; /* Sætter baggrundsfarve */
     padding: 1em; /* Tilføjer padding */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Tilføjer skyggeeffekt */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Tilføjer skyggeeffekt */
     /* Stiler enkelte features med baggrundsfarve, padding og skygge */
 }
 
@@ -179,16 +172,6 @@ body {
 .feature h3 {
     margin-top: 0; /* Fjerner topmargin */
     /* Fjerner topmargin på feature-overskriften */
-}
-
-/* Om os-sektionen */
-.about {
-    background: linear-gradient(to bottom, #4603ff59, #642be200); /* Tilføjer gradient baggrund */
-}
-
-/* Kontakt-sektionen */
-.contact {
-    background: linear-gradient(to bottom, #4603ff1c, #642be200); /* Næsten gennemsigtig baggrundsgradient */
 }
 
 /* Footer-sektionen */

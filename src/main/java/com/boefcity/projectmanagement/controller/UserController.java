@@ -39,16 +39,16 @@ public class UserController {
         try {
             Optional<User> optionalExistingUser = userService.findUserByUsername(user.getUsername());
             if (optionalExistingUser.isPresent()) {
-                redirectAttributes.addFlashAttribute("message", "Username already exists.");
+                redirectAttributes.addFlashAttribute("message", "Brugernavn eksisterer allerede. Brug et andet brugernavn");
                 return "redirect:/users/registerDisplay";
             }
             System.out.println("for create");
             userService.createUser(user);
             System.out.println("efter create");
-            redirectAttributes.addFlashAttribute("message", "User registered successfully!");
+            redirectAttributes.addFlashAttribute("message", "Brugeren blev oprettet");
             return "redirect:/users/loginDisplay";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "An error occurred.");
+            redirectAttributes.addFlashAttribute("message", "Noget gik galt. Prøv venligst igen");
             return "redirect:/users/registerDisplay";
         }
     }
@@ -69,11 +69,11 @@ public class UserController {
                 }
                 return "redirect:/errorPage";
             } else {
-                redirectAttributes.addFlashAttribute("message", "Incorrect username or password. Try again");
+                redirectAttributes.addFlashAttribute("message", "Forkert brugernavn eller kodeord. Prøv venligst igen");
                 return "redirect:/users/loginDisplay";
             }
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "An unexpected error occurred.");
+            redirectAttributes.addFlashAttribute("message", "Noget gik galt. Prøv venligst igen");
             return "redirect:/errorPage";
         }
     }
@@ -90,7 +90,7 @@ public class UserController {
             model.addAttribute("userList", userList);
             return "userList";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "An error occurred while fetching the user list.");
+            redirectAttributes.addFlashAttribute("message", "Kunne ikke få fat på listen af brugere");
             return "redirect:/users/loginDisplay";
         }
     }
@@ -112,10 +112,9 @@ public class UserController {
         User userToDelete = userService.findUserById(userToDeleteId);
         if (userToDelete != null) {
             userService.deleteUser(userToDeleteId);
-            redirectAttributes.addFlashAttribute("message",
-                    userToDelete.getUsername() + " was successfully deleted.");
+            redirectAttributes.addFlashAttribute("message", "Brugeren blev slettet");
         } else {
-            redirectAttributes.addFlashAttribute("message", "User not found.");
+            redirectAttributes.addFlashAttribute("message", "Brugeren blev ikke fundet");
         }
         return "redirect:/users/userListDisplay";
     }
@@ -137,13 +136,13 @@ public class UserController {
         Role role = currentUser.getUserRole();
 
         if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
-            redirectAttributes.addFlashAttribute("message", "User not authorized to see user list");
+            redirectAttributes.addFlashAttribute("message", "Kun ADMIN og MANAGER brugere kan benytte denne funktion");
             return "redirect:/menu";
         }
 
         User userToEdit = userService.findUserById(userId);
         if (userToEdit == null) {
-            redirectAttributes.addFlashAttribute("message", "User to edit was not found");
+            redirectAttributes.addFlashAttribute("message", "Brugeren blev ikke fundet");
             return "redirect:/menu";
         }
 
@@ -167,12 +166,12 @@ public class UserController {
         Role role = currentUser.getUserRole();
 
         if (!Role.ADMIN.equals(role) && !Role.MANAGER.equals(role)) {
-            redirectAttributes.addFlashAttribute("message", "User not authorized to edit user");
+            redirectAttributes.addFlashAttribute("message", "Kun ADMIN og MANAGER brugere kan benytte denne funktion");
             return "redirect:/menu";
         }
 
         userService.editUser(userId, userDetails);
-        redirectAttributes.addFlashAttribute("message", "User updated successfully");
+        redirectAttributes.addFlashAttribute("message", "Brugeren blev opdateret");
         return "redirect:/users/userListDisplay";
     }
 
