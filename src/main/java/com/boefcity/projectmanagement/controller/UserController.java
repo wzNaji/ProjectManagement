@@ -88,7 +88,7 @@ public class UserController {
         try {
             List<User> userList = userService.findAllUsers();
             model.addAttribute("userList", userList);
-            return "userList";
+            return "/user/userList";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", "Kunne ikke få fat på listen af brugere");
             return "redirect:/users/loginDisplay";
