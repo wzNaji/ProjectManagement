@@ -25,13 +25,12 @@
 </header>
 
 <main class="container flex-grow-1 my-3">
-    <section th:if="${message != null}" class="alert alert-dismissible fade show" role="alert">
-        <span th:text="${message}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <section th:if="${message}" class="alert alert-primary mb-3 col-md-6">
+        <p th:text="${message}"></p>
     </section>
 
     <section class="mb-3">
-        <label for="subprojectName" class="form-label white-text">Subprojekt navn:</label>
+        <label for="subprojectName" class="form-label text-white">Subprojekt navn:</label>
         <input type="text" id="subprojectName" th:value="${subproject.subprojectName}" class="form-control" readonly/>
     </section>
 

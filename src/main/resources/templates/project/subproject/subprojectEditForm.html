@@ -4,61 +4,78 @@
     <meta charset="UTF-8">
     <title>Rediger Subprojekt</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/bodyHeaderFooter.css">
 </head>
 <body class="d-flex flex-column min-vh-100">
-<main>
-    <header class="m-3 text-center">
-        <h1>Rediger Subprojekt</h1>
-    </header>
+
+<header class="d-flex justify-content-between align-items-center text-white py-3 px-3">
+    <h1 class="mb-0">Rediger Subprojekt</h1>
+    <nav>
+        <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link text-white" href="/">Forside</a>
+            </li>
+            <li class="nav-item">
+                <form id="logout-form" th:action="@{/logout}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-danger ms-3">Log ud</button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<main class="container flex-grow-1 my-3">
     <form th:action="@{/subprojects/editForm/{subprojectId}(subprojectId=${subprojectId}, projectId=${projectId})}" th:method="post" th:object="${subproject}">
-        <div class="m-3">
-            <label for="title" class="form-label">Navn</label>
+        <section class="mb-3">
+            <label for="title" class="form-label text-white">Navn</label>
             <input type="text" th:field="*{subprojectName}" class="form-control" id="title">
-        </div>
-        <div class="m-3">
-            <label for="description" class="form-label">Beskrivelse</label>
+        </section>
+        <section class="mb-3">
+            <label for="description" class="form-label text-white">Beskrivelse</label>
             <textarea th:field="*{subprojectDescription}" class="form-control" id="description"></textarea>
-        </div>
-        <div class="m-3">
-            <label for="startDate" class="form-label">Start dato</label>
-            <input type="date" th:field="*{subprojectStartDate}" class="form-control" id="startDate">
-        </div>
-        <div class="m-3">
-            <label for="dueDate" class="form-label">Slut dato</label>
-            <input type="date" th:field="*{subprojectDueDate}" class="form-control" id="dueDate">
-        </div>
-        <div class="m-3">
-            <label for="priority" class="form-label">Prioritet</label>
+        </section>
+        <section class="mb-3">
+            <label for="priority" class="form-label text-white">Prioritet</label>
             <select th:field="*{priorityLevel}" id="priority" class="form-select">
                 <option value="" th:text="'Vælg Prioritetsniveau'" th:if="${subproject.priorityLevel == null}" th:selected="true"></option>
-                <option th:each="priority : ${priorityLevel}" th:value="${priority}" th:text="${priority}"
-                        th:selected="${subproject.priorityLevel} == ${priority}">
-                </option>
+                <option th:each="priority : ${priorityLevel}" th:value="${priority}" th:text="${priority}" th:selected="${subproject.priorityLevel} == ${priority}"></option>
             </select>
-        </div>
-        <div class="m-3">
-            <label for="status" class="form-label">Status</label>
+        </section>
+        <section class="mb-3">
+            <label for="status" class="form-label text-white">Status</label>
             <select th:field="*{status}" id="status" class="form-select">
                 <option value="" th:text="'Vælg Status'" th:if="${subproject.status == null}" th:selected="true"></option>
-                <option th:each="statusItem : ${status}" th:value="${statusItem}" th:text="${statusItem}"
-                        th:selected="${subproject.status} == ${statusItem}">
-                </option>
+                <option th:each="statusItem : ${status}" th:value="${statusItem}" th:text="${statusItem}" th:selected="${subproject.status} == ${statusItem}"></option>
             </select>
-        </div>
-        <div class="m-3">
-            <label for="subprojectCost" class="form-label">Pris</label>
+        </section>
+        <section class="mb-3">
+            <label for="subprojectCost" class="form-label text-white">Pris</label>
             <input type="number" step="0.01" th:field="*{subprojectCost}" class="form-control" id="subprojectCost">
-        </div>
-        <div class="m-3">
-            <label for="subprojectHours" class="form-label">Timer</label>
+        </section>
+        <section class="mb-3">
+            <label for="subprojectHours" class="form-label text-white">Timer</label>
             <input type="number" step="0.5" th:field="*{subprojectHours}" class="form-control" id="subprojectHours">
-        </div>
-        <button type="submit" class="btn btn-primary">Tilføj</button>
-        <a href="/projects/overviewDisplay" th:href="@{/projects/overviewDisplay(projectId=${projectId})}" class="btn btn-secondary m-3">Annuller</a>
+        </section>
+        <section class="row mb-3">
+            <div class="col-md-6">
+                <label for="startDate" class="form-label text-white">Start dato</label>
+                <input type="datetime-local" th:field="*{subprojectStartDate}" class="form-control" id="startDate">
+            </div>
+            <div class="col-md-6">
+                <label for="dueDate" class="form-label text-white">Slut dato</label>
+                <input type="datetime-local" th:field="*{subprojectDueDate}" class="form-control" id="dueDate">
+            </div>
+        </section>
+        <button type="submit" class="btn btn-primary mb-3">Tilføj</button>
+        <a href="/projects/overviewDisplay" th:href="@{/projects/overviewDisplay(projectId=${projectId})}" class="btn btn-secondary mb-3 ms-3">Annuller</a>
     </form>
 </main>
-<footer class="mt-auto text-center">
-    <p>BoefCity@EMC.com</p>
+
+<footer class="text-center text-white mt-auto">
+    <section>
+        <p>&copy; 2024 Projektstyringsværktøj.<br> BoefCity@EMC.com</p>
+    </section>
 </footer>
+
 </body>
 </html>
