@@ -59,7 +59,7 @@ public class UserControllerTest {
 
         String result = userController.registerUser(newUser, redirectAttributes);
         assertEquals("redirect:/users/registerDisplay", result);
-        verify(redirectAttributes).addFlashAttribute("message", "Username already exists.");
+        verify(redirectAttributes).addFlashAttribute("message", "Brugernavn eksisterer allerede. Brug et andet brugernavn");
     }
 
     @Test
@@ -73,7 +73,7 @@ public class UserControllerTest {
         String result = userController.registerUser(newUser, redirectAttributes);
 
         assertEquals("redirect:/users/loginDisplay", result);
-        verify(redirectAttributes).addFlashAttribute("message", "User registered successfully!");
+        verify(redirectAttributes).addFlashAttribute("message", "Brugeren blev oprettet");
 
         verify(userService).createUser(any(User.class));
     }
@@ -88,7 +88,7 @@ public class UserControllerTest {
         String result = userController.registerUser(newUser, redirectAttributes);
 
         assertEquals("redirect:/users/registerDisplay", result);
-        verify(redirectAttributes).addFlashAttribute("message", "An error occurred.");
+        verify(redirectAttributes).addFlashAttribute("message", "Noget gik galt. Prøv venligst igen");
     }
 
     // User Login Tests
@@ -98,7 +98,7 @@ public class UserControllerTest {
 
         String result = userController.loginUser("testUser", "testPass", session, redirectAttributes);
         assertEquals("redirect:/users/loginDisplay", result);
-        verify(redirectAttributes).addFlashAttribute("message", "Incorrect username or password. Try again");
+        verify(redirectAttributes).addFlashAttribute("message", "Forkert brugernavn eller kodeord. Prøv venligst igen");
     }
 
     @Test
@@ -128,7 +128,7 @@ public class UserControllerTest {
 
         String result = userController.loginUser("validUser", "validPass", session, redirectAttributes);
         assertEquals("redirect:/errorPage", result);
-        verify(redirectAttributes).addFlashAttribute("message", "An unexpected error occurred.");
+        verify(redirectAttributes).addFlashAttribute("message", "Noget gik galt. Prøv venligst igen");
     }
 
     // User List Display Tests
@@ -152,7 +152,7 @@ public class UserControllerTest {
             when(userService.findAllUsers()).thenReturn(userList);
 
             String result = userController.userListDisplay(session, model, redirectAttributes);
-            assertEquals("userList", result);
+            assertEquals("/user/userList", result);
             verify(model).addAttribute("userList", userList);
         }
     }
@@ -165,7 +165,7 @@ public class UserControllerTest {
 
             String result = userController.userListDisplay(session, model, redirectAttributes);
             assertEquals("redirect:/users/loginDisplay", result);
-            verify(redirectAttributes).addFlashAttribute("message", "An error occurred while fetching the user list.");
+            verify(redirectAttributes).addFlashAttribute("message", "Kunne ikke få fat på listen af brugere");
         }
     }
 

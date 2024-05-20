@@ -23,7 +23,6 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mockStatic;
 
-/*
 @ExtendWith(MockitoExtension.class)
 public class ProjectControllerTest {
 
@@ -41,7 +40,6 @@ public class ProjectControllerTest {
     @InjectMocks
     private ProjectController projectController;
 
-    // Test: projectsAddFormDisplay
     @Test
     public void testProjectsAddFormDisplay_NotAuthenticated() {
         try (var mockedAppUtility = mockStatic(AppUtility.class)) {
@@ -55,21 +53,33 @@ public class ProjectControllerTest {
     @Test
     public void testProjectsAddFormDisplay_AdminRole() {
         try (var mockedAppUtility = mockStatic(AppUtility.class)) {
+            // Mock session, redirectAttributes, and model
+            HttpSession session = mock(HttpSession.class);
+            RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
+            Model model = mock(Model.class);
+
             Long userId = 1L;
             User adminUser = new User();
             adminUser.setUserId(userId);
             adminUser.setUserRole(Role.ADMIN);
 
+            // Mock static method calls
             mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
+            mockedAppUtility.when(() -> AppUtility.isAdminOrManager(adminUser)).thenReturn(true);
 
+            // Mock session and service method interactions
             when(session.getAttribute("userId")).thenReturn(userId);
             when(userService.findUserById(userId)).thenReturn(adminUser);
 
+            // Invoke controller method
             String result = projectController.projectsAddFormDisplay(model, session, redirectAttributes);
+
+            // Verify the result and interactions
             assertEquals("/project/projectAddForm", result);
             verify(model).addAttribute(eq("project"), any(Project.class));
         }
     }
+
 
     @Test
     public void testProjectsAddFormDisplay_WorkerRole() {
@@ -86,7 +96,7 @@ public class ProjectControllerTest {
 
             String result = projectController.projectsAddFormDisplay(model, session, redirectAttributes);
             assertEquals("redirect:/projects/display", result);
-            verify(redirectAttributes).addFlashAttribute("message", "User not authorized to add new projects");
+            verify(redirectAttributes).addFlashAttribute("message", "Kun ADMIN og MANAGER brugere kan benytte denne funktion");
         }
     }
 
@@ -105,25 +115,36 @@ public class ProjectControllerTest {
     @Test
     public void testCreateProject_AdminRole_Success() {
         try (var mockedAppUtility = mockStatic(AppUtility.class)) {
+            // Mock session and redirectAttributes
+            HttpSession session = mock(HttpSession.class);
+            RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
+
             Long userId = 1L;
             User adminUser = new User();
             adminUser.setUserId(userId);
             adminUser.setUserRole(Role.ADMIN);
 
+            // Mock static method calls
             mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
+            mockedAppUtility.when(() -> AppUtility.isAdminOrManager(adminUser)).thenReturn(true);
 
+            // Mock session and service method interactions
             when(session.getAttribute("userId")).thenReturn(userId);
             when(userService.findUserById(userId)).thenReturn(adminUser);
 
             Project project = new Project();
             project.setProjectName("Test Project");
 
+            // Invoke controller method
             String result = projectController.createProject(project, session, redirectAttributes);
+
+            // Verify the result and interactions
             assertEquals("redirect:/projects/display", result);
             verify(projectService).createProject(project);
-            verify(redirectAttributes).addFlashAttribute("message", "You have successfully created a new project: " + project.getProjectName());
+            verify(redirectAttributes).addFlashAttribute("message", "Projektet blev oprettet");
         }
     }
+
 
     @Test
     public void testCreateProject_AdminRole_Exception() {
@@ -135,19 +156,15 @@ public class ProjectControllerTest {
 
             mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
 
-            when(session.getAttribute("userId")).thenReturn(userId);
-            when(userService.findUserById(userId)).thenReturn(adminUser);
-
             Project project = new Project();
             project.setProjectName("Test Project");
 
-            doThrow(new RuntimeException("Service error")).when(projectService).createProject(project);
-
             String result = projectController.createProject(project, session, redirectAttributes);
             assertEquals("redirect:/projects/display", result);
-            verify(redirectAttributes).addFlashAttribute("message", "User not authorized to create a new project.");
+            verify(redirectAttributes).addFlashAttribute("message", "Kun ADMIN og MANAGER brugere kan benytte denne funktion");
         }
     }
+
 
     @Test
     public void testCreateProject_UnauthorizedRole() {
@@ -182,13 +199,21 @@ public class ProjectControllerTest {
     @Test
     public void testProjectsDisplay_AdminOrManagerRole() {
         try (var mockedAppUtility = mockStatic(AppUtility.class)) {
+            // Mock session, redirectAttributes, and model
+            HttpSession session = mock(HttpSession.class);
+            RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
+            Model model = mock(Model.class);
+
             Long userId = 1L;
             User adminUser = new User();
             adminUser.setUserId(userId);
             adminUser.setUserRole(Role.ADMIN);
 
+            // Mock static method calls
             mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
+            mockedAppUtility.when(() -> AppUtility.isAdminOrManager(adminUser)).thenReturn(true);
 
+            // Mock session and service method interactions
             when(session.getAttribute("userId")).thenReturn(userId);
             when(userService.findUserById(userId)).thenReturn(adminUser);
 
@@ -197,11 +222,15 @@ public class ProjectControllerTest {
 
             when(projectService.findAllProjects()).thenReturn(projectList);
 
+            // Invoke controller method
             String result = projectController.projectsDisplay(session, model, redirectAttributes);
+
+            // Verify the result and interactions
             assertEquals("/project/projectList", result);
             verify(model).addAttribute("projectList", projectList);
         }
     }
+
 
     @Test
     public void testProjectsDisplay_WorkerRole() {
@@ -236,7 +265,6 @@ public class ProjectControllerTest {
         }
     }
 
-    // Test: assignUserToProject
     @Test
     public void testAssignUserToProject_NotAuthenticated() {
         try (var mockedAppUtility = mockStatic(AppUtility.class)) {
@@ -257,22 +285,33 @@ public class ProjectControllerTest {
             currentUser.setUserId(currentUserId);
             currentUser.setUserRole(Role.ADMIN);
 
+
+            HttpSession session = mock(HttpSession.class);
+            RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
+
             mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
+            mockedAppUtility.when(() -> AppUtility.isAdminOrManager(currentUser)).thenReturn(true);
 
             when(session.getAttribute("userId")).thenReturn(currentUserId);
             when(userService.findUserById(currentUserId)).thenReturn(currentUser);
             when(projectService.isUserAssignedToProject(projectId, userId)).thenReturn(false);
 
             String result = projectController.assignUserToProject(projectId, userId, session, redirectAttributes);
+
             assertEquals("redirect:/projects/overviewDisplay?projectId=" + projectId, result);
             verify(projectService).assignUsersToProject(projectId, userId);
-            verify(redirectAttributes).addFlashAttribute("message", "User successfully assigned to the project.");
+            verify(redirectAttributes).addFlashAttribute("message", "Brugeren blev tilføjet til projektet");
         }
     }
+
 
     @Test
     public void testAssignUserToProject_UserAlreadyAssigned() {
         try (var mockedAppUtility = mockStatic(AppUtility.class)) {
+
+            HttpSession session = mock(HttpSession.class);
+            RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
+
             Long projectId = 1L;
             Long userId = 2L;
             Long currentUserId = 3L;
@@ -281,20 +320,28 @@ public class ProjectControllerTest {
             currentUser.setUserRole(Role.ADMIN);
 
             mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
+            mockedAppUtility.when(() -> AppUtility.isAdminOrManager(currentUser)).thenReturn(true);
 
             when(session.getAttribute("userId")).thenReturn(currentUserId);
             when(userService.findUserById(currentUserId)).thenReturn(currentUser);
             when(projectService.isUserAssignedToProject(projectId, userId)).thenReturn(true);
 
+
             String result = projectController.assignUserToProject(projectId, userId, session, redirectAttributes);
+
             assertEquals("redirect:/projects/overviewDisplay?projectId=" + projectId, result);
-            verify(redirectAttributes).addFlashAttribute("message", "User is already assigned to the project.");
+            verify(redirectAttributes).addFlashAttribute("message", "Brugeren er allerede tilføjet til dette projekt");
         }
     }
+
 
     @Test
     public void testAssignUserToProject_Exception() {
         try (var mockedAppUtility = mockStatic(AppUtility.class)) {
+            // Mock session and redirectAttributes
+            HttpSession session = mock(HttpSession.class);
+            RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
+
             Long projectId = 1L;
             Long userId = 2L;
             Long currentUserId = 3L;
@@ -302,17 +349,24 @@ public class ProjectControllerTest {
             currentUser.setUserId(currentUserId);
             currentUser.setUserRole(Role.ADMIN);
 
+            // Mock static method calls
             mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(false);
+            mockedAppUtility.when(() -> AppUtility.isAdminOrManager(currentUser)).thenReturn(true);
 
+            // Mock session and service method interactions
             when(session.getAttribute("userId")).thenReturn(currentUserId);
             when(userService.findUserById(currentUserId)).thenReturn(currentUser);
             when(projectService.isUserAssignedToProject(projectId, userId)).thenThrow(new RuntimeException("Service error"));
 
+            // Invoke controller method
             String result = projectController.assignUserToProject(projectId, userId, session, redirectAttributes);
+
+            // Verify the result and interactions
             assertEquals("redirect:/projects/overviewDisplay?projectId=" + projectId, result);
-            verify(redirectAttributes).addFlashAttribute("message", "Something went wrong. User was not assigned.");
+            verify(redirectAttributes).addFlashAttribute("message", "Noget gik galt. Prøv venligst igen");
         }
     }
+
 
     @Test
     public void testAssignUserToProject_UnauthorizedRole() {
@@ -335,4 +389,3 @@ public class ProjectControllerTest {
     }
 
 }
- */

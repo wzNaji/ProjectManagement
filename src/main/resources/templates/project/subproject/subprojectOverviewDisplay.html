@@ -4,58 +4,82 @@
     <meta charset="UTF-8">
     <title>Subprojekt overblik</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/bodyHeaderFooter.css">
 </head>
-<body class="container mt-5">
+<body class="d-flex flex-column min-vh-100">
 
-<h1 class="mb-4">Subprojekt overblik</h1>
-<div th:if="${message != null}" class="alert alert-dismissible fade show" role="alert">
-    <span th:text="${message}"></span>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
+<header class="d-flex justify-content-between align-items-center text-white py-3 px-3">
+    <h1 class="mb-0">Subprojekt overblik</h1>
+    <nav>
+        <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link text-white" href="/">Forside</a>
+            </li>
+            <li class="nav-item">
+                <form id="logout-form" th:action="@{/logout}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-danger ms-3">Log ud</button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+</header>
 
-<div class="mb-3">
-    <label for="subprojectName" class="form-label">Subprojekt navn:</label>
-    <input type="text" id="subprojectName" th:value="${subproject.subprojectName}" class="form-control" readonly/>
-</div>
-<h2 class="mb-3">Subprojekt tasks</h2>
-<table class="table table-hover">
-    <thead>
-    <tr>
-        <th scope="col">#</th>
-        <th scope="col">Navn</th>
-        <th scope="col">Beskrivelse</th>
-        <th scope="col">Prioritet</th>
-        <th scope="col">Status</th>
-        <th scope="col"></th>
-        <th scope="col"></th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="task, stat : ${subprojectTasks}">
-        <th scope="row" th:text="${stat.index + 1}"></th>
-        <td th:text="${task.taskName}">Navn</td>
-        <td th:text="${task.taskDescription}">Beskrivelse</td>
-        <td th:text="${task.priorityLevel}">Prioritet</td>
-        <td th:text="${task.status}">Status</td>
-        <td>
-            <a th:href="@{/tasks/editFormDisplay/{taskId}(taskId=${task.taskId},subprojectId=${subproject.subprojectId},projectId=${project.projectId})}" class="btn btn-primary ms-3">
-                Rediger
-            </a>
-        </td>
-        <td>
-            <form th:action="@{/tasks/delete}" method="post" onsubmit="return confirm('Er du sikker på du vil slette denne task?');">
-                <input type="hidden" name="taskId" th:value="${task.taskId}"/>
-                <input type="hidden" name="subprojectId" th:value="${subproject.subprojectId}"/>
-                <input type="hidden" name="projectId" th:value="${project.projectId}"/>
-                <button type="submit" class="btn btn-danger btn-sm">Slet</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
-<a th:href="@{/tasks/addFormDisplay(subprojectId=${subproject.subprojectId}, projectId=${project.projectId})}">
-    <button type="button" class="btn btn-success ms-3">Tilføj task</button>
-</a>
-<a href="/projects/overviewDisplay" th:href="@{/projects/overviewDisplay(projectId=${project.projectId})}" class="btn btn-secondary m-3">Tilbage</a>
+<main class="container flex-grow-1 my-3">
+    <section th:if="${message}" class="alert alert-primary mb-3 col-md-6">
+        <p th:text="${message}"></p>
+    </section>
+
+    <section class="mb-3">
+        <label for="subprojectName" class="form-label text-white">Subprojekt navn:</label>
+        <input type="text" id="subprojectName" th:value="${subproject.subprojectName}" class="form-control" readonly/>
+    </section>
+
+    <h2 class="mb-3 text-white">Subprojekt tasks</h2>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Navn</th>
+            <th scope="col">Beskrivelse</th>
+            <th scope="col">Prioritet</th>
+            <th scope="col">Status</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="task, stat : ${subprojectTasks}">
+            <th scope="row" th:text="${stat.index + 1}"></th>
+            <td th:text="${task.taskName}">Navn</td>
+            <td th:text="${task.taskDescription}">Beskrivelse</td>
+            <td th:text="${task.priorityLevel}">Prioritet</td>
+            <td th:text="${task.status}">Status</td>
+            <td>
+                <a th:href="@{/tasks/editFormDisplay/{taskId}(taskId=${task.taskId},subprojectId=${subproject.subprojectId},projectId=${project.projectId})}" class="btn btn-primary">
+                    Rediger
+                </a>
+            </td>
+            <td>
+                <form th:action="@{/tasks/delete}" method="post" onsubmit="return confirm('Er du sikker på du vil slette denne task?');">
+                    <input type="hidden" name="taskId" th:value="${task.taskId}"/>
+                    <input type="hidden" name="subprojectId" th:value="${subproject.subprojectId}"/>
+                    <input type="hidden" name="projectId" th:value="${project.projectId}"/>
+                    <button type="submit" class="btn btn-danger">Slet</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a th:href="@{/tasks/addFormDisplay(subprojectId=${subproject.subprojectId}, projectId=${project.projectId})}" class="btn btn-success mb-3">Tilføj task</a>
+    <a href="/projects/overviewDisplay" th:href="@{/projects/overviewDisplay(projectId=${project.projectId})}" class="btn btn-secondary mb-3 ms-3">Tilbage</a>
+</main>
+
+<footer class="text-center text-white mt-auto py-3">
+    <section>
+        <p>&copy; 2024 Projektstyringsværktøj.<br> BoefCity@EMC.com</p>
+    </section>
+</footer>
+
 </body>
 </html>

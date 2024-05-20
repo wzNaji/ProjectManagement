@@ -1,0 +1,11 @@
+body {
+    background: linear-gradient(to bottom, #060680, darkviolet);
+}
+
+header {
+    background: linear-gradient(to top, #1111ff00, darkviolet);
+}
+
+footer {
+    background-color: #343a40;
+}

@@ -60,7 +60,7 @@ public class ProjectController {
         User currentUser = userService.findUserById(currentUserId);
 
         if (!AppUtility.isAdminOrManager(currentUser)) {
-            redirectAttributes.addFlashAttribute("message", "User not authorized to add new projects.");
+            redirectAttributes.addFlashAttribute("message", "Kun ADMIN og MANAGER brugere kan benytte denne funktion");
             return "redirect:/projects/display";
         }
 
@@ -82,16 +82,16 @@ public class ProjectController {
         User currentUser = userService.findUserById(currentUserId);
 
         if (!AppUtility.isAdminOrManager(currentUser)) {
-            redirectAttributes.addFlashAttribute("message", "User not authorized to create a new project.");
+            redirectAttributes.addFlashAttribute("message", "Kun ADMIN og MANAGER brugere kan benytte denne funktion");
             return "redirect:/projects/display";
         }
 
         try {
             projectService.createProject(project);
             redirectAttributes.addFlashAttribute("message",
-                    "You have successfully created a new project: " + project.getProjectName());
+                    "Projektet blev oprettet");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Something went wrong. Please try again.");
+            redirectAttributes.addFlashAttribute("message", "Noget gik galt. Prøv venligst igen");
         }
 
         return "redirect:/projects/display";
@@ -108,11 +108,11 @@ public class ProjectController {
         try {
             project = projectService.findProjectById(projectId);
             if (project == null) {
-                redirectAttributes.addFlashAttribute("message", "Project not found.");
+                redirectAttributes.addFlashAttribute("message", "Projektet blev ikke fundet");
                 return "redirect:/projects/display";
             }
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Error retrieving project. Please try again.");
+            redirectAttributes.addFlashAttribute("message", "Fejl under hetning af projektet. Prøv venligst igen.");
             return "redirect:/projects/display";
         }
 
@@ -136,8 +136,12 @@ public class ProjectController {
             return "redirect:/users/loginDisplay";
         }
 
-        if (projectId == null || userId == null) {
-            redirectAttributes.addFlashAttribute("message", "User or project information is missing. Please try again.");
+        if (projectId == null) {
+            redirectAttributes.addFlashAttribute("message", "Projektet blev ikke fundet. Prøv venligst igen");
+            return "redirect:/projects/display";
+        }
+        if (userId == null) {
+            redirectAttributes.addFlashAttribute("message", "Brugeren blev ikke fundet. Prøv venligst igen");
             return "redirect:/projects/display";
         }
 
@@ -145,19 +149,19 @@ public class ProjectController {
         User currentUser = userService.findUserById(currentUserId);
 
         if (!AppUtility.isAdminOrManager(currentUser)) {
-            redirectAttributes.addFlashAttribute("message", "User not authorized to assign users to this project.");
+            redirectAttributes.addFlashAttribute("message", "Kun ADMIN og MANAGER brugere kan benytte denne funktion");
             return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         }
 
         try {
             if (projectService.isUserAssignedToProject(projectId, userId)) {
-                redirectAttributes.addFlashAttribute("message", "User is already assigned to the project.");
+                redirectAttributes.addFlashAttribute("message", "Brugeren er allerede tilføjet til dette projekt");
             } else {
                 projectService.assignUsersToProject(projectId, userId);
-                redirectAttributes.addFlashAttribute("message", "User successfully assigned to the project.");
+                redirectAttributes.addFlashAttribute("message", "Brugeren blev tilføjet til projektet");
             }
         } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("message", "Something went wrong. User was not assigned.");
+            redirectAttributes.addFlashAttribute("message", "Noget gik galt. Prøv venligst igen");
         }
 
         return "redirect:/projects/overviewDisplay?projectId=" + projectId;
@@ -176,20 +180,20 @@ public class ProjectController {
         User currentUser = userService.findUserById(currentUserId);
 
         if (!AppUtility.isAdminOrManager(currentUser)) {
-            redirectAttributes.addFlashAttribute("message", "User not authorized to delete projects.");
+            redirectAttributes.addFlashAttribute("message", "Kun ADMIN og MANAGER brugere kan benytte denne funktion");
             return "redirect:/projects/display";
         }
 
         try {
             Project projectToDelete = projectService.findProjectById(projectToDeleteId);
             if (projectToDelete == null) {
-                redirectAttributes.addFlashAttribute("message", "Project not found.");
+                redirectAttributes.addFlashAttribute("message", "Projektet blev ikke fundet");
             } else {
                 projectService.deleteProjectById(projectToDeleteId);
-                redirectAttributes.addFlashAttribute("message", projectToDelete.getProjectName() + " was successfully deleted.");
+                redirectAttributes.addFlashAttribute("message", "Projektet blev slettet");
             }
         } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("message", "Something went wrong. The project was not deleted.");
+            redirectAttributes.addFlashAttribute("message", "Der gik noget galt. Prøv venligst igen");
         }
 
         return "redirect:/projects/display";
@@ -206,8 +210,12 @@ public class ProjectController {
             return "redirect:/projects/display";
         }
 
-        if (projectId == null || userId == null) {
-            redirectAttributes.addFlashAttribute("message", "User or project information is missing. Please try again.");
+        if (projectId == null) {
+            redirectAttributes.addFlashAttribute("message", "Projektet blev ikke fundet. Prøv venligst igen");
+            return "redirect:/projects/display";
+        }
+        if (userId == null) {
+            redirectAttributes.addFlashAttribute("message", "Brugeren blev ikke fundet. Prøv venligst igen");
             return "redirect:/projects/display";
         }
 
@@ -215,15 +223,15 @@ public class ProjectController {
         User currentUser = userService.findUserById(currentUserId);
 
         if (!AppUtility.isAdminOrManager(currentUser)) {
-            redirectAttributes.addFlashAttribute("message", "You are not authorized to remove assigned users.");
+            redirectAttributes.addFlashAttribute("message", "Kun ADMIN og MANAGER brugere kan benytte denne funktion");
             return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         }
 
         try {
             projectService.removeUserFromProject(userId, projectId);
-            redirectAttributes.addFlashAttribute("message", "User was successfully removed from the project.");
+            redirectAttributes.addFlashAttribute("message", "Brugeren blev fjernet fra projektet");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Failed to remove user from the project due to an unexpected error.");
+            redirectAttributes.addFlashAttribute("message", "Kunne ikke fjerne brugeren fra projektet. Prøv venligst igen");
         }
 
         return "redirect:/projects/overviewDisplay?projectId=" + projectId;
@@ -244,13 +252,13 @@ public class ProjectController {
         User currentUser = userService.findUserById(currentUserId);
 
         if (!AppUtility.isAdminOrManager(currentUser)) {
-            redirectAttributes.addFlashAttribute("message", "User not authorized to edit this project.");
+            redirectAttributes.addFlashAttribute("message", "Kun ADMIN og MANAGER brugere kan benytte denne funktion");
             return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         }
 
         Project projectToEdit = projectService.findProjectById(projectId);
         if (projectToEdit == null) {
-            redirectAttributes.addFlashAttribute("message", "Project to edit was not found.");
+            redirectAttributes.addFlashAttribute("message", "Projektet blev ikke fundet");
             return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         }
 
@@ -273,13 +281,13 @@ public class ProjectController {
         User currentUser = userService.findUserById(currentUserId);
 
         if (!AppUtility.isAdminOrManager(currentUser)) {
-            redirectAttributes.addFlashAttribute("message", "User not authorized to edit this project.");
+            redirectAttributes.addFlashAttribute("message", "Kun ADMIN og MANAGER brugere kan t this project.");
             return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         }
 
         Project existingProject = projectService.findProjectById(projectId);
         if (existingProject == null) {
-            redirectAttributes.addFlashAttribute("message", "Project to edit was not found.");
+            redirectAttributes.addFlashAttribute("message", "Projektet blev ikke fundet");
             return "redirect:/projects/overviewDisplay?projectId=" + projectId;
         }
 

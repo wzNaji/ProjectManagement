@@ -1,0 +1,195 @@
+/* homepage.css */
+
+/* Standardindstillinger for hele dokumentet */
+body {
+    margin: 0; /* Fjerner standard margin */
+    padding: 0; /* Fjerner standard padding */
+    font-family: 'Arial', sans-serif; /* Sætter standard skrifttype til Arial */
+}
+
+/* Hovedcontainer, der bruger CSS Grid til layout */
+#main-container {
+    display: grid; /* Angiver, at dette element bruger grid layout */
+    grid-template-areas:
+        "header header header"
+        "content content content"
+        "footer footer footer"; /* Definerer grid-områder */
+    grid-template-columns: 1fr 1fr 1fr; /* Definerer tre lige brede kolonner */
+    grid-template-rows: 80px auto 100px; /* Definerer rækker: 60px header, auto content, 100px footer */
+    grid-gap: 20px; /* Tilføjer mellemrum mellem grid-områder */
+    min-height: 100vh; /* Sørger for at containeren fylder hele højden af vinduet */
+    background: linear-gradient(to bottom, #060680, darkviolet); /* Tilføjer en baggrundsgradient */
+    flex-grow: 1; /* Sikrer at containeren vokser for at fylde tilgængelig plads */
+    /* Opretter en grid layout, definerer områder og sørger for, at containeren fylder hele højden af vinduet */
+}
+
+/* Header-sektion */
+#header {
+    grid-area: header; /* Placerer dette element i header-området i grid layoutet */
+    background: linear-gradient(to top, #1111ff00, darkviolet); /* Sætter baggrundsfarve */
+    color: white; /* Sætter tekstfarve til hvid */
+    display: flex; /* Bruger flexbox layout til at arrangere indholdet */
+    align-items: center; /* Vertikal centrerer indholdet */
+    padding: 0 20px 8px; /* Tilføjer vandret padding */
+    /* Stiler headeren med baggrundsfarve, hvid tekst, centrerer indholdet og tilføjer padding */
+}
+
+/* Indholdet i headeren */
+.header-content {
+    display: flex; /* Bruger flexbox layout til at arrangere indholdet */
+    justify-content: space-between; /* Fordeler plads mellem elementer jævnt */
+    align-items: center; /* Vertikal centrerer indholdet */
+    width: 100%; /* Sikrer at indholdet fylder hele bredden af headeren */
+    /* Arrangerer header-indholdet med flexbox, fordeler pladsen jævnt og centrerer indholdet */
+}
+
+/* Titel i headeren */
+.header h1 {
+    margin: 0; /* Fjerner margin */
+    font-size: 1.5rem; /* Sætter skriftstørrelse */
+    /* Stiler header-overskriften med skriftstørrelse og margin */
+}
+
+/* Navigation i headeren */
+.nav {
+    list-style: none; /* Fjerner punktopstilling */
+    display: flex; /* Bruger flexbox layout til at arrangere indholdet vandret */
+    padding: 0; /* Fjerner padding */
+    margin: 0; /* Fjerner margin */
+    /* Arrangerer navigationselementer horisontalt med flexbox, fjerner standard liste-stil og tilføjer margin */
+}
+
+.nav li {
+    margin-left: 1em; /* Tilføjer venstremargin til hvert listeelement */
+}
+
+/* Links i navigationen */
+.nav li a {
+    color: white; /* Sætter linkfarve til hvid */
+    text-decoration: none; /* Fjerner understregning */
+    font-weight: bold; /* Gør teksten fed */
+    /* Stiler navigation links med farve, tekstdekoration og skriftvægt */
+}
+
+/* Hovedindholdet */
+#main-content {
+    grid-area: content; /* Placerer dette element i content-området i grid layoutet */
+    padding: 20px; /* Tilføjer padding omkring indholdet */
+    /* Stiler hovedindholdet med padding */
+}
+
+/* Hero-sektion */
+#hero {
+    color: white; /* Sætter tekstfarve til hvid */
+    text-align: center; /* Centrerer teksten horisontalt */
+    padding: 5em 0; /* Tilføjer 5em padding på toppen og bunden, 0 på venstre og højre */
+    /* Stiler hero-sektionen med hvid tekst, centrerer tekst horisontalt og tilføjer padding */
+}
+
+/* Indholdet i hero-sektionen */
+.hero-content {
+    display: flex; /* Bruger flexbox layout til at arrangere indholdet */
+    flex-direction: column; /* Arrangerer indholdet i en kolonne */
+    align-items: center; /* Horisontal centrerer indholdet */
+    justify-content: center; /* Vertikal centrerer indholdet */
+    max-width: 800px; /* Sætter maksimal bredde */
+    margin: 0 auto; /* Centrerer indholdet horisontalt */
+    /* Centrerer hero-indholdet med flexbox og begrænser bredden */
+}
+
+/* Overskrift i hero-sektionen */
+.hero h2 {
+    font-size: 2.5rem; /* Sætter skriftstørrelse */
+    margin: 0.5em 0; /* Tilføjer margin over og under */
+    /* Stiler hero-overskriften med skriftstørrelse og margin */
+}
+
+/* Paragraf i hero-sektionen */
+.hero p {
+    font-size: 1.2rem; /* Sætter skriftstørrelse */
+    margin: 0.5em 0; /* Tilføjer margin over og under */
+    /* Stiler hero-paragraffen med skriftstørrelse og margin */
+}
+
+/* Knapper */
+.btn {
+    display: inline-block; /* Gør knappen til et inline-blok element */
+    padding: 0.75em 1.5em; /* Tilføjer padding indeni knappen */
+    margin-top: 1em; /* Tilføjer topmargin */
+    text-decoration: none; /* Fjerner understregning */
+    border-radius: 0.5em; /* Tilføjer afrundede hjørner */
+    transition: background-color 0.3s; /* Tilføjer overgangseffekt ved hover */
+    /* Stiler knapperne med padding, margin, border-radius og overgangseffekt */
+}
+
+/* Primær knap */
+.btn-primary {
+    background-color: #0073e6; /* Sætter baggrundsfarve */
+    color: white; /* Sætter tekstfarve til hvid */
+}
+
+.btn-primary:hover {
+    background-color: #005bb5; /* Ændrer baggrundsfarve ved hover */
+    /* Stiler den primære knap og hover-effekten */
+}
+
+/* Sekundær knap */
+.btn-secondary {
+    background-color: #6c757d; /* Sætter baggrundsfarve */
+    color: white; /* Sætter tekstfarve til hvid */
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268; /* Ændrer baggrundsfarve ved hover */
+    /* Stiler den sekundære knap og hover-effekten */
+}
+
+/* Sektioner: features, about, contact */
+.features, .about, .contact {
+    padding: 3em 0; /* Tilføjer padding på toppen og bunden */
+    text-align: center; /* Centrerer teksten horisontalt */
+    color: white; /* Sætter tekstfarve til hvid */
+    /* Stiler disse sektioner med padding, centrerer tekst og sætter tekstfarve til hvid */
+}
+
+/* Liste over features */
+.feature-list {
+    display: grid; /* Bruger grid layout */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Definerer kolonner, der passer til minimum 300px bredde */
+    gap: 1em; /* Tilføjer mellemrum mellem grid-områder */
+    /* Bruger grid layout til features-listen */
+}
+
+/* Enkelte feature */
+.feature {
+    background-color: #0467ca17; /* Sætter baggrundsfarve */
+    padding: 1em; /* Tilføjer padding */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Tilføjer skyggeeffekt */
+    /* Stiler enkelte features med baggrundsfarve, padding og skygge */
+}
+
+/* Overskrift i en feature */
+.feature h3 {
+    margin-top: 0; /* Fjerner topmargin */
+    /* Fjerner topmargin på feature-overskriften */
+}
+
+/* Footer-sektionen */
+#footer {
+    grid-area: footer; /* Placerer dette element i footer-området i grid layoutet */
+    background-color: #343a40; /* Sætter baggrundsfarve */
+    color: white; /* Sætter tekstfarve til hvid */
+    text-align: center; /* Centrerer teksten horisontalt */
+    padding: 1em 0; /* Tilføjer padding på toppen og bunden */
+    width: 100%; /* Sikrer at footeren strækker sig over hele bredden */
+    align-self: end; /* Sikrer at footeren altid er placeret nederst */
+    /* Stiler footeren med baggrundsfarve, hvid tekst, centrerer tekst og sørger for, at den strækker sig over hele bredden */
+}
+
+/* Indholdet i footeren */
+.footer-content {
+    display: flex; /* Bruger flexbox layout til at arrangere indholdet */
+    flex-direction: column; /* Arrangerer indholdet i en kolonne */
+    align-items: center; /* Centrerer indholdet horisontalt */
+    /* Centrerer indholdet i footeren med flexbox og arrangerer det i en kolonne */
+}
