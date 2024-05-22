@@ -45,16 +45,6 @@ public class User {
         @ToString.Exclude
         private List<Project> projects = new ArrayList<>();
 
-        @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-        @JoinTable(
-                name = "user_subprojects",
-                joinColumns = @JoinColumn(name = "user_id"),
-                inverseJoinColumns = @JoinColumn(name = "subproject_id")
-        )
-        @ToString.Exclude
-        private List<Subproject> Subprojects = new ArrayList<>();
-
-
         public void removeProject(Project project) {
                 projects.remove(project);
                 project.getUsers().remove(this);

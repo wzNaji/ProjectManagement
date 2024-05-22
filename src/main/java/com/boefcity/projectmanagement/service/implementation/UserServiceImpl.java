@@ -68,7 +68,6 @@ public class UserServiceImpl implements UserService {
         User userToDelete = userRepository.findUserByIdNative(userId);
         if (userToDelete != null ) {
             //Fjerner tilhørsforhold fra brugeren, så den efterfølgende kan slettes
-            userToDelete.getSubprojects().clear();
             userToDelete.removeAllProjects();
             userRepository.deleteById(userId);
         }
