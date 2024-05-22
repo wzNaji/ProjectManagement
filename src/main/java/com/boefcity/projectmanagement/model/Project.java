@@ -81,17 +81,16 @@ public class Project {
     }
 
     public void removeSubproject(Subproject subproject) {
-        if (Subprojects.remove(subproject)) { // Only nullify the project reference if the task was successfully removed
+        if (Subprojects.remove(subproject)) {
             subproject.setProject(null);
         }
     }
 
     public void removeAllSubprojects() {
-        // Iterate over a copy of the task list to avoid ConcurrentModificationException
         for (Subproject subproject : new ArrayList<>(Subprojects)) {
             removeSubproject(subproject);
         }
-        Subprojects.clear(); // Optionally clear the tasks list after all tasks have been disassociated
+        Subprojects.clear();
     }
 
 
