@@ -6,7 +6,6 @@ import com.boefcity.projectmanagement.model.Task;
 import com.boefcity.projectmanagement.repository.ProjectRepository;
 import com.boefcity.projectmanagement.repository.SubprojectRepository;
 import com.boefcity.projectmanagement.repository.TaskRepository;
-import com.boefcity.projectmanagement.service.ProjectService;
 import com.boefcity.projectmanagement.service.SubprojectService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
