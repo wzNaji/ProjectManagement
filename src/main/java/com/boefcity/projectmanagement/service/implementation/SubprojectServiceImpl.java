@@ -11,6 +11,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class SubprojectServiceImpl implements SubprojectService {
 
@@ -18,7 +20,9 @@ public class SubprojectServiceImpl implements SubprojectService {
     private final ProjectRepository projectRepository;
     private final TaskRepository taskRepository;
 
-    public SubprojectServiceImpl(SubprojectRepository subprojectRepository, ProjectRepository projectRepository, TaskRepository taskRepository) {
+    public SubprojectServiceImpl(SubprojectRepository subprojectRepository,
+                                 ProjectRepository projectRepository,
+                                 TaskRepository taskRepository) {
         this.subprojectRepository = subprojectRepository;
         this.projectRepository = projectRepository;
         this.taskRepository = taskRepository;
@@ -104,11 +108,11 @@ public class SubprojectServiceImpl implements SubprojectService {
     public void updateSubproject(Long subprojectId, Subproject subprojectDetails) {
         Subproject subprojectToUpdate = subprojectRepository.findSubprojectByIdNative(subprojectId);
 
-        // Error handling for at undgå unødige database handlinger
         if (subprojectToUpdate == null) {
-            throw new EntityNotFoundException("Subprojekt med ID: " + subprojectId + " findes ikke.");
+            throw new EntityNotFoundException("Subproject with ID: " + subprojectId + " does not exist.");
         }
-        //Setter det eksisterende subprojekts attributer til nye værdier, så vi efterfølgende kan opdatere og gemme.
+
+        // Opdaterer subprojektet med nye værdier
         subprojectToUpdate.setSubprojectName(subprojectDetails.getSubprojectName());
         subprojectToUpdate.setSubprojectDescription(subprojectDetails.getSubprojectDescription());
         subprojectToUpdate.setSubprojectStartDate(subprojectDetails.getSubprojectStartDate());
@@ -116,9 +120,30 @@ public class SubprojectServiceImpl implements SubprojectService {
         subprojectToUpdate.setPriorityLevel(subprojectDetails.getPriorityLevel());
         subprojectToUpdate.setStatus(subprojectDetails.getStatus());
         subprojectToUpdate.setSubprojectCost(subprojectDetails.getSubprojectCost());
-        subprojectToUpdate.setSubprojectCost(subprojectDetails.getSubprojectHours());
+        subprojectToUpdate.setSubprojectHours(subprojectDetails.getSubprojectHours());
 
         subprojectRepository.save(subprojectToUpdate);
+
+        // Opdaterer tilknyttede projekt med subprojektets nye vost og hour værdier - Se 'updateProjectCostsAndHours'
+        Project parentProject = subprojectToUpdate.getProject();
+        if (parentProject != null) {
+            updateProjectCostsAndHours(parentProject);
+            projectRepository.save(parentProject);
+        }
+    }
+
+    private void updateProjectCostsAndHours(Project project) {
+        List<Subproject> subprojects = project.getSubprojects();
+        double totalCost = 0;
+        double totalHours = 0;
+
+        for (Subproject subproject : subprojects) {
+            totalCost += subproject.getSubprojectCost();
+            totalHours += subproject.getSubprojectHours();
+        }
+
+        project.setProjectCost(totalCost);
+        project.setProjectActualdHours(totalHours);
     }
 
 }

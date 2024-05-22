@@ -388,4 +388,37 @@ public class ProjectControllerTest {
         }
     }
 
+    @Test
+    public void testProjectsDisplay_NullUserId() {
+        when(session.getAttribute("userId")).thenReturn(null);
+
+        String result = projectController.projectsDisplay(session, model, redirectAttributes);
+        assertEquals("redirect:/users/loginDisplay", result);
+    }
+
+    @Test
+    public void testProjectsAddFormDisplay_NullUserId() {
+        when(session.getAttribute("userId")).thenReturn(null);
+
+        String result = projectController.projectsAddFormDisplay(model, session, redirectAttributes);
+        assertEquals("redirect:/users/loginDisplay", result);
+    }
+
+    @Test
+    public void testDeleteProject_UnauthorizedRole() {
+        Long projectId = 1L;
+        Long userId = 2L;
+        User unauthorizedUser = new User();
+        unauthorizedUser.setUserId(userId);
+        unauthorizedUser.setUserRole(Role.WORKER);
+
+        when(session.getAttribute("userId")).thenReturn(userId);
+        when(userService.findUserById(userId)).thenReturn(unauthorizedUser);
+
+        String result = projectController.deleteProject(projectId, session, redirectAttributes);
+        assertEquals("redirect:/projects/display", result);
+        verify(redirectAttributes).addFlashAttribute("message", "Kun ADMIN og MANAGER brugere kan benytte denne funktion");
+    }
+
+
 }

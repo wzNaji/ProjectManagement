@@ -1,12 +1,10 @@
 package com.boefcity.projectmanagement.repository;
 
 import com.boefcity.projectmanagement.model.User;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.sql.*;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -18,11 +16,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     including connection handling, preparing statements,
     setting parameters, executing the query,
     and mapping the results to the User entity.
-    It also integrates with Spring's transaction management and exception handling frameworks.
      */
-    @Query(value = "SELECT * FROM user WHERE user_id = :userId", nativeQuery = true)
+    @Query(value = "SELECT * FROM app_user WHERE user_id = :userId", nativeQuery = true)
     User findUserByIdNative(@Param("userId") Long userId);
 
+    Optional<User> findUserByUsername(String username);
     /*
 
     @Value("${spring.datasource.url}")
@@ -70,7 +68,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
         return user;
     }
      */
-
-    Optional<User> findUserByUsername(String username);
 
 }

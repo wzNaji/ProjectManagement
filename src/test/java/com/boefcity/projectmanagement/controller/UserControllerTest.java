@@ -1,6 +1,7 @@
 package com.boefcity.projectmanagement.controller;
 
 import com.boefcity.projectmanagement.config.AppUtility;
+import com.boefcity.projectmanagement.model.Role;
 import com.boefcity.projectmanagement.model.User;
 import com.boefcity.projectmanagement.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -167,6 +168,79 @@ public class UserControllerTest {
             assertEquals("redirect:/users/loginDisplay", result);
             verify(redirectAttributes).addFlashAttribute("message", "Kunne ikke få fat på listen af brugere");
         }
+    }
+
+
+    // Authentication Check in Delete
+    @Test
+    public void testDeleteUser_NotAuthenticated() {
+        try (var mockedAppUtility = mockStatic(AppUtility.class)) {
+            mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(true);
+
+            String result = userController.deleteUser(1L, session, redirectAttributes);
+            assertEquals("redirect:/users/loginDisplay", result);
+        }
+    }
+
+    // Authentication Check in Edit
+    @Test
+    public void testEditUser_NotAuthenticated() {
+        try (var mockedAppUtility = mockStatic(AppUtility.class)) {
+            mockedAppUtility.when(() -> AppUtility.isNotAuthenticated(session, redirectAttributes)).thenReturn(true);
+
+            String result = userController.editUser(1L, model, session, redirectAttributes);
+            assertEquals("redirect:/users/loginDisplay", result);
+        }
+    }
+
+    // Role Authorization Check in Delete
+    @Test
+    public void testDeleteUser_UnauthorizedRole() {
+        Long userToDeleteId = 1L;
+        User currentUser = new User();
+        currentUser.setUserRole(Role.WORKER); // Current user is not ADMIN or MANAGER
+
+        when(session.getAttribute("userId")).thenReturn(1L);
+        when(userService.findUserById(1L)).thenReturn(currentUser);
+
+        String result = userController.deleteUser(userToDeleteId, session, redirectAttributes);
+        assertEquals("errorPage", result);
+    }
+
+    // Role Authorization Check in Edit
+    @Test
+    public void testEditUser_UnauthorizedRole() {
+        Long userId = 1L;
+        User currentUser = new User();
+        currentUser.setUserRole(Role.WORKER); // Current user is not ADMIN or MANAGER
+
+        when(session.getAttribute("userId")).thenReturn(1L);
+        when(userService.findUserById(1L)).thenReturn(currentUser);
+
+        String result = userController.editUser(userId, model, session, redirectAttributes);
+        assertEquals("redirect:/menu", result);
+        verify(redirectAttributes).addFlashAttribute("message", "Kun ADMIN og MANAGER brugere kan benytte denne funktion");
+    }
+
+    // Edit User Not Found
+
+    // Edit User Form Submission
+    @Test
+    public void testEditUserFormSubmission_Success() {
+        Long userId = 1L;
+        User currentUser = new User();
+        currentUser.setUserRole(Role.ADMIN);
+
+        User userDetails = new User();
+        userDetails.setUsername("editedUser");
+
+        when(session.getAttribute("userId")).thenReturn(1L);
+        when(userService.findUserById(1L)).thenReturn(currentUser);
+
+        String result = userController.editUser(userId, userDetails, session, redirectAttributes);
+        assertEquals("redirect:/users/userListDisplay", result);
+        verify(userService).editUser(userId, userDetails);
+        verify(redirectAttributes).addFlashAttribute("message", "Brugeren blev opdateret");
     }
 
 }
