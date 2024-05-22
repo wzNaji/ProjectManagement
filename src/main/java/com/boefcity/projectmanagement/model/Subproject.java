@@ -47,14 +47,6 @@ public class Subproject {
     @Column(name = "subproject_hours", nullable = true)
     private Double subprojectHours;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinTable(
-            name = "subproject_users",
-            joinColumns = @JoinColumn(name = "subproject_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private List<User> users = new ArrayList<>();
-
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinTable(
