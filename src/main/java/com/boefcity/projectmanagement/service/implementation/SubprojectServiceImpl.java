@@ -20,13 +20,13 @@ public class SubprojectServiceImpl implements SubprojectService {
     private final SubprojectRepository subprojectRepository;
     private final ProjectRepository projectRepository;
     private final TaskRepository taskRepository;
-    private final ProjectService projectService;
 
-    public SubprojectServiceImpl(SubprojectRepository subprojectRepository, ProjectRepository projectRepository, TaskRepository taskRepository, ProjectService projectService) {
+    public SubprojectServiceImpl(SubprojectRepository subprojectRepository,
+                                 ProjectRepository projectRepository,
+                                 TaskRepository taskRepository) {
         this.subprojectRepository = subprojectRepository;
         this.projectRepository = projectRepository;
         this.taskRepository = taskRepository;
-        this.projectService = projectService;
     }
 
     @Override
