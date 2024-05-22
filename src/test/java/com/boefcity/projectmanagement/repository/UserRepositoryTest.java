@@ -59,4 +59,5 @@ public class UserRepositoryTest {
         Optional<User> foundUser = userRepository.findUserByUsername("invaliduser");
         assertFalse(foundUser.isPresent());
     }
+
 }
