@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "user")
+@Table(name = "app_user")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -44,7 +44,6 @@ public class User {
         )
         @ToString.Exclude
         private List<Project> projects = new ArrayList<>();
-
 
         public void removeProject(Project project) {
                 projects.remove(project);

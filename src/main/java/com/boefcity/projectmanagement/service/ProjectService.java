@@ -17,6 +17,7 @@ public interface ProjectService {
 
     void assignUsersToProject (Long projectID, Long userID);
 
+
     boolean isUserAssignedToProject(Long projectID, Long userID);
 
     void assignSubprojectToProject(Subproject subproject, Long projectId);
