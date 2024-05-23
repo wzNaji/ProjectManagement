@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-public class GlobalExceptionHandler{
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public String handleIllegalArgumentException(IllegalArgumentException ex, Model model) {
@@ -13,5 +13,9 @@ public class GlobalExceptionHandler{
         return "errorPage";
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public String handleRuntimeException(RuntimeException ex, Model model) {
+        model.addAttribute("message", "System fejl " + ex.getMessage());
+        return "errorPage";
+    }
 }
-
