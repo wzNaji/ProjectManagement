@@ -8,7 +8,7 @@ public class AppUtility {
         public static boolean isNotAuthenticated(HttpSession session, RedirectAttributes redirectAttributes) {
             Long userId = (Long) session.getAttribute("userId");
             if (userId == null) {
-                redirectAttributes.addFlashAttribute("message", "Please login first.");
+                redirectAttributes.addFlashAttribute("message", "Venligst log ind.");
                 return true;
             }
             return false;

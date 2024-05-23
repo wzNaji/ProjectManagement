@@ -74,11 +74,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<Project> findAllProjects() {
-        List<Project> projectList = projectRepository.findAll();
-        if (projectList == null) {
-            throw new RuntimeException("Fejl under fetching af projekter");
-        }
-        return projectList;
+        return projectRepository.findAll();
     }
     @Transactional
     @Override
@@ -156,6 +152,7 @@ public class ProjectServiceImpl implements ProjectService {
             throw new IllegalArgumentException("Could not find user or project. userId: " + userId + ", projectId: " + projectId);
         }
             user.removeProject(project); // Fjerner projektet fra useren og fjerner useren fra projektet. Se 'removeProject' i User klassen
+            userRepository.save(user);
     }
 
     @Transactional
