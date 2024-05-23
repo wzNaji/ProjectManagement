@@ -28,7 +28,6 @@ public class ProjectRepositoryTest {
         user.setPassword("password");
         user.setUserRole(Role.MANAGER);
 
-        user = userRepository.save(user);
         project = projectRepository.save(project);
 
         Project foundProject = projectRepository.findProjectByIdNative(project.getProjectId());

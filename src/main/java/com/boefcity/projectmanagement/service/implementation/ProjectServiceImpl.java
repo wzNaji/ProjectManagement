@@ -156,6 +156,7 @@ public class ProjectServiceImpl implements ProjectService {
             throw new IllegalArgumentException("Could not find user or project. userId: " + userId + ", projectId: " + projectId);
         }
             user.removeProject(project); // Fjerner projektet fra useren og fjerner useren fra projektet. Se 'removeProject' i User klassen
+            userRepository.save(user);
     }
 
     @Transactional
