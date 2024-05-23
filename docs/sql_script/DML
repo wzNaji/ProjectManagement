@@ -1,0 +1,49 @@
+-- Subqueries bruges i scriptet til at sikre, at de korrekte værdier referenceres,
+
+-- username: 'admin', password: 'password1'
+-- username: 'manager', password: 'password2'
+-- username: 'worker', password: 'password3'
+
+-- Inserting users
+INSERT INTO app_user (email, password, user_role, username) VALUES
+('admin@example.com', '$2a$10$60TUFD.W5R9KS3kPaeASFu7EvOIqEzvrkMf.gP1TZA7.4/J4lVfWy', 'ADMIN', 'admin'),
+('manager@example.com', '$2a$10$cEndtaaBHKjujYGkzjfs0ObyOHA.x8d.crUZk9PNuczV7Bitv8702', 'MANAGER', 'manager'),
+('worker@example.com', '$2a$10$EbzhK4d5nuzon65.PebxTeGc2HYQdJ4v/kjgNOmbVgL9ar8FUZslS', 'WORKER', 'worker');
+
+-- Inserting projects
+INSERT INTO project (project_name, project_description, project_start_date, project_end_date, project_budget, project_cost, project_actual_hours, project_esitmated_hours) VALUES
+('Project A', 'Description for Project A', '2024-01-01 10:00:00', '2024-12-31 18:00:00', 100000.00, 50000.00, 1000.0, 1200.0),
+('Project B', 'Description for Project B', '2024-02-01 10:00:00', '2024-11-30 18:00:00', 150000.00, 75000.00, 1500.0, 1600.0);
+
+-- Inserting subprojects
+INSERT INTO subproject (subproject_name, subproject_description, subproject_start_date, subproject_due_date, priority_level, status, subproject_cost, subproject_hours, project_id) VALUES
+('Subproject A1', 'Description for Subproject A1', '2024-01-10 10:00:00', '2024-06-30 18:00:00', 'HIGH', 'ACTIVE', 25000.00, 300.0, (SELECT project_id FROM project WHERE project_name = 'Project A')),
+('Subproject A2', 'Description for Subproject A2', '2024-02-15 10:00:00', '2024-08-31 18:00:00', 'MEDIUM', 'ACTIVE', 15000.00, 200.0, (SELECT project_id FROM project WHERE project_name = 'Project A')),
+('Subproject B1', 'Description for Subproject B1', '2024-03-01 10:00:00', '2024-07-31 18:00:00', 'LOW', 'PAUSED', 35000.00, 400.0, (SELECT project_id FROM project WHERE project_name = 'Project B'));
+
+-- Inserting tasks
+INSERT INTO task (task_name, task_description, priority_level, status, subproject_id) VALUES
+('Task A1-1', 'Description for Task A1-1', 'HIGH', 'ACTIVE', (SELECT subproject_id FROM subproject WHERE subproject_name = 'Subproject A1')),
+('Task A1-2', 'Description for Task A1-2', 'MEDIUM', 'COMPLETED', (SELECT subproject_id FROM subproject WHERE subproject_name = 'Subproject A1')),
+('Task A2-1', 'Description for Task A2-1', 'LOW', 'ACTIVE', (SELECT subproject_id FROM subproject WHERE subproject_name = 'Subproject A2')),
+('Task B1-1', 'Description for Task B1-1', 'HIGH', 'PAUSED', (SELECT subproject_id FROM subproject WHERE subproject_name = 'Subproject B1'));
+
+-- Inserting project_users
+INSERT INTO project_users (project_id, user_id) VALUES
+((SELECT project_id FROM project WHERE project_name = 'Project A'), (SELECT user_id FROM app_user WHERE username = 'admin')), -- Admin assigned to Project A
+((SELECT project_id FROM project WHERE project_name = 'Project A'), (SELECT user_id FROM app_user WHERE username = 'manager')), -- Manager assigned to Project A
+((SELECT project_id FROM project WHERE project_name = 'Project B'), (SELECT user_id FROM app_user WHERE username = 'manager')), -- Manager assigned to Project B
+((SELECT project_id FROM project WHERE project_name = 'Project B'), (SELECT user_id FROM app_user WHERE username = 'worker')); -- Worker assigned to Project B
+
+-- Inserting project_subprojects
+INSERT INTO project_subprojects (project_id, subproject_id) VALUES
+((SELECT project_id FROM project WHERE project_name = 'Project A'), (SELECT subproject_id FROM subproject WHERE subproject_name = 'Subproject A1')), -- Subproject A1 to Project A
+((SELECT project_id FROM project WHERE project_name = 'Project A'), (SELECT subproject_id FROM subproject WHERE subproject_name = 'Subproject A2')), -- Subproject A2 to Project A
+((SELECT project_id FROM project WHERE project_name = 'Project B'), (SELECT subproject_id FROM subproject WHERE subproject_name = 'Subproject B1')); -- Subproject B1 to Project B
+
+-- Inserting subproject_tasks
+INSERT INTO subproject_tasks (subproject_id, task_id) VALUES
+((SELECT subproject_id FROM subproject WHERE subproject_name = 'Subproject A1'), (SELECT task_id FROM task WHERE task_name = 'Task A1-1')), -- Task A1-1 to Subproject A1
+((SELECT subproject_id FROM subproject WHERE subproject_name = 'Subproject A1'), (SELECT task_id FROM task WHERE task_name = 'Task A1-2')), -- Task A1-2 to Subproject A1
+((SELECT subproject_id FROM subproject WHERE subproject_name = 'Subproject A2'), (SELECT task_id FROM task WHERE task_name = 'Task A2-1')), -- Task A2-1 to Subproject A2
+((SELECT subproject_id FROM subproject WHERE subproject_name = 'Subproject B1'), (SELECT task_id FROM task WHERE task_name = 'Task B1-1')); -- Task B1-1 to Subproject B1
