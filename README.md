@@ -1,6 +1,6 @@
 # Projektledelse
 
-Velkommen til GitHub-repositoriet for Projektledelse. Dette projekt er designet til at forbedre og optimere projektstyringsprocesser ved at tilvejebringe en integreret platform for estimering, ressourceallokering, tidsplanlægning, risikovurdering og opfølgning på performance. Vores mål er at simplificere og forbedre projektlederes arbejde med at planlægge, overvåge og rapportere på projekter for at forbedre beslutningstagning og effektiv ressourceudnyttelse.
+Velkommen til GitHub-repositoriet for ProjectManagement. Dette projekt er designet til at forbedre og optimere projektstyringsprocesser ved at tilvejebringe en integreret platform for estimering, ressourceallokering, tidsplanlægning, risikovurdering og opfølgning på performance. Vores mål er at simplificere og forbedre projektlederes arbejde med at planlægge, og overvåge projekter for at forbedre beslutningstagning og effektiv ressourceudnyttelse.
 
 ## Teknologi Stack
 - **Backend**: Anvender Spring Boot for server-side logik.
