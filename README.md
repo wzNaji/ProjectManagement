@@ -1,80 +1,43 @@
-ProjectManagement
+# Projektledelse
 
-Velkommen til GitHub repositoriet for ProjectManagement.
-Applikationen har til formål at optimere projektstyringsprocesser ved at tilbyde værktøjer til estimering, ressourceallokering, tidsplanlægning,
-risikovurdering og performance tracking. Ved at integrere disse funktioner i én platform, sigter vi mod at forenkle og forbedre måden, hvorpå projektledere planlægger,
-overvåger og rapporterer om projekter, hvilket ultimativt vil føre til bedre beslutningstagning og ressourceudnyttelse.
+Velkommen til GitHub-repositoriet for Projektledelse. Dette projekt er designet til at forbedre og optimere projektstyringsprocesser ved at tilvejebringe en integreret platform for estimering, ressourceallokering, tidsplanlægning, risikovurdering og opfølgning på performance. Vores mål er at simplificere og forbedre projektlederes arbejde med at planlægge, overvåge og rapportere på projekter for at forbedre beslutningstagning og effektiv ressourceudnyttelse.
 
-Dette projekt benytter Spring Boot for backend logik, Thymeleaf for frontend templating, og MySQL for databasestyring.
-Projektet er designet til at blive deployed på Microsoft Azure ved brug af GitHub Actions for automatiseret testing og deployment.
+## Teknologi Stack
+- **Backend**: Anvender Spring Boot for server-side logik.
+- **Frontend**: Implementeret med Thymeleaf for templating og understøttet af CSS og Bootstrap for styling.
+- **Database**: Bruger MySQL til datalagring.
+- **CI/CD**: Integrerer GitHub Actions for automatiseret testing og deployment.
+- **Deployment**: Deployes på Microsoft Azure via Azure Web Apps.
 
-Funktioner
+## Funktionaliteter
 
-Log ind og Registrer:
-Brugere har mulighed for at logge ind på en eksisterende konto, eller registrere sig som en ny bruger.
+### Brugerhåndtering
+- **Log ind og Registrer**: Brugere kan oprette en ny konto eller logge ind på en eksisterende.
+- **Vis Brugere**: Tilgængelig for alle, viser en liste over registrerede brugere med roller og kontaktoplysninger.
+- **Administrer Brugere**: Kun tilgængelig for 'ADMIN' og 'MANAGER' roller til redigering og sletning af brugere.
 
-Vis brugere:
-Denne funktion giver mulighed for at se alle registrerede brugere. Dette funktion danner overblik over medlemmere i virksomheden,
-samt roller og kontaktoplyninger, så man nemt kan søge hjælp eller lign. ved at kontakte pågældende bruger.
+### Projektstyring
+- **Håndtering af Projekter og Subprojekter**: Tillader oprettelse, redigering og sletning af projekter, kun tilgængelig for 'ADMIN' og 'MANAGER'.
+- **Tilknytning af Brugere**: Administrer hvilke brugere der er tilknyttet hvilke projekter.
+- **Oversigt over Projektmedlemmer**: Viser hvem der arbejder på et projekt med mulighed for kontakt.
 
-Slet, rediger brugere:
-Kun brugere med 'ADMIN' og 'MANAGER' roller kan benytte sig af denne funktion af sikkerhedsmæssige årsager.
+### Opgavestyring
+- **Opret Task**: Alle projektmedlemmer kan oprette opgaver indenfor deres tildelte projekter.
+- **Administrer Tasks**: Kun 'ADMIN' og 'MANAGER' kan redigere og slette opgaver.
 
-Opret, slet, rediger projekter, subprojekter:
-Disse funktioner giver mulighed for at skabe overblik over et projekt. Projektets information indeholder data såsom, tidestimering, budget, start- og slut dato.
-Kun brugere med 'ADMIN' og 'MANAGER' roller kan benytte sig af denne funktion af sikkerhedsmæssige årsager.
+## Kom i Gang
 
-Tilføj og slet brugere til/fra projekt:
-Denne funktion bruges til at tilføje brugere til specifikke projekter, og Kun brugere med 'ADMIN' og 'MANAGER' roller kan benytte sig af denne funktion.
+1. **Klon repositoriet**: [GitHub Link](https://github.com/wzNaji/ProjectManagement.git)
+2. **Konfigurer MySQL-databasen** ved at oprette den og køre de nødvendige scripts.
+3. **Sæt databaseforbindelser op** i `src/main/resources/application-dev.properties`.
+4. **Byg og kør projektet med Maven**.
+5. **Applikationen er nu tilgængelig** på din lokale server.
 
-Vis brugere tilknyttet til projekt:
-Denne funktion vises for alle der er tilknyttet projektet, samt 'ADMIN' og 'MANAGER' brugere. Dette kan skabe en bedre overblik over hvem der er arbejder på projektet, 
-og viser samtidigt kontaktoplysninger på projekt-medlemmere, så en udvikler/arbejder nemt kan finde frem til hvem og hvor man kan søge hjælp til projektet.
+## Testing og Deployment
+Projektet benytter GitHub Actions til at håndtere CI/CD-processer, som sikrer kontinuerlig integration og deployment til Azure.
 
-Opret task:
-Denne funktion er tilknyttet et subprojekt, og alle medlemmere, der er tilføjet til en projekt, kan tilgå denne funktion.
-Det giver mulighed for udviklere/arbejdere selv kan oprette små opgaver, på egen initiativ.
+## Bidrag
+Alle bidrag er velkomne. For retningslinjer, se vores CONTRIBUTING.md.
 
-Slet og redigering af tasks:
-Kun brugere med 'ADMIN' og 'MANAGER' roller kan benytte sig af denne funktion, da tasks skal godkendes af projektlederen for at kunne afsluttes.
-
-
-Teknologier
-
-Backend: Spring Boot (Java)
-Frontend: Thymeleaf, CSS, Bootstrap
-Database: MySQL
-CI/CD: GitHub ActionsDeployment: Azure Web Apps
-
-
-Get started
-
-1. Klon repositoriet:
-   https://github.com/wzNaji/ProjectManagement.git
-
-2. Konfigurer MySQL database: Opret en database f.eks. 'ProjectManagement' og kør SQL scripts fra /docs/sql_script/DDL for at oprette tabeller.
-
-3. Konfigurer applikationsindstillinger: Rediger src/main/resources/application-dev.properties for at indstille database tilslutninger:
-spring.datasource.url=jdbc:mysql://localhost:3306/ProjectManagement?useSSL=false&serverTimezone=UTC
-spring.datasource.username=root
-spring.datasource.password=password
-
-Set derefter application.properties: spring.profiles.active=dev
-
-4. Byg og kør projektet med maven
-
-5. Applikationen kan nu findes på localhost. f.eks. localhost:8080
-   
-
-Testing og deployment
-CI/CD
-
-Dette projekt bruger GitHub Actions for kontinuerlig integration og deployment.
-Workflowet for CI/CD processerne er defineret under /.github/workflows , som inkluderer opgaver som automatiske tests, bygninger, og deployment til Azure Web Apps.
-
-
-Bidrag
-Vi byder bidrag velkomne fra alle! Venligst læs CONTRIBUTE.md for retningslinjerne om, hvordan du kan indsende bugs, forslag til forbedringer, og pull requests.
-
-Kontakt
-Hvis du har spørgsmål, er du velkommen til at sende en email til wana0001@stud.kea.dk
+## Kontakt
+Spørgsmål kan rettes via e-mail: wana0001@stud.kea.dk
