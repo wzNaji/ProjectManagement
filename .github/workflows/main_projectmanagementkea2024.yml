@@ -1,13 +1,15 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy JAR app to Azure Web App - projectmanagementKEA24
+name: Build and deploy JAR app to Azure Web App - projectmanagementKEA2024
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - "main"
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - "main"
   workflow_dispatch:
 
 jobs:
@@ -20,7 +22,7 @@ jobs:
       - name: Set up Java version
         uses: actions/setup-java@v1
         with:
-          java-version: '20'
+          java-version: '17'
 
       - name: Build with Maven
         run: mvn clean install
@@ -37,27 +39,18 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write #This is required for requesting the JWT
-  
+      
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
           name: java-app
       
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_90E78D7EED2344B39F176368FDF17F02 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_CEA3C484EE464530BC1652F5F6F96F09 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E4E8B3256C2743FB988810EA42EC18D5 }}
-
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'projectmanagementKEA24'
+          app-name: 'projectmanagementKEA2024'
           slot-name: 'Production'
           package: '*.jar'
-          
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_60569AC13C434C57BBA638060C8CCCC0 }}

@@ -27,7 +27,4 @@ jobs:
 
       - name: Build with Maven
         run: mvn -B package --file pom.xml
-        env:
-          PRODUCTION_DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
-          DATABASE_USER: ${{ secrets.PRODUCTION_DATABASE_USER }}
-          DATABASE_PASSWORD: ${{ secrets.PRODUCTION_DATABASE_PASSWORD }}
+
