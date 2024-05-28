@@ -47,3 +47,4 @@ INSERT INTO subproject_tasks (subproject_id, task_id) VALUES
 ((SELECT subproject_id FROM subproject WHERE subproject_name = 'Subproject A1'), (SELECT task_id FROM task WHERE task_name = 'Task A1-2')), -- Task A1-2 to Subproject A1
 ((SELECT subproject_id FROM subproject WHERE subproject_name = 'Subproject A2'), (SELECT task_id FROM task WHERE task_name = 'Task A2-1')), -- Task A2-1 to Subproject A2
 ((SELECT subproject_id FROM subproject WHERE subproject_name = 'Subproject B1'), (SELECT task_id FROM task WHERE task_name = 'Task B1-1')); -- Task B1-1 to Subproject B1
+

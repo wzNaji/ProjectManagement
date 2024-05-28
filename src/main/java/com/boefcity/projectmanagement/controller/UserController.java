@@ -42,9 +42,7 @@ public class UserController {
                 redirectAttributes.addFlashAttribute("message", "Brugernavn eksisterer allerede. Brug et andet brugernavn");
                 return "redirect:/users/registerDisplay";
             }
-            System.out.println("for create");
             userService.createUser(user);
-            System.out.println("efter create");
             redirectAttributes.addFlashAttribute("message", "Brugeren blev oprettet");
             return "redirect:/users/loginDisplay";
         } catch (Exception e) {
