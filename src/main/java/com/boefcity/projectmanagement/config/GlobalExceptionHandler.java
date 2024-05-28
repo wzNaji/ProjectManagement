@@ -15,6 +15,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public String handleRuntimeException(RuntimeException ex, Model model) {
+        model.addAttribute("message", "runtime fejl " + ex.getMessage());
+        return "errorPage";
+    }
+
+    @ExceptionHandler(Exception.class)
+    public String handleException(Exception ex, Model model) {
         model.addAttribute("message", "System fejl " + ex.getMessage());
         return "errorPage";
     }
